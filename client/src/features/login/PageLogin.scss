@@ -1,0 +1,56 @@
+@import "../../app/css/root.scss";
+.PageLogin {
+  margin-top: 0 !important;
+  height: inherit;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .container {
+    border: $border-default;
+    padding: 2rem;
+    .logo {
+      width: 100%;
+      flex-grow: 0;
+      margin: $margin-default;
+    }
+    .login {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      .explanations {
+        width: 50vw;
+        background-image: url("/assets/download_image_1700775996997.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        width: 512px;
+        height: 512px;
+        display: flex;
+        .title {
+          font-size: 2.5rem;
+          line-height: 7rem;
+          padding: $padding-default;
+          color: #000000;
+          font-weight: bold;
+          text-align: center;
+          // transform: rotate(-10deg); /* Rotate the text by 45 degrees */
+          /* You may also want to adjust the transform-origin for positioning */
+          transform-origin: 0 0; /* Set the rotation origin to the top-left corner */
+          margin: 5rem 5rem;
+          // text-shadow: -2px -2px 0 #ccc, 1px -1px 0 #ccc, -2px 2px 0 #ccc,
+          //   1px 1px 0 #ccc;
+        }
+      }
+    }
+  }
+  .bottom {
+    margin: $margin-default;
+  }
+  a:link {
+    text-decoration: none !important;
+  }
+  a:visited {
+    text-decoration: none !important;
+  }
+}

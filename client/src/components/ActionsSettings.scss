@@ -1,0 +1,17 @@
+@import "../app/css/root.scss";
+.ActionsSettings {
+  .Block {
+    flex-direction: row;
+    flex-wrap: wrap;
+    h2 {
+      width: 100%;
+    }
+    .url,
+    .auth {
+      flex-grow: 1;
+      .inputgeneric {
+        width: 90%;
+      }
+    }
+  }
+}

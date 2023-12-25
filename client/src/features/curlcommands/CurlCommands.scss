@@ -1,0 +1,17 @@
+@import "../../app/css/root.scss";
+.CurlCommands {
+  display: flex;
+  flex-direction: column;
+  .name {
+    div {
+      font-weight: bold;
+      color: $color-error;
+    }
+  }
+  .closeButton {
+    align-self: center;
+    justify-self: center;
+    margin: $margin-default;
+    padding: $padding-default;
+  }
+}

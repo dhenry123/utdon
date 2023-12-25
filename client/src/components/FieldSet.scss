@@ -1,0 +1,14 @@
+@import "../app/css/root.scss";
+.FieldSet {
+  // important to use ellipsis
+  min-width: 0;
+  legend {
+    font-weight: bold;
+  }
+  .content {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

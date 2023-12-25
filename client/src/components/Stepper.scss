@@ -1,0 +1,63 @@
+@import "../app/css/root.scss";
+
+.Stepper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  row-gap: $rowgap-default;
+  padding: $padding-default;
+  .step {
+    max-width: 10vw;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    row-gap: $rowgap-default;
+    max-width: inherit;
+    .separator {
+      align-self: center;
+      min-height: 3rem;
+      width: 0.5rem;
+      border-radius: 4px 4px 100% 100%;
+      background-color: #e7dfdf;
+      box-shadow: 4px 4px 8px #d6d5d5;
+      &.done {
+        background-color: $color-success;
+      }
+    }
+    .button {
+      border-radius: 100%;
+      border: 0;
+      width: 3rem;
+      height: 3rem;
+      align-self: center;
+      background-color: $color-text-secondary;
+      box-shadow: $boxshadow-default;
+      i {
+        margin: auto;
+        font-size: 1.5rem;
+      }
+      &.done {
+        background-color: $color-success;
+        color: white;
+      }
+      &.undone {
+        color: $color-text-primary;
+      }
+      &.active {
+        color: white;
+        background-color: $color-error;
+      }
+    }
+    label {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+    &.done {
+      background-color: $color-success;
+    }
+  }
+}

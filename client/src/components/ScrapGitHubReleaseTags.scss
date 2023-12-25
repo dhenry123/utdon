@@ -1,0 +1,53 @@
+@import "../app/css/root.scss";
+
+.ScrapGitHubReleaseTags {
+  display: flex;
+  flex-direction: column;
+  row-gap: $rowgap-default;
+  padding: $padding-default;
+  width: 100%;
+  .Block {
+    align-items: center;
+    &.inactive {
+      display: none;
+    }
+    &.filter {
+      flex-direction: row;
+      align-items: flex-start;
+      .list {
+        height: 20vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        &.excluded {
+          color: $color-error;
+          font-weight: bold;
+        }
+      }
+      .version {
+        max-width: 19rem;
+        font-weight: bold;
+        .error {
+          color: $color-error;
+        }
+        .success {
+          color: $color-success;
+        }
+      }
+    }
+    .urlGithub {
+      flex-grow: 1;
+    }
+    .content {
+      width: 100%;
+      .scrapContent {
+        border: $border-default;
+        border-radius: $border-radius-default;
+        width: 100%;
+        height: $form-scrap-content-height;
+        padding: $padding-default;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+    }
+  }
+}

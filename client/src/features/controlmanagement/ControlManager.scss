@@ -1,0 +1,11 @@
+@import "../../app/css/root.scss";
+
+.ControlManager {
+  display: flex;
+  flex-direction: row;
+  margin-top: $fixedheadermargintop;
+  .Stepper {
+    align-self: stretch;
+    margin: $margin-default;
+  }
+}

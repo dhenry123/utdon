@@ -1,0 +1,12 @@
+@import "../app/css/root.scss";
+.SelectGeneric {
+  padding: 0.5rem 0.5rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  appearance: none;
+  border-radius: $border-radius-default;
+  border: $border-default;
+  &:focus {
+    outline: $input-outline-default;
+  }
+}

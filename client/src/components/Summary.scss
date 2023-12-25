@@ -1,0 +1,43 @@
+@import "../app/css/root.scss";
+
+.Summary {
+  display: flex;
+  flex-direction: column;
+  row-gap: $rowgap-default;
+  padding: $padding-default;
+  width: 100%;
+  .Block {
+    &.details {
+      flex-wrap: wrap;
+      h2 {
+        width: 100%;
+      }
+    }
+    &.save {
+      row-gap: $rowgap-default;
+      column-gap: $columngap-default;
+      align-items: center;
+      justify-content: center;
+    }
+    .mustbesaved {
+      animation-name: greenPulse;
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      color: $color-text-secondary;
+    }
+  }
+}
+@keyframes greenPulse {
+  from {
+    background-color: #8c6cb1;
+    -webkit-box-shadow: 0 0 9px #8c6cb1;
+  }
+  50% {
+    background-color: #f8a6c1;
+    -webkit-box-shadow: 0 0 10px #f8a6c1;
+  }
+  to {
+    background-color: #f2598b;
+    -webkit-box-shadow: 0 0 9px #f2598b;
+  }
+}

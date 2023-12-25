@@ -1,0 +1,54 @@
+@import "../app/css/root.scss";
+
+.ScrapProduction {
+  display: flex;
+  flex-direction: column;
+  row-gap: $rowgap-default;
+  padding: $padding-default;
+  width: 100%;
+  .Block {
+    align-items: flex-start;
+    &.filter {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .ImageUploader {
+      display: flex;
+      justify-content: center;
+    }
+    .name {
+      width: 25%;
+      .inputgeneric {
+        width: 90%;
+      }
+    }
+    .url {
+      flex-grow: 1;
+      .inputgeneric {
+        width: 90%;
+      }
+    }
+    .content {
+      width: 100%;
+      .scrapContent {
+        border: $border-default;
+        border-radius: $border-radius-default;
+        width: 100%;
+        height: $form-scrap-content-height;
+        padding: $padding-default;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+    }
+    .version {
+      max-width: 19rem;
+      font-weight: bold;
+      .error {
+        color: $color-error;
+      }
+      .success {
+        color: $color-success;
+      }
+    }
+  }
+}

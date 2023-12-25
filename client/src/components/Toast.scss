@@ -1,0 +1,94 @@
+@import "../app/css/root.scss";
+
+.containertoast {
+  height: max-content;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.2rem;
+  max-width: 50vw;
+  .toast {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    width: 100%;
+    padding: 0;
+    background-color: #ffffff;
+    border-radius: 7px;
+    display: flex;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    justify-content: space-between;
+    p {
+      margin: 0.3rem 0 0.3rem 0;
+    }
+    &.info {
+      border-left: $toast-color-border-info;
+      i {
+        color: $toast-color-info;
+      }
+    }
+    &.success {
+      border-left: $toast-color-border-success;
+      i {
+        color: $toast-color-success;
+      }
+    }
+    &.warn {
+      border-left: $toast-color-border-warn;
+      i {
+        color: $toast-color-warn;
+      }
+    }
+    &.error {
+      border-left: $toast-color-border-error;
+      i {
+        color: $toast-color-error;
+      }
+    }
+    .toast:not(:last-child) {
+      margin-bottom: 50px;
+    }
+    .container-1,
+    .container-2 {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+    }
+    .container-1 {
+      flex-grow: 0;
+    }
+    .container-2 {
+      overflow: auto;
+      .summary {
+        color: #101020;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .detail {
+        font-size: 0.7rem;
+        font-weight: 400;
+        color: #656565;
+        padding: $padding-default;
+        overflow: auto;
+      }
+    }
+
+    .container-1 i {
+      font-size: 35px;
+    }
+    button {
+      align-self: flex-start;
+      background-color: transparent;
+      font-size: 1.5rem;
+      color: #656565;
+      line-height: 0;
+      border: none;
+      cursor: pointer;
+      margin: 1rem 0.5rem 0 0.5rem;
+    }
+  }
+}
