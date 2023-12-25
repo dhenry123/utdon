@@ -1,0 +1,312 @@
+[
+  {
+    "name": "rc-4.0.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v3.0.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v3.0.1",
+    "commit": {
+      "sha": "f08ac87888a3b715e56bc10f60d5895a029d4c4b",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/f08ac87888a3b715e56bc10f60d5895a029d4c4b"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YzLjAuMQ=="
+  },
+  {
+    "name": "v3.0.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v3.0.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v3.0.1",
+    "commit": {
+      "sha": "f08ac87888a3b715e56bc10f60d5895a029d4c4b",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/f08ac87888a3b715e56bc10f60d5895a029d4c4b"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YzLjAuMQ=="
+  },
+  {
+    "name": "v3.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v3.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v3.0",
+    "commit": {
+      "sha": "1553a792057418f23626487d204d2c2576d79971",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/1553a792057418f23626487d204d2c2576d79971"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YzLjA="
+  },
+  {
+    "name": "v2.10",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.10",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.10",
+    "commit": {
+      "sha": "a2fdb5dc52d8b1b459bbea38a0859ff44856139e",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/a2fdb5dc52d8b1b459bbea38a0859ff44856139e"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjEw"
+  },
+  {
+    "name": "v2.9.2",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.9.2",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.9.2",
+    "commit": {
+      "sha": "ee73091b72088cba6a5dd2140a9f95a7d232d3ae",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/ee73091b72088cba6a5dd2140a9f95a7d232d3ae"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjkuMg=="
+  },
+  {
+    "name": "v2.9.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.9.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.9.1",
+    "commit": {
+      "sha": "3a07a940987adffdae477ce5876375bf31b1f264",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/3a07a940987adffdae477ce5876375bf31b1f264"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjkuMQ=="
+  },
+  {
+    "name": "v2.9",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.9",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.9",
+    "commit": {
+      "sha": "1f0ca10185e3af24cda4aa70528205bd8a2cd92d",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/1f0ca10185e3af24cda4aa70528205bd8a2cd92d"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjk="
+  },
+  {
+    "name": "v2.8.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.8.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.8.1",
+    "commit": {
+      "sha": "05722cbf9eba9e631e96fd5e52a5fa42bba5cfac",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/05722cbf9eba9e631e96fd5e52a5fa42bba5cfac"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjguMQ=="
+  },
+  {
+    "name": "v2.8",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.8",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.8",
+    "commit": {
+      "sha": "b1ce88d56a9a583533167e9943b9c06650161e08",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/b1ce88d56a9a583533167e9943b9c06650161e08"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjg="
+  },
+  {
+    "name": "v2.7",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.7",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.7",
+    "commit": {
+      "sha": "bce9d4ddef8e7d814aa22b49775e4a87bfa4a2c7",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/bce9d4ddef8e7d814aa22b49775e4a87bfa4a2c7"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjc="
+  },
+  {
+    "name": "v2.6.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.6.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.6.1",
+    "commit": {
+      "sha": "09593c80d92c7259e76b6af38604d010dbb1177c",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/09593c80d92c7259e76b6af38604d010dbb1177c"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjYuMQ=="
+  },
+  {
+    "name": "v2.6",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.6",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.6",
+    "commit": {
+      "sha": "d67144ed3ae90f050c754243ba63a17d002b1904",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/d67144ed3ae90f050c754243ba63a17d002b1904"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjY="
+  },
+  {
+    "name": "v2.5",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.5",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.5",
+    "commit": {
+      "sha": "30e88beda35fbd6d510d285ff32c43f829c48120",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/30e88beda35fbd6d510d285ff32c43f829c48120"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjU="
+  },
+  {
+    "name": "v2.4.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.4.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.4.1",
+    "commit": {
+      "sha": "85dcadd05334281e820d9722f59530f53966cd35",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/85dcadd05334281e820d9722f59530f53966cd35"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjQuMQ=="
+  },
+  {
+    "name": "v2.4",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.4",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.4",
+    "commit": {
+      "sha": "414d5a9424bde82586ca27b5d7edf3333189e866",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/414d5a9424bde82586ca27b5d7edf3333189e866"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjQ="
+  },
+  {
+    "name": "v2.3",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.3",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.3",
+    "commit": {
+      "sha": "16083d1037a3ff64806622d29d52bd2918cdefff",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/16083d1037a3ff64806622d29d52bd2918cdefff"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjM="
+  },
+  {
+    "name": "v2.2.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.2.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.2.1",
+    "commit": {
+      "sha": "f4a30fb25acf1b9992631ed1812a737468d289d7",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/f4a30fb25acf1b9992631ed1812a737468d289d7"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjIuMQ=="
+  },
+  {
+    "name": "v2.2",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.2",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.2",
+    "commit": {
+      "sha": "cce52bf29826314d66e3ed2f62ffeeb727867992",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/cce52bf29826314d66e3ed2f62ffeeb727867992"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjI="
+  },
+  {
+    "name": "v2.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.1",
+    "commit": {
+      "sha": "e3ff8bf3ca520d3251718c3c268a427e9b7d5978",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/e3ff8bf3ca520d3251718c3c268a427e9b7d5978"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjE="
+  },
+  {
+    "name": "v2.0.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.0.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.0.1",
+    "commit": {
+      "sha": "d54dcb5ea65e744a00dbf867ab8888a4781bbff5",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/d54dcb5ea65e744a00dbf867ab8888a4781bbff5"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjAuMQ=="
+  },
+  {
+    "name": "v2.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v2.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v2.0",
+    "commit": {
+      "sha": "e2a8e712c4e70aadb6024b9a9a35262fb9080ba6",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/e2a8e712c4e70aadb6024b9a9a35262fb9080ba6"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YyLjA="
+  },
+  {
+    "name": "v1.25.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.25.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.25.0",
+    "commit": {
+      "sha": "731c54529c94a795454745f0fec244669dd2be1e",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/731c54529c94a795454745f0fec244669dd2be1e"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjI1LjA="
+  },
+  {
+    "name": "v1.24.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.24.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.24.1",
+    "commit": {
+      "sha": "8d9a6866a4d97422ff76d136642a24508dfe7367",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/8d9a6866a4d97422ff76d136642a24508dfe7367"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjI0LjE="
+  },
+  {
+    "name": "v1.24.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.24.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.24.0",
+    "commit": {
+      "sha": "a0d3d4003399a28bba3be51fca611e4afae7bdf0",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/a0d3d4003399a28bba3be51fca611e4afae7bdf0"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjI0LjA="
+  },
+  {
+    "name": "v1.23.1",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.23.1",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.23.1",
+    "commit": {
+      "sha": "30a3482d0e4d2670f1caee856b30464deee3ec1f",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/30a3482d0e4d2670f1caee856b30464deee3ec1f"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjIzLjE="
+  },
+  {
+    "name": "v1.23.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.23.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.23.0",
+    "commit": {
+      "sha": "3e0ff1cf811509e5eaba827df6d4db9571e29baf",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/3e0ff1cf811509e5eaba827df6d4db9571e29baf"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjIzLjA="
+  },
+  {
+    "name": "v1.22.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.22.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.22.0",
+    "commit": {
+      "sha": "2a9bc42dd43ece0e9fc29f9e79803fa8e3c144b1",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/2a9bc42dd43ece0e9fc29f9e79803fa8e3c144b1"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjIyLjA="
+  },
+  {
+    "name": "v1.21.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.21.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.21.0",
+    "commit": {
+      "sha": "5a4c06ffaeb536cf98b9a2fc075a0b58796d1f71",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/5a4c06ffaeb536cf98b9a2fc075a0b58796d1f71"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjIxLjA="
+  },
+  {
+    "name": "v1.20.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.20.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.20.0",
+    "commit": {
+      "sha": "e2b96d9bd8c022b353db108cde0abab7c9c452df",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/e2b96d9bd8c022b353db108cde0abab7c9c452df"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjIwLjA="
+  },
+  {
+    "name": "v1.19.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.19.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.19.0",
+    "commit": {
+      "sha": "0a0b48a3feb800b80df796d31a3ad5e2030473fa",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/0a0b48a3feb800b80df796d31a3ad5e2030473fa"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjE5LjA="
+  },
+  {
+    "name": "v1.18.0",
+    "zipball_url": "https://api.github.com/repos/healthchecks/healthchecks/zipball/refs/tags/v1.18.0",
+    "tarball_url": "https://api.github.com/repos/healthchecks/healthchecks/tarball/refs/tags/v1.18.0",
+    "commit": {
+      "sha": "b8f1bdaf96b364ded6865c46da0f66591694abc0",
+      "url": "https://api.github.com/repos/healthchecks/healthchecks/commits/b8f1bdaf96b364ded6865c46da0f66591694abc0"
+    },
+    "node_id": "MDM6UmVmMzgwNjcwNzg6cmVmcy90YWdzL3YxLjE4LjA="
+  }
+]

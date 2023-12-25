@@ -1,0 +1,9 @@
+data/**
+!data/.gitkeep
+dist/**
+node_modules
+test/data/**
+!test/data/.gitkeep
+test/devtest.test.ts
+coverage/**
+
