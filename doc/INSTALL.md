@@ -28,13 +28,13 @@ mkdir data
 
 # Générique
 chown 1001:1001 data
-sudo docker run -d -v $(pwd)/data:/app/data -p $port:3015 -e USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET -e DATABASE_ENCRYPT_SECRET=test mytinydc/utdon:$tag
+sudo docker run -d -v $(pwd)/data:/app/data -p $port:3015 -e USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET -e DATABASE_ENCRYPT_SECRET=test ghcr.io/dhenry123/utdon:$tag
 
 # ou mode "Durci" - Utilisateur/groupe arbitraires et lecture seule
 # USER=1250036
 # GROUP=1300006
 # chown $USER:$GROUP data
-# sudo docker run -d -u $USER:$GROUP --read-only -p   port:3015 -v $(pwd)/data:/data -e USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET -e DATABASE_ENCRYPT_SECRET=$DATABASE_ENCRYPT_SECRET mytinydc/utdon:$tag
+# sudo docker run -d -u $USER:$GROUP --read-only -p   port:3015 -v $(pwd)/data:/data -e USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET -e DATABASE_ENCRYPT_SECRET=$DATABASE_ENCRYPT_SECRET ghcr.io/dhenry123/utdon:$tag
 
 ```
 

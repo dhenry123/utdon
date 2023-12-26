@@ -29,8 +29,11 @@ RUN find ./client -name "*.stories.*" -exec rm -rf {} \;
 # Building client, final dest is client/dist
 RUN cd client && npm install && npm run build
 
-FROM node:20.10.0-alpine3.19 as runner
-#FROM base AS runner
+FROM base AS runner
+LABEL org.opencontainers.image.source=https://github.com/dhenry123/utdon
+LABEL org.opencontainers.image.description="Multi arch image"
+LABEL org.opencontainers.image.licenses=AGPLV3
+
 ARG RUNASUSER
 ARG RUNASUSERID
 ARG RUNASGROUP
@@ -52,3 +55,4 @@ RUN mkdir data
 EXPOSE 3015
 
 CMD ["node","main.js"]
+
