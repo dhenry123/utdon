@@ -1,0 +1,17 @@
+[
+  {
+    "name": "xxxxxx",
+    "urlProduction": "https://xxxxxxxx",
+    "scrapTypeProduction": "json",
+    "exprProduction": "join('.',*)",
+    "urlGitHub": "https://xxxxxxxxx",
+    "exprGithub": "v[\\d+.]+",
+    "urlCronJobMonitoring": "https://xxxxxxxxxxxxx",
+    "urlCronJobMonitoringAuth": "Bearer xxxxxxxx",
+    "urlCICD": "https://xxxxxxxxxxxxxxxxx",
+    "urlCICDAuth": "Bearer xxxxxxxx",
+    "uuid": "d05aeb69-205f-49b5-af5c-23120505843c",
+    "isPause": false,
+    "compareResult": null 
+  }
+]

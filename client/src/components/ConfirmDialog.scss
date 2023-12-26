@@ -1,0 +1,15 @@
+@import "../app/css/root.scss";
+.ConfirmDialog {
+  display: flex;
+  flex-direction: column;
+  .message {
+    padding: $padding-default;
+    margin: $margin-default;
+  }
+  .groupButtons {
+    display: flex;
+    flex-direction: row !important;
+    column-gap: $columngap-default;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,9 @@
+@import "../app/css/root.scss";
+.Block {
+  min-width: 256px;
+  display: flex;
+  box-shadow: $boxshadow-default;
+  padding: $padding-default;
+  margin: $margin-default;
+  border: $border-default;
+}

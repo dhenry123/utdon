@@ -1,0 +1,77 @@
+@import "../app/css/root.scss";
+.Control {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  padding: 1rem;
+  width: 20vw;
+  .identity {
+    display: flex;
+    flex-direction: row;
+    .appLogo {
+      align-self: center;
+      filter: grayscale(100%);
+      min-width: 90px;
+      min-height: 90px;
+      align-self: first baseline;
+      .content {
+        img {
+          width: 90px;
+          height: 90px;
+        }
+      }
+    }
+    .nameuuid {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      .name {
+        flex-grow: 1;
+        font-weight: bold;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .uuid {
+        font-size: 0.7rem;
+      }
+    }
+  }
+  .lastestCompare {
+    .details {
+      display: flex;
+      align-items: center;
+      column-gap: $columngap-default;
+      .Badge:hover {
+        cursor: pointer;
+      }
+      .compareVersions {
+        display: flex;
+        flex-wrap: wrap;
+        .separator {
+          padding: 0 0.2rem 0 0.2rem;
+        }
+      }
+    }
+  }
+  .groupButtons {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    flex-grow: 1;
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      column-gap: 1rem;
+      row-gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0.7rem;
+      width: 95%;
+      margin-top: auto;
+      .ButtonGeneric {
+        border-radius: 100%;
+      }
+    }
+  }
+}

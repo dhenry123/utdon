@@ -1,0 +1,53 @@
+@import "../app/css/root.scss";
+
+.ImageUploader {
+  .inputUploadNative {
+    display: none;
+  }
+  .dragDropButtonContainer {
+    position: relative;
+    width: $app-logo-width;
+    height: $app-logo-height;
+  }
+  .imagePpreview {
+    width: $app-logo-width;
+    height: $app-logo-height;
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    img {
+      width: inherit;
+      height: inherit;
+    }
+  }
+  .dragDropButton {
+    width: $app-logo-width;
+    height: $app-logo-height;
+    background-color: transparent;
+    position: absolute;
+    border: 1px dashed #ccc;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    .upload-button {
+      cursor: pointer;
+
+      padding: 0.25rem;
+      font-size: 0.7rem;
+      border: none;
+      font-family: "Oswald", sans-serif;
+      background-color: transparent;
+      width: $app-logo-width;
+      height: $app-logo-height;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .upload-button:hover {
+      background-color: white;
+      font-weight: bold;
+      opacity: 0.6;
+    }
+  }
+}

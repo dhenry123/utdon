@@ -1,0 +1,40 @@
+@import "../app/css/root.scss";
+
+.ButtonGeneric {
+  background-color: $button-generic-background-color;
+  color: $button-generic-color;
+  border-radius: $border-radius-button;
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  height: max-content;
+  display: flex;
+  column-gap: 0.5rem;
+  align-items: center;
+  width: max-content;
+  &.disabled {
+    background-color: $color-warning !important;
+    color: $color-text-secondary !important;
+  }
+
+  &.round {
+    border-radius: 100%;
+  }
+  &.success {
+    background-color: $color-success;
+    color: $color-text-secondary;
+  }
+  &.warning {
+    background-color: $color-warning;
+    color: $color-text-secondary;
+  }
+  .label:hover {
+    cursor: pointer;
+  }
+}
+.ButtonGeneric:hover {
+  cursor: pointer;
+}
+.ButtonGeneric:focus {
+  border-color: red;
+}

@@ -1,0 +1,6 @@
+@import "../app/css/root.scss";
+.StepperStep {
+  &.notVisibleComponent {
+    display: none;
+  }
+}

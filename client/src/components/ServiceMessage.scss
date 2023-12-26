@@ -1,0 +1,9 @@
+@import "../app/css/root.scss";
+
+.ServiceMessage {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  height: auto;
+  z-index: 100;
+}

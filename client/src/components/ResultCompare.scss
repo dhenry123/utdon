@@ -1,0 +1,18 @@
+@import "../app/css/root.scss";
+.ResultCompare {
+  display: flex;
+  row-gap: $rowgap-default;
+  .warning {
+    font-weight: bold;
+    color: $color-error;
+  }
+  .operation {
+    height: 6rem;
+    .groupButtons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      row-gap: 0.5rem;
+    }
+  }
+}
