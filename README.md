@@ -62,21 +62,21 @@ s-->|update|mps
 
 - Nodejs
 - React/Redux
-- Base de données JSON : Situées en RAM, si vous remplacer le fichier en cours d'exécution, ceci n'aura aucun effet. Le contenu de la base est enregistré après chaque modification et lorsque le service reçoit le signal SGINT | SIGTERM | SIGUSR2.
+- Base de données JSON : Situées en RAM, si vous remplacer les fichiers en cours d'exécution, ceci n'aura aucun effet. Le contenu des bases est enregistré après chaque modification et lorsque le service reçoit le signal SGINT | SIGTERM | SIGUSR2.
 - Filtres RegExp et Jmespath pour Json.
 
 ## Securité
 
-Ne jamais exposer UTDON directement sur internet (utilisez  un VPN si nécessaire). UTDON est un outil interne (auto-hébergé) qui exécute des actions sur vos ressources privées (Monitoring/CI-CD).
+Ne jamais exposer UTDON directement sur internet (utilisez un VPN si nécessaire). UTDON est un outil interne, auto-hébergé, qui exécute des actions sur vos ressources privées (Monitoring/CI-CD).
 
 **Refuser tout hébergement SAAS**: Ce produit n'a pas été dessiné pour être "multi-tenant" et n'est pas protégé par une solution "E2E". Les données d'authentification sont chiffrées au moyen d'une chaîne qui serait fournie pas le potentiel hébergeur et donc déchifrable par lui. Comprenez que les "contrôles" UTDON contiennent l'url du service à surveiller, et potentiellement les accès à votre chaîne CI/CD et/ou service de monitoring.
 
 ### Chiffrement
 
-Le contenu des deux bases de données sont chiffrés partiellement :
+Le contenu des deux bases de données est chiffré partiellement :
 
 - user.json: Le mot de passe de l'administrateur (non réversible) et le jeton d'authentification (réversible)
-- database.json: Les chaîne d'authentification pour les "urls" de monitoring et de la chaine CI/CD (réversibles).
+- database.json: Les chaînes d'authentification pour les "urls" de monitoring et de la chaine CI/CD (réversibles).
 
 ### Si vous avez perdu le mot de passe admin
 
@@ -104,8 +104,6 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 - Radioactive button : <https://zurb.com/playground/radioactive-buttons>
 
 - Logo: <https://www.instagram.com/henry_redbeard_overland/>
-
-
 
 ## Si vous appréciez cette application
 
