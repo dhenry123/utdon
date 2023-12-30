@@ -33,6 +33,10 @@ export const contextSlice = createSlice({
       if (value.payload === "fr") {
         state.language.locale = value.payload;
         state.language.lang = languageFr;
+      } else {
+        //default is en
+        state.language.locale = "en";
+        state.language.lang = {};
       }
     },
     updateKeyUptodateFrom(state, value) {
