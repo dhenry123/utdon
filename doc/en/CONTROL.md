@@ -4,7 +4,7 @@
 You'll see that the source code refers to the "healthchecks" and "immich" applications in the tests. Simply because I use these services as a basis for my work...
 Please note that I have no direct or indirect links or interests with these applications or their authors. These projects are Opensource and available on the GitHub forge.
 
-## Recovering the production version
+## Retrieving the production version
 
 Give your control a name, the name of the application for example, and add the associated logo (PNG or JPEG format, max 100Kb).
 
@@ -104,7 +104,7 @@ These are add-ons for monitoring and triggering the CI/CD chain pipeline.
 
 I personally use the "ping healthchecks" service. This type of service is generic and takes as url parameters: "0" for "OK" and "1" for "KO".
 
-### CI/CD string
+### CI/CD chain
 
 This action is never called automatically; you need to request it using the API entrypoint or the button available after comparison. Generally, this action allows you to update your application by executing a pipeline of tasks. **Triggering this type of action automatically is bad practice**, as updating an application first requires reading the version documentation. There may be additional tasks to perform to the usual ones, which could take your application out of service.
 
