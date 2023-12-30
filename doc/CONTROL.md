@@ -32,9 +32,7 @@ Certaines équipes commencent avec le modèle v1.0.1 et soudainnement, à la maj
 
 C'est plus facile lorsque les développeurs fournissent un point d'entrée de l'API, qui renvoie un texte qui peut être au format json.
 
-Dans ce cas, il suffit de fournir le chemin complet de la clé
-
-Exemple:
+Dans ce cas, il suffit de fournir le chemin complet de la clé, exemple:
 
 ```json
 {
