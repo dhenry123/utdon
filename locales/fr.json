@@ -109,7 +109,7 @@
   "Start the action on the CI/CD chain": "Démarrer l'action sur la chaîne CI/CD",
   "The action was triggered": "L'action a été déclenchée",
   "Execution date": "Date d'exécution",
-  "Last comparison": "Dernière comparaison",
+  "Latest comparison": "Dernière comparaison",
   "v[x.] repetead (eg: vx, vx.y, vx.y.x...)": "v[x.] répété (ex: vx, vx.y, vx.y.x...)",
   "Update the content of all controls": "Actualiser le contenu de tous les contrôles",
   "API entrypoint for UTDON version": "Point d'entrée de l'API pour obtenir la version UTDON",

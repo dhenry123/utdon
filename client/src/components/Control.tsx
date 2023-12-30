@@ -105,7 +105,7 @@ export const Control = ({
 
       <FieldSet
         className="lastestCompare"
-        legend={intl.formatMessage({ id: "Last comparison" })}
+        legend={intl.formatMessage({ id: "Latest comparison" })}
       >
         <div
           className="details"

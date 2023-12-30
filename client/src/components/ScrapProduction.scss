@@ -12,6 +12,9 @@
       flex-direction: row;
       align-items: flex-start;
     }
+    .expression {
+      flex-grow: 1;
+    }
     .ImageUploader {
       display: flex;
       justify-content: center;

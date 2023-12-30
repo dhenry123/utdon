@@ -184,6 +184,7 @@ export const ScrapGitHubReleaseTags = ({
           legend={intl.formatMessage({
             id: "Expression (adapt if necessary)",
           })}
+          className="expression"
         >
           <InputGeneric
             value={activeUptodateForm.exprGithub}
