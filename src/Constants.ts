@@ -35,10 +35,12 @@ export const API_ENTRY_POINTS_NO_NEED_AUTHENTICATION = [
   "/ui/editcontrol/*",
   "/ui/addcontrol",
   // Pure API
+  "/api/v1/healthz",
   "/api/v1/userlogin",
   "/api/v1/userlogout",
   "/api/v1/isauthenticated",
   "/api/v1/version",
+  "/api/doc/",
 ];
 
 /** Toasts */
