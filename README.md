@@ -13,6 +13,15 @@ UTDON est né d'un shell qui compare :
 
 N'ayant que des applications dont le dépôt des sources est situé sur "GitHub", UTDON ne fonctionne pour l'instant qu'avec GitHub.
 
+![dashboard](./doc/assets/utdon-dashboard-mytinydc.com.png)
+
+## Cas d'utilisation
+
+- Surveillance par UI.
+- Surveillance par appel API.
+- Surveillance par appel API et mise à jour d'un service de monitoring (type ping).
+- Appel API pour déclencher la mise à jour par une action sur la chaine CI/CD.
+
 ## Versioning UTDON
 
 UDON suit le protocole "semver" (<https://semver.org/>), accessible par l'entrypoint "/api/v1/version" qui renvoit une valeur au format JSON : {"version":"[\d+]\.[\d+]\.[\d+]} (3 groupes de nombres séparés par un point).
