@@ -13,6 +13,7 @@ import { useRef, useState } from "react";
 import ButtonGeneric from "./ButtonGeneric";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { CheckBox } from "./CheckBox";
+import { copyToClipboard } from "../helpers/UiMiscHelper";
 
 interface FieldSetApiEntrypointProps {
   className?: string;
@@ -42,25 +43,28 @@ export const FieldSetApiEntrypoint = ({
 
   const [isChecked, setIsChecked] = useState(false);
 
-  const copyToClipboard = () => {
-    if (divRef.current) {
-      const textToCopy = (divRef.current as HTMLDivElement).innerText;
-      const textarea = document.createElement("textarea");
-      textarea.value = textToCopy;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      dispatch(
-        showServiceMessage({
-          ...INITIALIZED_TOAST,
-          severity: "info",
-          detail: intl.formatMessage({
-            id: "The command has been copied to Clipboard",
-          }),
-        })
-      );
-    }
+  const handleOnCopyToClipboard = async () => {
+    copyToClipboard(divRef)
+      .then(() => {
+        dispatch(
+          showServiceMessage({
+            ...INITIALIZED_TOAST,
+            severity: "info",
+            detail: intl.formatMessage({
+              id: "The command has been copied to Clipboard",
+            }),
+          })
+        );
+      })
+      .catch((error: Error) => {
+        dispatch(
+          showServiceMessage({
+            ...INITIALIZED_TOAST,
+            severity: "error",
+            detail: `Unexpected Error: ${error.toString()}`,
+          })
+        );
+      });
   };
 
   return (
@@ -82,7 +86,7 @@ export const FieldSetApiEntrypoint = ({
         </div>
         <ButtonGeneric
           className="copyToClipboard"
-          onClick={copyToClipboard}
+          onClick={handleOnCopyToClipboard}
           icon={"copy"}
           title={intl.formatMessage({ id: "Copy command to the clipboard" })}
         />

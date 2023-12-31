@@ -7,6 +7,7 @@
   "Get Content": "Récupérer le contenu",
   "Extracted content version": "Version extraite du contenu",
   "Try with type": "Essayer avec le type",
+  "Expression": "Expression",
   "Regular expression to apply": "Expression régulière à appliquer",
   "See here for more informations about regexp": "Voir ici pour plus d'informations sur les expressions régulières",
   "See here for more informations about Jmespath filters": "Voir ici pour plus d'informations sur les filtres Jmespath",

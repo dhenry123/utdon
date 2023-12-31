@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { CheckBox } from "./CheckBox";
+import { FieldSetAuthorizationHeader } from "./FieldSetAuthorizationHeader";
 import {
   reactRouterParameters,
   withRouter,
 } from "storybook-addon-react-router-v6";
 
 const meta = {
-  title: "Components/Input/CheckBox",
-  component: CheckBox,
+  title: "Ui/FieldSetAuthorizationHeader",
+  component: FieldSetAuthorizationHeader,
   decorators: [withRouter],
   parameters: {
     layout: "fullscreen",
@@ -18,17 +18,13 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {},
-} satisfies Meta<typeof CheckBox>;
+} satisfies Meta<typeof FieldSetAuthorizationHeader>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// If you need to keep state in storybook, you also could use the app redux store
 export const Primary: Story = {
   args: {
-    checked: true,
-    label: "checkbox, move cursor hover the check to display title",
-    title: "checkbox title",
-    onChange: () => {},
+    authBearer: "Bearer xxxxxxxxx",
   },
 };
