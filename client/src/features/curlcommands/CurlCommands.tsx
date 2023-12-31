@@ -68,6 +68,14 @@ export const CurlCommands = ({
         <>
           <FieldSetApiEntrypoint
             commandTitle={intl.formatMessage({
+              id: "API entry point for the github version of the latest comparison",
+            })}
+            userAuthBearer={auth}
+            apiEntrypoint={`/api/v1//action/lastcomparegitrealase/${uptodateForm.uuid}`}
+            method={"GET"}
+          />
+          <FieldSetApiEntrypoint
+            commandTitle={intl.formatMessage({
               id: "API entry point for calling the CI/CD chain for this control",
             })}
             userAuthBearer={auth}
