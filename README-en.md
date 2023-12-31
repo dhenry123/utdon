@@ -11,6 +11,8 @@ UTDON was born from a shell that compares :
 
 As UTDON only works with applications whose source repository is located on "GitHub", it currently only works with GitHub.
 
+![dashboard](./doc/assets/utdon-dashboard-mytinydc.com.png)
+
 ## UTDON Versioning
 
 UDON follows the "semver" protocol (<https://semver.org/>), accessible via the "/api/v1/version" entrypoint, which returns a value in JSON format: {"version":"[\d+]\.[\d+]\.[\d+]} (3 groups of numbers separated by a dot).
