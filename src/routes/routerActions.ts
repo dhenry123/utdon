@@ -344,4 +344,72 @@ routerActions.put(
   }
 );
 
+/**
+ * return the git release of lastcompare
+ * usefull to be called by CI/CD
+ *
+ * @swagger
+ * /action/lastcomparegitrealase/{controlUuid}/:
+ *   get:
+ *     summary: Get the github release
+ *     description: Get the github release of the latest comparison (history) for one control uuid
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Actions
+ *     parameters:
+ *       - in: path
+ *         name: controlUuid
+ *         required: true
+ *         description: control uuid, could be 'all'
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Value of the github release
+ *         content:
+ *           application/text:
+ *             schema:
+ *               type: string
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: control uuid not found or github release is empty
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerActions.get(
+  "/action/lastcomparegitrealase/:controlUuid/",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const record = (await dbGetRecord(
+        req.app.get("DB"),
+        req.params.controlUuid,
+        req.app.get("LOGGER")
+      )) as UptodateForm;
+      if (record) {
+        if (record.compareResult?.githubLatestRelease) {
+          res.status(200).send(record.compareResult?.githubLatestRelease);
+        } else {
+          req.app.get("LOGGER").error("githubLatestRelease is empty");
+          res.status(404).json({ error: "githubLatestRelease is empty" });
+        }
+      } else {
+        req.app.get("LOGGER").error(UUIDNOTFOUND);
+        res.status(404).json({ error: UUIDNOTFOUND });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
 export default routerActions;
