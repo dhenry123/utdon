@@ -80,9 +80,9 @@ export const mytinydcUPDONApi = createApi({
         responseHandler: (response) => response.text(),
       }),
     }),
-    postChangePassword: builder.mutation({
+    putChangePassword: builder.mutation({
       query: (data: ChangePasswordType) => ({
-        method: "POST",
+        method: "PUT",
         url: `/changepassword/`,
         body: data,
       }),

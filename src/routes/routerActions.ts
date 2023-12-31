@@ -34,7 +34,54 @@ const updateExternalStatus = (
 };
 
 /**
- * controlUuid value could be "all"
+ * Call compare entrypoint for control uuid, control Uuid value could be "all"
+ *
+ * @swagger
+ * /action/compare/{controlUuid}/{setStatus}:
+ *   get:
+ *     summary: Call compare method
+ *     description: Call compare method for one or all controls, and call url monitoring
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Actions
+ *     parameters:
+ *       - in: path
+ *         name: controlUuid
+ *         required: true
+ *         description: control uuid, could be 'all'
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: setStatus
+ *         required: true
+ *         description: control uuid
+ *         schema:
+ *           type: string
+ *           enum:
+ *            - 0
+ *            - 1
+ *     responses:
+ *       200:
+ *         description: The response varies according to the parameters provided
+ *         content:
+ *           application/text:
+ *             schema:
+ *               type: string
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: control uuid not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
  */
 routerActions.get(
   "/action/compare/:controlUuid/:setStatus",
@@ -166,6 +213,50 @@ routerActions.get(
   }
 );
 
+/**
+ * Call ci/cd for uuid provided
+ *
+ * @swagger
+ * /action/cicd/:
+ *   put:
+ *     summary: Call CI/CD
+ *     description: Call url CI/CD for control uuid provided
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Actions
+ *     requestBody:
+ *       description: uuid
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               uuid:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: CI/CD response body
+ *         content:
+ *           application/text:
+ *             schema:
+ *               type: string
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: control uuid not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
 routerActions.put(
   "/action/cicd/",
   async (req: Request, res: Response, next: NextFunction) => {

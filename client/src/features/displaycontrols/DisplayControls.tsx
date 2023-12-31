@@ -128,8 +128,8 @@ export const DisplayControls = () => {
     await dispatch(mytinydcUPDONApi.endpoints.deleteCheck.initiate(uuid))
       .unwrap()
       .then((response) => {
-        if (response === uuid) {
-          refetch();
+        refetch();
+        if (response.uuid === uuid) {
           dispatch(
             showServiceMessage({
               ...INITIALIZED_TOAST,
@@ -141,10 +141,15 @@ export const DisplayControls = () => {
             })
           );
         } else {
-          throw new Error(
-            intl.formatMessage({
-              id: "Warn delete has been fired, but response is unexpected",
-            }) + `: ${response}`
+          dispatch(
+            showServiceMessage({
+              ...INITIALIZED_TOAST,
+              severity: "error",
+              sticky: true,
+              detail: intl.formatMessage({
+                id: "Warn delete has been fired, but response is unexpected",
+              }),
+            })
           );
         }
       })

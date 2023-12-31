@@ -13,11 +13,124 @@ const routerCore = express.Router();
  * components:
  *   responses:
  *     UnauthorizedError:
- *       description: Access token or user/password are missing, invalid
+ *       description: Access token,user/password are missing, invalid, or session is not set
  *   schemas:
  *     Error:
  *       type: string
  *       description: Catched Error as string
+ *     HTTPMethods:
+ *       type: string
+ *       enum:
+ *         - "GET"
+ *         - "POST"
+ *         - "PUT"
+ *         - "DELETE"
+ *     ChangePasswordType:
+ *       type: object
+ *       properties:
+ *         password:
+ *           type: string
+ *         newPassword:
+ *           type: string
+ *         newConfirmPassword:
+ *           type: string
+ *     InfoIuType:
+ *       type: object
+ *       properties:
+ *         login:
+ *           type: string
+ *         bearer:
+ *           type: string
+ *     DeletedRecord:
+ *       type: object
+ *       properties:
+ *         uuid:
+ *           type: string
+ *     UptoDateOrNotState:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: name of control
+ *         githubLatestRelease:
+ *           type: string
+ *           description: latest github release after expression applied
+ *         productionVersion:
+ *           type: string
+ *           description: production version after expression applied
+ *         state:
+ *           type: boolean
+ *           description: is Uptodate or Not ?
+ *         strictlyEqual:
+ *           type: boolean
+ *           description: is production strictly equal latest github release ?
+ *         githubLatestReleaseIncludesProductionVersion:
+ *           description: Is github latest release included in Production version?
+ *           type: boolean
+ *         productionVersionIncludesGithubLatestRelease:
+ *           description: Is Production version included in github latest release?
+ *           type: boolean
+ *         urlGitHub:
+ *           type: string
+ *         urlProduction:
+ *           type: string
+ *         ts:
+ *           type: number
+ *           description: Execution timestamp
+ *     UptodateForm:
+ *       type: object
+ *       description: control record
+ *       properties:
+ *         uuid:
+ *           type: string
+ *           description: control uniq id
+ *         name:
+ *           type: string
+ *           description: name of control
+ *         logo:
+ *           type: string
+ *           description: base64 html logo src
+ *         urlProduction:
+ *           type: string
+ *           description: url of the production application to be verified
+ *         scrapTypeProduction:
+ *           type: string
+ *           description: type of content
+ *         exprProduction:
+ *           type: string
+ *           description: Expression to apply to get the version
+ *         urlGitHub:
+ *           type: string
+ *           description: url of the github repository
+ *         exprGithub:
+ *           type: string
+ *           description: Expression to apply to get the version
+ *         urlCronJobMonitoring:
+ *           type: string
+ *           description: url of the cronJob monitoring
+ *         httpMethodCronJobMonitoring:
+ *           $ref: '#/components/schemas/HTTPMethods'
+ *           description: Http method to call url of the cronJob monitoring
+ *         urlCronJobMonitoringAuth:
+ *           type: string
+ *           description: Api Key to provide to call url of the cronJob monitoring
+ *         urlCICD:
+ *           type: string
+ *           description: url of the CI/CD
+ *         httpMethodCICD:
+ *           $ref: '#/components/schemas/HTTPMethods'
+ *           description: Http method to call url of the CI/CD
+ *         urlCICDAuth:
+ *           type: string
+ *           description: Api Key to provide to call url of the CI/CD
+ *         isPause:
+ *           type: boolean
+ *           description: When calling compare API if paused, this control will not be included in the process
+ *         compareResult:
+ *           description: latest compare result
+ *           oneOf:
+ *             - $ref: '#/components/schemas/UptoDateOrNotState'
+ *             - nullable: true
  */
 
 /**
@@ -51,7 +164,7 @@ const routerCore = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *              - $ref: '#/components/schemas/Error'
+ *              $ref: '#/components/schemas/Error'
  */
 routerCore.get(
   "/scrap/:url",
@@ -98,7 +211,7 @@ routerCore.get(
  *         content:
  *           application/json:
  *             schema:
- *                - $ref: '#/components/schemas/Error'
+ *               $ref: '#/components/schemas/Error'
  */
 routerCore.get(
   "/version",
@@ -128,7 +241,7 @@ routerCore.get(
  *         content:
  *           application/json:
  *             schema:
- *                - $ref: '#/components/schemas/Error'
+ *               $ref: '#/components/schemas/Error'
  */
 routerCore.get(
   "/healthz",
@@ -161,7 +274,7 @@ routerCore.get(
  *         content:
  *           application/json:
  *             schema:
- *                - $ref: '#/components/schemas/Error'
+ *               $ref: '#/components/schemas/Error'
  */
 routerCore.get(
   "/metrics",

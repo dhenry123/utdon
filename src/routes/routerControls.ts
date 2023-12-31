@@ -35,7 +35,7 @@ routerControl.post(
         }
       }
       if (!validate) {
-        res.status(503).json("check is not valide");
+        res.status(503).json("check is not valid");
       } else {
         if (req.body.uuid) {
           // uuid update
@@ -68,7 +68,40 @@ routerControl.post(
 
 /**
  * uuid value could be "all"
+ *
+ * @swagger
+ * /control/{uuid}:
+ *   get:
+ *     summary: Get control values
+ *     description: Get all control data per uuid or all controls (all)
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Control
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         required: true
+ *         description: control uuid||all
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: control data or Array of controls data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UptodateForm'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
  */
+
 routerControl.get(
   "/control/:uuid",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -88,6 +121,47 @@ routerControl.get(
   }
 );
 
+/**
+ * Delete controle per uuid
+ *
+ * @swagger
+ * /control/{uuid}:
+ *   delete:
+ *     summary: Delete one control
+ *     description: Delete control per uuid
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Control
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         required: true
+ *         description: control uuid
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: control uuid as JSON
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DeletedRecord'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: control uuid not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
 routerControl.delete(
   "/control/:uuid",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -97,15 +171,14 @@ routerControl.delete(
         //commit
         dbCommit(req.app.get("DBFILE") as string, req.app.get("DB"))
           .then(() => {
-            res.status(200).json(rec);
+            req.app
+              .get("LOGGER")
+              .info({ action: "check deleted", uuid: req.params.uuid });
+            res.status(200).json({ uuid: rec });
           })
           .catch((error: Error) => {
             next(error);
           });
-        req.app
-          .get("LOGGER")
-          .info({ action: "check added", uuid: req.params.uuid });
-        res.status(200).json(rec);
       } else {
         res.status(404).json({
           message: `Try to delete a non-existent uuid: ${req.params.uuid}`,
