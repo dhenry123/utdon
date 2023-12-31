@@ -1,0 +1,21 @@
+@import "../app/css/root.scss";
+.FieldSetAuthorizationHeader {
+  .authBearer {
+    padding: $padding-default;
+    position: relative;
+    border: $border-default;
+
+    .copyToClipboard {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      border-radius: 100%;
+      background-color: $color-error;
+      color: $color-text-secondary;
+      padding: 0.3rem;
+      .ti {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

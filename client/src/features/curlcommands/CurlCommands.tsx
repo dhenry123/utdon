@@ -11,6 +11,7 @@ import { useIntl } from "react-intl";
 import ButtonGeneric from "../../components/ButtonGeneric";
 import { FieldSet } from "../../components/FieldSet";
 import { BEARERDEF } from "../../../../src/Constants";
+import { FieldSetAuthorizationHeader } from "../../components/FieldSetAuthorizationHeader";
 
 interface CurlCommandsProps {
   uptodateForm: UptodateForm | "all";
@@ -41,13 +42,7 @@ export const CurlCommands = ({
       ) : (
         <></>
       )}
-      <FieldSet
-        legend={intl.formatMessage({
-          id: "Authorization header",
-        })}
-      >
-        <div>{auth}</div>
-      </FieldSet>
+      <FieldSetAuthorizationHeader authBearer={auth} />
 
       <FieldSetApiEntrypoint
         commandTitle={intl.formatMessage({

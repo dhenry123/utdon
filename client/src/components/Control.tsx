@@ -105,7 +105,7 @@ export const Control = ({
 
       <FieldSet
         className="lastestCompare"
-        legend={intl.formatMessage({ id: "Last comparison" })}
+        legend={intl.formatMessage({ id: "Latest comparison" })}
       >
         <div
           className="details"
@@ -204,6 +204,7 @@ export const Control = ({
         visible={isCurlCommandVisible}
         onHide={() => setIsCurlCommandVisible(false)}
         header={intl.formatMessage({ id: "Curl commands for this control" })}
+        closeButton
       >
         <CurlCommands
           uptodateForm={data}

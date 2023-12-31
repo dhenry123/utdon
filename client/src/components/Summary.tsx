@@ -78,7 +78,7 @@ export const Summary = ({
     <div className={`Summary`}>
       <Block className="details">
         <h2>{intl.formatMessage({ id: "Summary" })}</h2>
-        <FieldSet legend="name">
+        <FieldSet legend={intl.formatMessage({ id: "Name" })}>
           <div className="label">{uptodateForm.name}</div>
         </FieldSet>
         {uptodateForm.uuid ? (
@@ -91,34 +91,46 @@ export const Summary = ({
           <div></div>
         )}
         <FieldSetClickableUrl
-          legend="urlProduction"
+          legend={intl.formatMessage({ id: "Production version url" })}
           url={uptodateForm.urlProduction}
           className="label"
         />
-        <FieldSet legend="scrapTypeProduction">
+        <FieldSet legend={intl.formatMessage({ id: "Type of content" })}>
           <div className="label">{uptodateForm.scrapTypeProduction}</div>
         </FieldSet>
-        <FieldSet legend="exprProduction">
+        <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
           <div className="label">{uptodateForm.exprProduction}</div>
         </FieldSet>
         <FieldSetClickableUrl
-          legend="urlProduction"
+          legend={intl.formatMessage({ id: "GitHub repository url" })}
           url={uptodateForm.urlGitHub}
           className="label"
         />
-        <FieldSet legend="exprGithub">
+        <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
           <div className="label">{uptodateForm.exprGithub}</div>
         </FieldSet>
-        <FieldSet legend="urlCronJobMonitoring">
+        <FieldSet
+          legend={intl.formatMessage({ id: "Url of the notification service" })}
+        >
           <div className="label">{uptodateForm.urlCronJobMonitoring}</div>
         </FieldSet>
-        <FieldSet legend="urlCronJobMonitoringAuth">
+        <FieldSet
+          legend={intl.formatMessage({
+            id: "HEADER pour Authentification API",
+          })}
+        >
           <div className="label">{uptodateForm.urlCronJobMonitoringAuth}</div>
         </FieldSet>
-        <FieldSet legend="urlCICD">
+        <FieldSet
+          legend={intl.formatMessage({ id: "Url of the CI/CD API entrypoint" })}
+        >
           <div className="label">{uptodateForm.urlCICD}</div>
         </FieldSet>
-        <FieldSet legend="urlCICDAuth">
+        <FieldSet
+          legend={intl.formatMessage({
+            id: "HEADER pour Authentification API",
+          })}
+        >
           <div className="label">{uptodateForm.urlCICDAuth}</div>
         </FieldSet>
       </Block>
