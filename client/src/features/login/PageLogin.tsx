@@ -75,9 +75,13 @@ export const PageLogin = () => {
           &copy; Copyright{" "}
           <a href="https://www.mytinydc.com" target="_mytinydc_com">
             Mytinydc.com
-          </a>{" "}
-          - {applicationContext.copyrightts} - Licence{" "}
+          </a>
+          {" - "} {applicationContext.copyrightts} - Licence{" "}
           {applicationContext.licence}
+          {" - "}
+          <a href="/api/doc" target="_swagger_api_doc">
+            {intl.formatMessage({ id: "API Documentation" })}
+          </a>
         </div>
       </div>
     </div>

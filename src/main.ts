@@ -9,7 +9,7 @@ import crypto from "crypto";
 import * as http from "http";
 import cors from "cors";
 import winston from "winston";
-import helmet from "helmet";
+//import helmet from "helmet";
 
 import {
   dbCommit,
@@ -98,7 +98,7 @@ app.set("AUTH", auth);
 
 // cors
 app.use(cors());
-app.use(helmet());
+//app.use(helmet());
 
 app.use(express.json({ limit: JSON_POST_MAX_SIZE }));
 
@@ -144,7 +144,7 @@ const swaggerDefinition = {
     ],
     servers: [{ url: "/api/v1" }],
   },
-  apis: ["./src/routes/*.ts"],
+  apis: ["./src/routes/*"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerDefinition);

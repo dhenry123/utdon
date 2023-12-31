@@ -128,5 +128,6 @@
   "Exclude prefix and keep x.y & x.y.z": "Exclure le prefixe & garder x.y & x.y.z",
   "Service to be monitored": "Service à contrôler",
   "Github repository": "Dépôt Github",
-  "Action to perform": "Action à effectuer"
+  "Action to perform": "Action à effectuer",
+  "API Documentation": "Documentation API"
 }
