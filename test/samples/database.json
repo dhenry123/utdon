@@ -7,11 +7,11 @@
     "urlGitHub": "https://xxxxxxxxx",
     "exprGithub": "v[\\d+.]+",
     "urlCronJobMonitoring": "https://xxxxxxxxxxxxx",
-    "urlCronJobMonitoringAuth": "Bearer xxxxxxxx",
+    "urlCronJobMonitoringAuth": "xxxxxxxx",
     "urlCICD": "https://xxxxxxxxxxxxxxxxx",
-    "urlCICDAuth": "Bearer xxxxxxxx",
+    "urlCICDAuth": "xxxxxxxx",
     "uuid": "d05aeb69-205f-49b5-af5c-23120505843c",
     "isPause": false,
-    "compareResult": null 
+    "compareResult": null
   }
 ]

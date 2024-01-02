@@ -1,12 +1,13 @@
 {
   "name": "mytinydc-utdon-client",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Application for tracking obsolete FOSS applications - UI",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "buildAndDeployOnDevServer": "tsc && vite build && rm -rf ../public/* && cp -r dist/* ../public/.",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "jest",

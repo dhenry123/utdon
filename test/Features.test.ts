@@ -76,11 +76,7 @@ describe("Features", () => {
   });
 
   test("scrapUrl - default GET With authent", async () => {
-    const content = await scrapUrl(
-      "https://www.google.com",
-      "GET",
-      "Bearer xxxxxxxxx"
-    )
+    const content = await scrapUrl("https://www.google.com", "GET", "xxxxxxxxx")
       .then((result) => {
         return result;
       })

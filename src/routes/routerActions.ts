@@ -361,7 +361,7 @@ routerActions.put(
  *       - in: path
  *         name: controlUuid
  *         required: true
- *         description: control uuid, could be 'all'
+ *         description: control uuid
  *         schema:
  *           type: string
  *     responses:

@@ -16,7 +16,6 @@ import {
   dbUpdateRecord,
   getDbInitJsonFileName,
 } from "../src/lib/Database";
-import { BEARERDEF } from "../src/Constants";
 import winston from "winston";
 import Transport from "winston-transport";
 const { combine, timestamp, json } = winston.format;
@@ -34,10 +33,10 @@ const check: UptodateForm = {
   exprGithub: "v[\\d+.]+",
   urlCronJobMonitoring: "https://xxxxxxxxxxxxx",
   httpMethodCronJobMonitoring: "GET",
-  urlCronJobMonitoringAuth: `${BEARERDEF} xxxxxxx`,
+  urlCronJobMonitoringAuth: `xxxxxxx`,
   urlCICD: "https://xxxxxxxxxxxxxxxxx",
   httpMethodCICD: "GET",
-  urlCICDAuth: `${BEARERDEF} xxxxxxx`,
+  urlCICDAuth: `xxxxxxx`,
   isPause: false,
   compareResult: null,
   uuid: "",
@@ -50,6 +49,7 @@ class LastErrorTransport extends Transport {
     super(options);
     this.lastError = null;
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   log(info: any, callback: () => void) {
     if (info.level === "error") {
       this.lastError = info;

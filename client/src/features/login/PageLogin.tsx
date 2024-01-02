@@ -13,7 +13,10 @@ import { useAppDispatch, useAppSelector } from "../../app/hook";
 import { useNavigate } from "react-router-dom";
 import { LoginBlock } from "../../components/LoginBlock";
 import { PostAuthent } from "../../../../src/Global.types";
-import { INITIALIZED_TOAST } from "../../../../src/Constants";
+import {
+  APPLICATION_VERSION,
+  INITIALIZED_TOAST,
+} from "../../../../src/Constants";
 
 export const PageLogin = () => {
   const dispatch = useAppDispatch();
@@ -82,6 +85,7 @@ export const PageLogin = () => {
           <a href="/api/doc" target="_swagger_api_doc">
             {intl.formatMessage({ id: "API Documentation" })}
           </a>
+          {` - Version: ${APPLICATION_VERSION}`}
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@
  * @license AGPL3
  */
 
-import { BEARERDEF } from "./Constants";
 import { UptoDateOrNotState, UptodateForm } from "./Global.types";
 
 export const STORYBOOK_UPDATEORNOTSTATE: UptoDateOrNotState = {
@@ -26,10 +25,10 @@ export const STORYBOOK_UPTODATEFORM: UptodateForm = {
   exprGithub: "",
   urlCronJobMonitoring: "https://monitoring.service/state/",
   httpMethodCronJobMonitoring: "GET",
-  urlCronJobMonitoringAuth: `${BEARERDEF} xxxxxxx`,
+  urlCronJobMonitoringAuth: `xxxxxxx`,
   urlCICD: "https://uricicd/jobs/xxxxx",
   httpMethodCICD: "GET",
-  urlCICDAuth: `${BEARERDEF} xxxxxxx`,
+  urlCICDAuth: `xxxxxxx`,
   name: "storybook",
   isPause: false,
   compareResult: null,

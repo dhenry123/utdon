@@ -89,7 +89,8 @@ routerAuth.post(
  *         description: User is logged
  *         content:
  *           application/json:
- *             type: string
+ *             schema:
+ *               type: string
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       500:
@@ -142,7 +143,10 @@ routerAuth.get(
           action: "logout",
           user: session.user.login,
         });
+        session.user.login = "";
       }
+      res.clearCookie("connect.sid");
+      req.session.cookie.expires = new Date();
       req.session.destroy((error: Error) => {
         if (error) req.app.get("LOGGER").error(error);
         res.status(204).json();
@@ -204,21 +208,22 @@ routerAuth.put(
  * @swagger
  * /bearer:
  *   get:
- *     summary: get user user auth Bearer
- *     description: Used by UI to get user auth Bearer
+ *     summary: get user user auth Token
+ *     description: Used by UI to get user auth Token
  *     security:
  *       - ApiKeyAuth: []
  *     tags:
  *       - Authentication
  *     responses:
  *       200:
- *         description: User auth Bearer
+ *         description: User auth Token
  *         content:
  *           application/json:
- *             type: object
- *             properties:
- *               bearer:
- *                 type: string
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 bearer:
+ *                   type: string
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       500:
@@ -253,15 +258,15 @@ routerAuth.get(
  * @swagger
  * /bearer:
  *   put:
- *     summary: change user auth Bearer
- *     description: Used by UI to get new user auth Bearer
+ *     summary: change user auth Token
+ *     description: Used by UI to get new user auth Token
  *     security:
  *       - ApiKeyAuth: []
  *     tags:
  *       - Authentication
  *     responses:
  *       204:
- *         description: User auth Bearer has been changed
+ *         description: User auth Token has been changed
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       500:

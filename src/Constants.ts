@@ -24,7 +24,7 @@ export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   urlProduction: "",
 };
 
-export const APPLICATION_VERSION = "1.0.0";
+export const APPLICATION_VERSION = "1.1.0";
 
 // routes which dont need authentication to be served
 // firsts are UI routes
@@ -42,6 +42,9 @@ export const API_ENTRY_POINTS_NO_NEED_AUTHENTICATION = [
   "/api/v1/version",
   "/api/doc/",
 ];
+
+export const OPENAPIFILEJSON = "./openapi.json";
+export const OPENAPIFILEYAML = "./openapi.yaml";
 
 /** Toasts */
 export const TOAST_DEFAULT_LIFETIME = 10000;
@@ -71,8 +74,6 @@ export const MAXFILESIZEKBITS = 100;
 
 // Max size of post data
 export const JSON_POST_MAX_SIZE = "200kb";
-
-export const BEARERDEF = "Bearer "; // space after key is important
 
 export const SCRAPTYPEOPTIONJSON = "Json";
 export const SCRAPTYPEOPTIONTEXT = "Text / HTML / XML";

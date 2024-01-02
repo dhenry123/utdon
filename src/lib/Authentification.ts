@@ -8,7 +8,6 @@ import { ChangePasswordType, InfoIuType, UserType } from "../Global.types";
 import crypto from "crypto";
 
 import {
-  BEARERDEF,
   CIPHERALGORITHM,
   CIPHERSHAALGORITHM,
   LOGIN_FAILED,
@@ -162,15 +161,7 @@ export class Authentification {
 
   isAuthBearer = (req: Request) => {
     if (req.headers) {
-      const authorizationHeader = req.headers["authorization"];
-      const AuthKey = `${BEARERDEF}`;
-      if (
-        authorizationHeader &&
-        authorizationHeader.match(new RegExp(AuthKey))
-      ) {
-        const token = authorizationHeader.replace(new RegExp(AuthKey), "");
-        return token === this.getUserBearer();
-      }
+      return req.headers["authorization"] === this.getUserBearer();
     }
     return false;
   };

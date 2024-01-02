@@ -6,4 +6,5 @@ test/data/**
 !test/data/.gitkeep
 test/devtest.test.ts
 coverage/**
-
+.envlocaldev
+public

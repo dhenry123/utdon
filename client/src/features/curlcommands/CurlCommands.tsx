@@ -10,7 +10,6 @@ import { UptodateForm } from "../../../../src/Global.types";
 import { useIntl } from "react-intl";
 import ButtonGeneric from "../../components/ButtonGeneric";
 import { FieldSet } from "../../components/FieldSet";
-import { BEARERDEF } from "../../../../src/Constants";
 import { FieldSetAuthorizationHeader } from "../../components/FieldSetAuthorizationHeader";
 
 interface CurlCommandsProps {
@@ -26,7 +25,7 @@ export const CurlCommands = ({
 }: CurlCommandsProps) => {
   const intl = useIntl();
 
-  const auth = `${BEARERDEF}${userAuthBearer}`;
+  const auth = `${userAuthBearer}`;
 
   return (
     <Block className={`CurlCommands`}>

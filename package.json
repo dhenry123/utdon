@@ -1,6 +1,6 @@
 {
   "name": "mytinydc-utdon",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Application for tracking obsolete FOSS applications - Server",
   "main": "main.ts",
   "scripts": {
@@ -8,10 +8,11 @@
     "build": "environment=production tsc",
     "preview": "node dist/main.js",
     "lint": "npx eslint ./src",
-    "test": "jest --testPathIgnorePatterns='devtest*'",
     "updateVersionMajor": "./updateVersion.sh major",
     "updateVersionMinor": "./updateVersion.sh minor",
-    "updateVersionPatch": "./updateVersion.sh patch"
+    "updateVersionPatch": "./updateVersion.sh patch",
+    "genSwaggerYamlFile": "ts-node ./src/genSwaggerJson.ts && yq -p json -o yaml openapi.json > openapi.yaml && rm -f openapi.json",
+    "test": "jest --testPathIgnorePatterns='devtest*'"
   },
   "repository": {
     "type": "git",
@@ -22,16 +23,16 @@
   "dependencies": {
     "@metrichor/jmespath": "^0.3.1",
     "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "helmet": "^7.1.0",
-    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
+    "swagger-jsdoc": "^6.2.8",
     "@jest/globals": "^29.7.0",
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
