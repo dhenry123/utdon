@@ -68,7 +68,7 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
       formData.newConfirmPassword &&
       formData.newPassword === formData.newConfirmPassword
     ) {
-      dispatch(mytinydcUPDONApi.endpoints.postChangePassword.initiate(formData))
+      dispatch(mytinydcUPDONApi.endpoints.putChangePassword.initiate(formData))
         .unwrap()
         .then(() => {
           onHide();

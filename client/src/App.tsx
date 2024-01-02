@@ -22,8 +22,8 @@ export const App = () => {
     // Browser language detection
     const navigatorLocale =
       navigator.language.split("-")[0].toLowerCase() !== "fr" ? "en" : "fr";
-    console.log("navigator", navigatorLocale);
     dispatch(setLanguage(navigatorLocale));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -11,7 +11,7 @@ import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
 
 import "./ActionsSettings.scss";
-import { BEARERDEF, HTTP_METHOD_ENUM } from "../../../src/Constants";
+import { HTTP_METHOD_ENUM } from "../../../src/Constants";
 import SelectGeneric from "./SelectGeneric";
 
 export interface ActionsSettingsProps {
@@ -67,7 +67,7 @@ export const ActionsSettings = ({
             onChange={(value) =>
               handleOnChange("urlCronJobMonitoringAuth", value)
             }
-            placeholder={`${BEARERDEF} xxxxxxx`}
+            placeholder={`xxxxxxx`}
           />
         </FieldSet>
       </Block>
@@ -103,7 +103,7 @@ export const ActionsSettings = ({
             className=""
             value={activeUptodateForm.urlCICDAuth}
             onChange={(value) => handleOnChange("urlCICDAuth", value)}
-            placeholder={`${BEARERDEF} xxxxxxx`}
+            placeholder={`xxxxxxx`}
           />
         </FieldSet>
         <FieldSet legend={intl.formatMessage({ id: "Next step" })}>

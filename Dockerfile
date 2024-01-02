@@ -14,6 +14,8 @@ WORKDIR /app
 
 # Server
 COPY ./src/ ./src/
+RUN rm -f ./genSwaggerJson.ts
+COPY ./openapi.yaml .
 COPY ./package.json .
 COPY ./locales ./locales
 COPY ./tsconfig.json .
@@ -22,7 +24,7 @@ RUN npm install && npm run build
 RUN rm -rf node_modules && npm install --omit=dev
 # Client
 COPY ./client ./client
-RUN rm -rf client/node_modules client/tools client/dist
+RUN rm -rf client/node_modules client/tools client/dist client/.storybook
 # Remove stories
 RUN find ./client -name "*.stories.*" -exec rm -rf {} \;
 
@@ -46,6 +48,7 @@ USER ${RUNASUSERID}
 WORKDIR /app
 
 COPY --from=builder --chown=${RUNASUSERID}:${RUNASGROUP} /app/dist/ ./
+COPY --from=builder --chown=${RUNASUSERID}:${RUNASGROUP} /app/openapi.yaml ./
 COPY --from=builder --chown=${RUNASUSERID}:${RUNASGROUP} /app/node_modules/ ./node_modules
 COPY --from=builder --chown=${RUNASUSERID}:${RUNASGROUP} /app/client/dist/ ./public
 
@@ -55,4 +58,3 @@ RUN mkdir data
 EXPOSE 3015
 
 CMD ["node","main.js"]
-

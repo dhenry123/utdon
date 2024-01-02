@@ -75,6 +75,7 @@ s-->|update|mps
 - React/Redux
 - Base de données JSON : Situées en RAM, si vous remplacer les fichiers en cours d'exécution, ceci n'aura aucun effet. Le contenu des bases est enregistré après chaque modification et lorsque le service reçoit le signal SGINT | SIGTERM | SIGUSR2.
 - Filtres RegExp et Jmespath pour Json.
+- Swagger.
 
 ## Securité
 
@@ -103,7 +104,7 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 - Dupliquer un contrôle.
 - Filtres pour l'affichage.
 - Classement des contrôles par groupes.
-- Plusieurs "Auth Bearer" par contrôle pour éviter de fournir le jeton d'authentification de l'admin.
+- Plusieurs "Auth Token" par contrôle pour éviter de fournir le jeton d'authentification de l'admin.
 - Stockage S3.
 - Entrypoint API metrics.
 - Authentification LDAP.

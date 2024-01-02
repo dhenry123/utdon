@@ -7,9 +7,10 @@ import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import crypto from "crypto";
 import * as http from "http";
-import cors from "cors";
 import winston from "winston";
 import helmet from "helmet";
+import { parse } from "yaml";
+import { existsSync, readFileSync } from "fs";
 
 import {
   dbCommit,
@@ -24,6 +25,7 @@ import {
   ADMINUSERLOGINDEFAULT,
   API_ENTRY_POINTS_NO_NEED_AUTHENTICATION,
   JSON_POST_MAX_SIZE,
+  OPENAPIFILEYAML,
   SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB,
   SERVER_ERROR_USER_IS_NOT_AUTHENTIFIED,
 } from "./Constants";
@@ -33,7 +35,6 @@ import routerCore from "./routes/routerCore";
 import routerAuth from "./routes/routerAuth";
 
 // Swagger Documentation
-import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
 // logs
@@ -96,9 +97,17 @@ app.set("LOGGER", logger);
 app.set("DBFILE", dbfile);
 app.set("AUTH", auth);
 
-// cors
-app.use(cors());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+      },
+    },
+  })
+);
 
 app.use(express.json({ limit: JSON_POST_MAX_SIZE }));
 
@@ -121,34 +130,6 @@ app.set(
 // Needed for Ip collecting
 app.set("trust proxy", true);
 
-const swaggerDefinition = {
-  definition: {
-    openapi: "3.0.3",
-    info: {
-      title: "Utdon API Documentation",
-      version: "1.0.0",
-    },
-    components: {
-      securitySchemes: {
-        ApiKeyAuth: {
-          type: "apiKey",
-          in: "header",
-          name: "Bearer",
-        },
-      },
-    },
-    security: [
-      {
-        ApiKeyAuth: [],
-      },
-    ],
-    servers: [{ url: "/api/v1" }],
-  },
-  apis: ["./src/routes/*.ts"],
-};
-
-const swaggerSpec = swaggerJsdoc(swaggerDefinition);
-
 /**
  * explainations : https://dev.to/p0oker/why-is-my-browser-sending-an-options-http-request-instead-of-post-5621
  */
@@ -169,21 +150,23 @@ app.use(function (req, res, next) {
 
 // statics routes
 const publicPath =
-  process.env.environment === "development" ? "/client/dist/" : "/public";
+  process.env.environment === "development" ? "/../client/dist/" : "/public";
+
 // route to send react app
 ["/", "/login", "/ui/editcontrol/*", "/ui/addcontrol"].forEach((item) => {
   app.use(
     item,
     express.static(__dirname + publicPath, {
-      etag: false,
+      etag: true,
     })
   );
 });
-app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.get("/api-docs.json", function (req, res) {
-  res.setHeader("Content-Type", "application/json");
-  res.send(swaggerSpec);
-});
+
+//Swagger
+if (existsSync(OPENAPIFILEYAML)) {
+  const swaggerDocument = parse(readFileSync(OPENAPIFILEYAML, "utf-8"));
+  app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   // no need auth for this UI routes

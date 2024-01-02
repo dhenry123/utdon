@@ -60,6 +60,10 @@ export const Header = () => {
     );
   };
 
+  const handleOnNavigateToApiDoc = () => {
+    window.open("/api/doc/", "_swagger_api_doc");
+  };
+
   const displayDialogChangePassword = () => {
     setDialogHeader(
       intl.formatMessage({
@@ -141,10 +145,15 @@ export const Header = () => {
         />
         <div className="flexPushLeft logout">
           <ButtonGeneric
+            icon={"file-function"}
+            title={intl.formatMessage({ id: "API Documentation" })}
+            onClick={handleOnNavigateToApiDoc}
+          />
+          <ButtonGeneric
             icon={"key"}
             title={intl.formatMessage({ id: "Change you password" })}
             onClick={displayDialogChangePassword}
-          />{" "}
+          />
           <ButtonGeneric
             icon={"ti ti-logout"}
             title={intl.formatMessage({ id: "Logout" })}

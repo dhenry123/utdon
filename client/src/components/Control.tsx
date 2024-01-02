@@ -192,7 +192,8 @@ export const Control = ({
       <ConfirmDialog
         visible={confirmDeleteIsVisible}
         message={
-          intl.formatMessage({ id: "Are you sure to delete this check" }) + " ?"
+          intl.formatMessage({ id: "Are you sure to delete this control" }) +
+          " ?"
         }
         onConfirm={() => {
           setConfirmDeleteIsVisible(false);

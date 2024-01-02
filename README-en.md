@@ -13,6 +13,13 @@ As UTDON only works with applications whose source repository is located on "Git
 
 ![dashboard](./doc/assets/utdon-dashboard-mytinydc.com.png)
 
+## Use cases
+
+- Monitoring by UI.
+- Monitoring by API call.
+- Monitoring by API call and update of a monitoring service (ping type).
+- API call to trigger update by action on CI/CD chain.
+
 ## UTDON Versioning
 
 UDON follows the "semver" protocol (<https://semver.org/>), accessible via the "/api/v1/version" entrypoint, which returns a value in JSON format: {"version":"[\d+]\.[\d+]\.[\d+]} (3 groups of numbers separated by a dot).
@@ -66,6 +73,7 @@ s-->|update|mps
 - React/Redux
 - JSON databases: located in RAM, replacing files during execution has no effect. Database contents are saved after each modification and when the service receives the SGINT | SIGTERM | SIGUSR2 signal.
 - RegExp and Jmespath filters for Json.
+- Swagger.
 
 ## Security
 
@@ -94,7 +102,7 @@ Sessions are managed in RAM, so a simple service restart resets all sessions.
 - Duplicate a control.
 - Display filters.
 - Controls sorted into groups.
-- Multiple "Auth Bearer" per control to avoid providing admin authentication token.
+- Multiple "Auth Token" per control to avoid providing admin authentication token.
 - S3 storage.
 - Entrypoint API metrics.
 - LDAP authentication.

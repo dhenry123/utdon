@@ -314,13 +314,13 @@ describe("Authentification", () => {
     }
   });
 
-  test("isAuthBearer - Bearer provided is ok", () => {
+  test("isAuthBearer - authorization provided is ok", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
       auth.store(auth.makeUser("admin", "admin"));
       const req = {
-        headers: { authorization: `Bearer ${auth.getUserBearer()}` },
+        headers: { authorization: `${auth.getUserBearer()}` },
       } as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeTruthy();
@@ -330,29 +330,13 @@ describe("Authentification", () => {
     }
   });
 
-  test("isAuthBearer - Bearer provided is false", () => {
+  test("isAuthBearer - authorization provided is false", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
       auth.store(auth.makeUser("admin", "admin"));
       const req = {
-        headers: { authorization: `Bearer xxxx` },
-      } as Request;
-      const isAuth = auth.isAuthBearer(req);
-      expect(isAuth).toBeFalsy();
-    } catch (error: unknown) {
-      // unexpected error
-      expect(error).not.toBeDefined();
-    }
-  });
-
-  test("isAuthBearer - Bearer is not set", () => {
-    try {
-      process.env.USER_ENCRYPT_SECRET = "test";
-      const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
-      const req = {
-        headers: { authorization: `Bearerx ${auth.getUserBearer()}` },
+        headers: { authorization: `xxxx` },
       } as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeFalsy();
@@ -407,13 +391,13 @@ describe("Authentification", () => {
     }
   });
 
-  test("isAuthenticated - with Bearer header", () => {
+  test("isAuthenticated - with authorization header", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
       auth.store(auth.makeUser("admin", "admin"));
       const req = {
-        headers: { authorization: `Bearer ${auth.getUserBearer()}` },
+        headers: { authorization: `${auth.getUserBearer()}` },
       } as Request;
       const isAuth = auth.isAuthenticated(req);
       expect(isAuth).toBeTruthy();
@@ -590,7 +574,7 @@ describe("Authentification", () => {
     }
   });
 
-  test("Auth user Bearer Flow", () => {
+  test("Auth user authorization Flow", () => {
     process.env.USER_ENCRYPT_SECRET = "test";
     const auth = new Authentification(userDatabase);
     const bearer = auth.generateBearerKey();

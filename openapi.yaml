@@ -1,0 +1,555 @@
+openapi: 3.0.0
+info:
+  title: Utdon API Documentation
+  version: 1.1.0
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+  responses:
+    UnauthorizedError:
+      description: Access token,user/password are missing, invalid, or session is not set
+  schemas:
+    Error:
+      type: string
+      description: Catched Error as string
+    HTTPMethods:
+      type: string
+      enum:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+    ChangePasswordType:
+      type: object
+      properties:
+        password:
+          type: string
+        newPassword:
+          type: string
+        newConfirmPassword:
+          type: string
+    InfoIuType:
+      type: object
+      properties:
+        login:
+          type: string
+        bearer:
+          type: string
+    DeletedRecord:
+      type: object
+      properties:
+        uuid:
+          type: string
+    UptoDateOrNotState:
+      type: object
+      properties:
+        name:
+          type: string
+          description: name of control
+        githubLatestRelease:
+          type: string
+          description: latest github release after expression applied
+        productionVersion:
+          type: string
+          description: production version after expression applied
+        state:
+          type: boolean
+          description: is Uptodate or Not ?
+        strictlyEqual:
+          type: boolean
+          description: is production strictly equal latest github release ?
+        githubLatestReleaseIncludesProductionVersion:
+          description: Is github latest release included in Production version?
+          type: boolean
+        productionVersionIncludesGithubLatestRelease:
+          description: Is Production version included in github latest release?
+          type: boolean
+        urlGitHub:
+          type: string
+        urlProduction:
+          type: string
+        ts:
+          type: number
+          description: Execution timestamp
+    UptodateForm:
+      type: object
+      description: control record
+      properties:
+        uuid:
+          type: string
+          description: control uniq id
+        name:
+          type: string
+          description: name of control
+        logo:
+          type: string
+          description: base64 html logo src
+        urlProduction:
+          type: string
+          description: url of the production application to be verified
+        scrapTypeProduction:
+          type: string
+          description: type of content
+        exprProduction:
+          type: string
+          description: Expression to apply to get the version
+        urlGitHub:
+          type: string
+          description: url of the github repository
+        exprGithub:
+          type: string
+          description: Expression to apply to get the version
+        urlCronJobMonitoring:
+          type: string
+          description: url of the cronJob monitoring
+        httpMethodCronJobMonitoring:
+          $ref: '#/components/schemas/HTTPMethods'
+          description: Http method to call url of the cronJob monitoring
+        urlCronJobMonitoringAuth:
+          type: string
+          description: Api Key to provide to call url of the cronJob monitoring
+        urlCICD:
+          type: string
+          description: url of the CI/CD
+        httpMethodCICD:
+          $ref: '#/components/schemas/HTTPMethods'
+          description: Http method to call url of the CI/CD
+        urlCICDAuth:
+          type: string
+          description: Api Key to provide to call url of the CI/CD
+        isPause:
+          type: boolean
+          description: When calling compare API if paused, this control will not be included in the process
+        compareResult:
+          description: latest compare result
+          oneOf:
+            - $ref: '#/components/schemas/UptoDateOrNotState'
+            - nullable: true
+security:
+  - ApiKeyAuth: []
+servers:
+  - url: /api/v1
+paths:
+  /action/compare/{controlUuid}/{setStatus}:
+    get:
+      summary: Call compare method
+      description: Call compare method for one or all controls, and call url monitoring
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Actions
+      parameters:
+        - in: path
+          name: controlUuid
+          required: true
+          description: control uuid, could be 'all'
+          schema:
+            type: string
+        - in: path
+          name: setStatus
+          required: true
+          description: control uuid
+          schema:
+            type: string
+            enum:
+              - 0
+              - 1
+      responses:
+        "200":
+          description: The response varies according to the parameters provided
+          content:
+            application/text:
+              schema:
+                type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: control uuid not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /action/cicd/:
+    put:
+      summary: Call CI/CD
+      description: Call url CI/CD for control uuid provided
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Actions
+      requestBody:
+        description: uuid
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uuid:
+                  type: string
+      responses:
+        "200":
+          description: CI/CD response body
+          content:
+            application/text:
+              schema:
+                type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: control uuid not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /action/lastcomparegitrealase/{controlUuid}/:
+    get:
+      summary: Get the github release
+      description: Get the github release of the latest comparison (history) for one control uuid
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Actions
+      parameters:
+        - in: path
+          name: controlUuid
+          required: true
+          description: control uuid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Value of the github release
+          content:
+            application/text:
+              schema:
+                type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: control uuid not found or github release is empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /userlogin:
+    post:
+      summary: login to the system with UI
+      description: UI login method
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      requestBody:
+        description: login properties
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login OK
+          content:
+            application/text:
+              schema:
+                $ref: '#/components/schemas/InfoIuType'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /isauthenticated:
+    get:
+      summary: is user logged
+      description: Used by UI to verify user is logged
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: User is logged
+          content:
+            application/json:
+              schema:
+                type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /userlogout:
+    get:
+      summary: user logout method
+      description: Used by UI to logout user
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "204":
+          description: User is logged out
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /changepassword:
+    put:
+      summary: user change password
+      description: Used by UI to change user password
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      requestBody:
+        description: passwords list
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordType'
+      responses:
+        "204":
+          description: Password has been changed
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /bearer:
+    get:
+      summary: get user user auth Token
+      description: Used by UI to get user auth Token
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: User auth Token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bearer:
+                    type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: change user auth Token
+      description: Used by UI to get new user auth Token
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "204":
+          description: User auth Token has been changed
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /control/{uuid}:
+    get:
+      summary: Get control values
+      description: Get all control data per uuid or all controls (all)
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Control
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: control uuid||all
+          schema:
+            type: string
+      responses:
+        "200":
+          description: control data or Array of controls data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UptodateForm'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete one control
+      description: Delete control per uuid
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Control
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: control uuid
+          schema:
+            type: string
+      responses:
+        "200":
+          description: control uuid as JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedRecord'
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: control uuid not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /scrap/{url}:
+    get:
+      summary: Get provided url content
+      description: Used to retrieve url content from the production server, github API tags...
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Core
+      parameters:
+        - in: path
+          name: url
+          required: true
+          description: url to scrap http||https supported
+          schema:
+            type: string
+      responses:
+        "200":
+          description: content as text
+          content:
+            application/text:
+              schema:
+                type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /version:
+    get:
+      summary: To get the application version
+      description: Get the version in JSON format
+      security: []
+      tags:
+        - Core
+      responses:
+        "200":
+          description: Version as JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    description: Major.Minor.Patch
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /healthz:
+    get:
+      summary: Is service Healthy ?
+      description: Could be used to find out if the service is healthy
+      security: []
+      tags:
+        - Core
+      responses:
+        "204":
+          description: service is healthy
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /metrics:
+    get:
+      summary: not implemented
+      description: In the Roadmap
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Core
+      responses:
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "503":
+          description: not implemented
+tags: []
