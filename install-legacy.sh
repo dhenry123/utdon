@@ -16,6 +16,7 @@ rm -r node_modules && npm install --omit=dev
 
 sudo mkdir -p $installdir/public $installdir/data
 sudo cp -R dist/* $installdir/.
+sudo cp ./openapi.yaml $installdir/.
 sudo cp -R client/dist/* $installdir/public/.
 sudo cp -R node_modules $installdir/.
 rm -r node_modules dist client/node_modules client/dist
