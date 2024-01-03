@@ -113,7 +113,7 @@ Sessions are managed in RAM, so a simple service restart resets all sessions.
 
 - Radioactive button: <https://zurb.com/playground/radioactive-buttons>
 
-- Logo: <https://www.instagram.com/henry_redbeard_overland/>
+- Logo: <https://www.instagram.com/henry_redbeard/>
 
 ## If you like this application
 

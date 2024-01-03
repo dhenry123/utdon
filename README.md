@@ -115,7 +115,7 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 
 - Radioactive button : <https://zurb.com/playground/radioactive-buttons>
 
-- Logo: <https://www.instagram.com/henry_redbeard_overland/>
+- Logo: <https://www.instagram.com/henry_redbeard/>
 
 ## Si vous appréciez cette application
 
