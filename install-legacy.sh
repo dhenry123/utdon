@@ -62,7 +62,7 @@ EOF
 echo ""
 echo ""
 # you have to daemon-reload for systemd to recognize the new unit
-echo "First, reload systemd: 'systemctl daemon-reload"', then"
+echo "First, reload systemd: 'systemctl daemon-reload', then"
 echo "Start service: 'systemctl start $service'"
 echo ""
 echo "################"
