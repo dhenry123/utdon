@@ -44,14 +44,13 @@ cat <<EOF
 [Unit]
 Description=UTDON - Application for tracking obsolete FOSS applications
 After=networking.service
-[environment]
-USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET
-DATABASE_ENCRYPT_SECRET=$DATABASE_ENCRYPT_SECRET
 [Service]
 WorkingDirectory=$installdir
 ExecStart=node main.js
 User=$service
 Group=$service
+Environment="USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET"
+Environment="DATABASE_ENCRYPT_SECRET=$DATABASE_ENCRYPT_SECRET"
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=$service
