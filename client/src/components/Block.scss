@@ -7,3 +7,9 @@
   margin: $margin-default;
   border: $border-default;
 }
+
+@media (prefers-color-scheme: dark) {
+  .Block {
+    box-shadow: $boxshadow-default-dark;
+  }
+}

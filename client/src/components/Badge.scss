@@ -16,8 +16,8 @@
     width: max-content;
     border-radius: $badge-component-border-radius 0 0
       $badge-component-border-radius;
-      display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
   }
   .value {
     padding: $padding-badge;
