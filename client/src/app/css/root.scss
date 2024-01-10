@@ -82,6 +82,11 @@ $form-scrap-content-height: 10vh;
   align-self: flex-start;
   background-image: url("/assets/MytinyDC_logo-brand-full.png");
   background-repeat: no-repeat;
+
+    @media (prefers-color-scheme: dark) {
+      background-image: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
+      background-size: 180px 50px;
+    }
 }
 
 :root {
