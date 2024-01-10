@@ -1,0 +1,45 @@
+@import "../../app/css/root.scss";
+.UserManager {
+
+  $color-border : #303030;
+  @media (prefers-color-scheme: dark) {
+    $color-border : #e0e0e0;
+  }
+
+  table {
+    table-layout: fixed;
+    border-collapse : collapse;
+    border: 1px solid $color-border;
+  }
+
+  thead th:nth-child(1) {
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: 20px;
+    border: 1px solid $color-border;
+  }
+
+  .ButtonGeneric {
+    width: 100%;
+  }
+
+  .ButtonGeneric:not(:first-child) {
+    margin-top: 1rem;
+  }
+
+  .new-user-label {
+    margin-bottom: 0;
+  }
+
+  .FieldSet.password {
+    flex-grow: 1;
+  }
+
+  .form {
+    display: flex;
+  }
+
+}

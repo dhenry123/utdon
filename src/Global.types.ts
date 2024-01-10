@@ -145,6 +145,10 @@ export interface UptoDateOrNotStateResponseMonitoring
   urlCronJobMonitoringWithPayloadResponse?: string;
 }
 
+export type UsersType = {
+    users: UserType[];
+}
+
 export type UserType = {
   login: string;
   uuid: string;
@@ -158,10 +162,16 @@ export type UIError = {
 };
 
 export type ChangePasswordType = {
+  login: string;
   password: string;
   newPassword: string;
   newConfirmPassword: string;
 };
+
+export type NewUserType = {
+  login: string;
+  password: string;
+}
 
 export type ControlToPause = {
   uuid: string;

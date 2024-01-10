@@ -31,6 +31,17 @@ components:
           type: string
         newConfirmPassword:
           type: string
+    NewUserType:
+      type: object
+      properties:
+        login:
+          type: string
+          description: login of the new user
+          example: AzureDiamond
+        password:
+          type: string
+          description: password of the new user
+          example: hunter2
     InfoIuType:
       type: object
       properties:
@@ -288,6 +299,99 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      summary: get users list
+      description: Used by the User Management UI to get users list
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: create user in the database
+      description: UI create user method
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      requestBody:
+        description: login and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserType'
+      responses:
+        "200":
+          description: created user
+          content:
+            application/text:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: string
+        "400":
+          description: User already exists
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{login}:
+    delete:
+      summary: delete user from the database
+      description: UI delete user method
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      parameters:
+        - in: path
+          name: login
+          required: true
+          description: login of the user to delete
+          schema:
+            type: string
+            example: user
+      responses:
+        "200":
+          description: deleted
+          content:
+            application/text:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /isauthenticated:
     get:
       summary: is user logged
@@ -390,6 +494,32 @@ paths:
       responses:
         "204":
           description: User auth Token has been changed
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user:
+    get:
+      summary: get user's login
+      description: Used by UI to show the user's login in the header
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: User's login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: string
         "401":
           $ref: '#/components/responses/UnauthorizedError'
         "500":

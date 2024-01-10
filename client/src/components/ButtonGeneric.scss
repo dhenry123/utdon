@@ -12,11 +12,17 @@
   column-gap: 0.5rem;
   align-items: center;
   width: max-content;
-  &.disabled {
+
+  &:not(:disabled) > .label:hover {
+    cursor: pointer;
+  }
+  &.disabled, &:disabled > .label {
     background-color: $color-warning !important;
     color: $color-text-secondary !important;
+    &:hover {
+      cursor: not-allowed;
+    }
   }
-
   &.round {
     border-radius: 100%;
   }
@@ -27,9 +33,6 @@
   &.warning {
     background-color: $color-warning;
     color: $color-text-secondary;
-  }
-  .label:hover {
-    cursor: pointer;
   }
 }
 .ButtonGeneric:hover {

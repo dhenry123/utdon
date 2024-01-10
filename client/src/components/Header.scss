@@ -1,3 +1,5 @@
+@import "../app/css/root.scss";
+
 .header {
   padding-top: 0.3rem;
   width: 100%;
@@ -12,6 +14,20 @@
   left: 0;
   .flexPushLeft {
     margin-left: auto;
+
+    .loginName {
+      display: flex;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-right: 0.5rem;
+
+      font-size: 1.2rem;
+
+      @media (prefers-color-scheme: dark) {
+        color: $text-dark;
+      }
+    }
+
   }
   .ti {
     font-size: 1.7rem;

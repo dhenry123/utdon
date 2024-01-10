@@ -9,7 +9,7 @@ import {
   SelectOptionType,
   ToastType,
   UptoDateOrNotState,
-  UptodateForm,
+  UptodateForm, NewUserType,
 } from "./Global.types";
 
 export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
@@ -79,9 +79,15 @@ export const SCRAPTYPEOPTIONJSON = "Json";
 export const SCRAPTYPEOPTIONTEXT = "Text / HTML / XML";
 
 export const INITIALIZED_CHANGEPASSWORD: ChangePasswordType = {
+  login: "",
   password: "",
   newPassword: "",
   newConfirmPassword: "",
+};
+
+export const INITIALIZED_NEWUSER: NewUserType = {
+  login: "",
+  password: "",
 };
 
 export const INITIALIZED_UPTODATEFORM: UptodateForm = {

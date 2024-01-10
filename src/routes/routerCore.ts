@@ -34,6 +34,17 @@ const routerCore = express.Router();
  *           type: string
  *         newConfirmPassword:
  *           type: string
+ *     NewUserType:
+ *       type: object
+ *       properties:
+ *         login:
+ *           type: string
+ *           description: login of the new user
+ *           example: AzureDiamond
+ *         password:
+ *           type: string
+ *           description: password of the new user
+ *           example: hunter2
  *     InfoIuType:
  *       type: object
  *       properties:
