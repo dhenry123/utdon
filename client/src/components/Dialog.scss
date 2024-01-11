@@ -33,6 +33,12 @@
       animation-duration: 0.4s;
       max-height: 94vh;
       overflow-y: auto;
+
+      @media (prefers-color-scheme: dark) {
+        background-color: $background-dark;
+        color: $text-dark;
+      }
+
       .modal-header {
         padding: 0 0.5rem;
         border-radius: $border-radius-default $border-radius-default 0 0;
@@ -41,6 +47,10 @@
         display: flex;
         align-items: start;
         min-width: 30vw;
+        @media (prefers-color-scheme: dark) {
+          background-color: $background-dark;
+          color: $text-dark;
+        }
         h2 {
           text-transform: none;
           font-size: 1rem;

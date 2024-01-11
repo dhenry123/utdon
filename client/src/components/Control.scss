@@ -13,11 +13,13 @@
       filter: grayscale(100%);
       min-width: 90px;
       min-height: 90px;
-      align-self: first baseline;
       .content {
         img {
           width: 90px;
           height: 90px;
+          @media (prefers-color-scheme: dark) {
+            filter: invert(1);
+          }
         }
       }
     }
