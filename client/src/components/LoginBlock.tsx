@@ -36,6 +36,7 @@ export const LoginBlock = ({ onLogin }: LoginBlockProps) => {
         icon={"user"}
         value={login}
         placeholder={intl.formatMessage({ id: "User" })}
+        autoComplete="username"
         onChange={setLogin}
       />
 
@@ -43,6 +44,7 @@ export const LoginBlock = ({ onLogin }: LoginBlockProps) => {
         icon={"key"}
         type="password"
         value={password}
+        autoComplete="password"
         placeholder={intl.formatMessage({ id: "Password" })}
         onChange={setPassword}
         onKeyUp={(key: string) => {
