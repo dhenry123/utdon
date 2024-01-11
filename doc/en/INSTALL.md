@@ -13,7 +13,7 @@ The appplication doesn't support "https", so you'll need to use this product beh
 
 ```
 # tag version
-tag="1.0.0"
+tag="1.2.0"
 # Which port do you expose the service on?
 port=3015
 # Generate secrets

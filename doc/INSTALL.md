@@ -9,12 +9,11 @@ L'appplication ne supporte pas "https", vous devrez utiliser ce produit derrièr
 - Un port d'exposition, le port exposé par le container est 3015
 - Le container peut-être exécuté "ReadOnly"
 
-
 ### Démarrage du service
 
 ```
 # tag version
-tag="1.0.0"
+tag="1.2.0"
 # Which port do you expose the service on?
 port=3015
 # Generate secrets
