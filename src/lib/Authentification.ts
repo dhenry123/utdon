@@ -3,8 +3,13 @@
  * @license AGPL3
  */
 
-import { readFileSync, existsSync, writeFileSync } from "fs";
-import { ChangePasswordType, InfoIuType, UsersType, UserType } from "../Global.types";
+import { readFileSync, existsSync, writeFileSync, copyFileSync } from "fs";
+import {
+  ChangePasswordType,
+  InfoIuType,
+  UsersType,
+  UserType,
+} from "../Global.types";
 import crypto from "crypto";
 
 import {
@@ -31,7 +36,21 @@ export class Authentification {
   }
 
   loadUsersFromDatabase = (): UsersType => {
-    return JSON.parse(readFileSync(this.database, "utf-8"));
+    // PR#15 : Modification of the user database schema: multi-administrators
+    let data = JSON.parse(readFileSync(this.database, "utf-8"));
+    if (!data.users) {
+      copyFileSync(
+        this.database,
+        this.database.replace(/\.json$/, "Before-PR#15-backup.json")
+      );
+      // save
+      this.initDatabase(data);
+      data = this.loadUsersFromDatabase();
+      console.log(
+        "[INFO] PR#15: The user database has been converted into a multi-administrator database."
+      );
+    }
+    return data;
   };
 
   encryptPassword = (clearPassword: string): string => {
@@ -84,7 +103,7 @@ export class Authentification {
   };
 
   initDatabase = (user?: UserType) => {
-    const users = {users: [ ]} as UsersType;
+    const users = { users: [] } as UsersType;
     if (user) {
       users.users.push(user);
     }
@@ -99,11 +118,7 @@ export class Authentification {
     login: string,
     clearPassword: string
   ): [number, string | InfoIuType] => {
-    if (
-      this.users &&
-      clearPassword &&
-      process.env.USER_ENCRYPT_SECRET
-    ) {
+    if (this.users && clearPassword && process.env.USER_ENCRYPT_SECRET) {
       // find user in database
       const currentUser = this.users.users.find((user) => user.login === login);
       if (!currentUser) return [401, LOGIN_FAILED];
@@ -128,33 +143,34 @@ export class Authentification {
   };
 
   /*
-  * return all users logins
-  * @returns string[]
-  */
+   * return all users logins
+   * @returns string[]
+   */
   getUsersLogins = (): string[] => {
     return this.users.users.map((user) => user.login);
   };
 
   /*
-  * add a user to the database
-  * @param user UserType
-  * @returns void
- */
+   * add a user to the database
+   * @param user UserType
+   * @returns void
+   */
   addUser = (user: UserType) => {
     // check if user already exists
-    if (this.users.users.find((u) => u.login === user.login)) throw new Error("User already exists");
+    if (this.users.users.find((u) => u.login === user.login))
+      throw new Error("User already exists");
     this.users.users.push(user);
     writeFileSync(this.database, JSON.stringify(this.users), {
       encoding: "utf-8",
       mode: 0o600,
     });
-  }
+  };
 
   /*
-  * delete a user from the database
-  * @param user string
-  * @returns void
- */
+   * delete a user from the database
+   * @param user string
+   * @returns void
+   */
   deleteUser = (user: string) => {
     const uid = this.users.users.findIndex((u) => u.login === user);
     if (uid !== -1) {
@@ -164,11 +180,11 @@ export class Authentification {
         mode: 0o600,
       });
     }
-  }
+  };
 
   /*
-    * return the user's bearer, decrypted, to check if a bearer is valid
-    * @returns string
+   * return the user's bearer, decrypted, to check if a bearer is valid
+   * @returns string
    */
   getUserBearer = (user: string): string => {
     // return this.users.users.fil .map((user) => Authentification.dataDecrypt(user.bearer, process.env.USER_ENCRYPT_SECRET || ""));
@@ -180,13 +196,17 @@ export class Authentification {
     );
   };
 
-
   /*
-  * gives all users bearers, decrypted, to check if a bearer is valid
-  * @returns string[]
-  * */
+   * gives all users bearers, decrypted, to check if a bearer is valid
+   * @returns string[]
+   * */
   getUsersBearers = (): string[] => {
-    return this.users.users.map((user) => Authentification.dataDecrypt(user.bearer, process.env.USER_ENCRYPT_SECRET || ""));
+    return this.users.users.map((user) =>
+      Authentification.dataDecrypt(
+        user.bearer,
+        process.env.USER_ENCRYPT_SECRET || ""
+      )
+    );
   };
 
   getInfoForUi(login: string): InfoIuType {
@@ -201,17 +221,20 @@ export class Authentification {
 
   isAuthSession = (req: Request) => {
     const session = req.session as SessionExt;
-    return (session &&
-        session.user &&
-        session.user.login &&
-        !!this.getUsersLogins().find((login) => login === session.user.login));
-
+    return (
+      session &&
+      session.user &&
+      session.user.login &&
+      !!this.getUsersLogins().find((login) => login === session.user.login)
+    );
   };
 
   isAuthBearer = (req: Request) => {
     if (req.headers) {
       const bearers = this.getUsersBearers();
-      const bearer = bearers.find((bearer) => bearer === req.headers["authorization"]);
+      const bearer = bearers.find(
+        (bearer) => bearer === req.headers["authorization"]
+      );
       return !!bearer;
     }
     return false;
@@ -219,18 +242,17 @@ export class Authentification {
 
   changeBearer = (user: string) => {
     try {
-        const uid = this.users.users.findIndex((u) => u.login === user);
-        if (uid !== -1) {
-
-          this.users.users[uid].bearer = this.generateBearerKey();
-          writeFileSync(this.database, JSON.stringify(user), {
-            encoding: "utf-8",
-            mode: 0o600,
-          });
-          return [200, "User bearer has been changed"];
-        } else {
-          return [500, "User not found"];
-        }
+      const uid = this.users.users.findIndex((u) => u.login === user);
+      if (uid !== -1) {
+        this.users.users[uid].bearer = this.generateBearerKey();
+        writeFileSync(this.database, JSON.stringify(user), {
+          encoding: "utf-8",
+          mode: 0o600,
+        });
+        return [200, "User bearer has been changed"];
+      } else {
+        return [500, "User not found"];
+      }
     } catch (error) {
       return [500, error]; //hard to test
     }
@@ -249,17 +271,26 @@ export class Authentification {
       changepassword.newPassword &&
       changepassword.newConfirmPassword
     ) {
-        // check if current password is correct
-      if (this.verifyPassword(changepassword.login, changepassword.password)[0] === 200) {
+      // check if current password is correct
+      if (
+        this.verifyPassword(
+          changepassword.login,
+          changepassword.password
+        )[0] === 200
+      ) {
         // if new password and its confirmation match
         if (changepassword.newPassword === changepassword.newConfirmPassword) {
           // if so, find the uid of the user we want to change the password
           // console.log(changepassword.login);
-          const uid = this.users.users.findIndex((u) => u.login === changepassword.login);
+          const uid = this.users.users.findIndex(
+            (u) => u.login === changepassword.login
+          );
 
           if (uid === -1) return [500, "User not found"];
 
-          this.users.users[uid].password = this.encryptPassword(changepassword.newPassword);
+          this.users.users[uid].password = this.encryptPassword(
+            changepassword.newPassword
+          );
           writeFileSync(this.database, JSON.stringify(this.users), {
             encoding: "utf-8",
             mode: 0o600,

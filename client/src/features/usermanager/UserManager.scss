@@ -1,14 +1,13 @@
 @import "../../app/css/root.scss";
 .UserManager {
-
-  $color-border : #303030;
+  $color-border: #303030;
   @media (prefers-color-scheme: dark) {
-    $color-border : #e0e0e0;
+    $color-border: #e0e0e0;
   }
 
   table {
     table-layout: fixed;
-    border-collapse : collapse;
+    border-collapse: collapse;
     border: 1px solid $color-border;
   }
 
@@ -41,5 +40,4 @@
   .form {
     display: flex;
   }
-
 }

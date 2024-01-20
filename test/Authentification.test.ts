@@ -3,7 +3,13 @@
  * @license AGPL3
  */
 
-import { existsSync, rmSync } from "fs";
+import {
+  existsSync,
+  rmSync,
+  copyFileSync,
+  readFileSync,
+  unlinkSync,
+} from "fs";
 import { Authentification } from "../src/lib/Authentification";
 import { LOGIN_FAILED, PASSWORD_OR_USER_UNDEFINED } from "../src/Constants";
 import { Request } from "express";
@@ -12,7 +18,7 @@ import { SessionExt } from "../src/ServerTypes";
 const userDatabase = `${__dirname}/data/userDatabase.json`;
 
 describe("Authentification", () => {
-  beforeAll(() => {
+  afterEach(() => {
     // delete userdatabase
     if (existsSync(userDatabase)) rmSync(userDatabase);
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
@@ -32,6 +38,33 @@ describe("Authentification", () => {
       const auth = new Authentification(userDatabase);
       const data = auth.loadUsersFromDatabase();
       expect(data.users[0]).not.toBeDefined();
+    } catch (error: unknown) {
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  test("schema migration PR#15", () => {
+    // old scheme
+    copyFileSync("./test/samples/users-before-PR#15.json", userDatabase);
+    try {
+      // get user values
+      const oldData = JSON.parse(readFileSync(userDatabase, "utf-8"));
+      const auth = new Authentification(userDatabase);
+      const data = auth.loadUsersFromDatabase();
+      const fileCopy = userDatabase.replace(
+        /\.json$/,
+        "Before-PR#15-backup.json"
+      );
+      expect(existsSync(fileCopy)).toBeTruthy();
+      expect(data.users).toBeDefined();
+      expect(data.users[0]).toBeDefined();
+      expect(data.users[0].login).toEqual(oldData.login);
+      expect(data.users[0].uuid).toEqual(oldData.uuid);
+      expect(data.users[0].password).toEqual(oldData.password);
+      expect(data.users[0].bearer).toEqual(oldData.bearer);
+      //cleaning
+      unlinkSync(fileCopy);
     } catch (error: unknown) {
       // unexpected error
       expect(error).not.toBeDefined();
@@ -107,6 +140,7 @@ describe("Authentification", () => {
       data = auth.loadUsersFromDatabase();
       expect(data.users[0]).not.toBeDefined();
     } catch (error: unknown) {
+      console.log(error);
       // unexpected error
       expect(error).not.toBeDefined();
     }
@@ -129,7 +163,6 @@ describe("Authentification", () => {
       //reload from disk
       data = auth.loadUsersFromDatabase();
       users.forEach((user, index) => {
-
         expect(data.users[index].login).toEqual(user.login);
         expect(data.users[index].password).not.toEqual("");
         expect(data.users[index].bearer).not.toEqual("");
@@ -139,7 +172,6 @@ describe("Authentification", () => {
       expect(error).not.toBeDefined();
     }
   });
-
 
   test("make & store multiple User, then delete one of them", () => {
     try {
@@ -152,8 +184,7 @@ describe("Authentification", () => {
       data = auth.loadUsersFromDatabase();
 
       // check that there is no user
-      expect(data.users.length).toEqual(0)
-
+      expect(data.users.length).toEqual(0);
 
       const users = [
         auth.makeUser("admin", "admin"),
@@ -167,7 +198,7 @@ describe("Authentification", () => {
       // reload
       data = auth.loadUsersFromDatabase();
 
-      expect(data.users.length).toEqual(3)
+      expect(data.users.length).toEqual(3);
 
       // delete user1
       auth.deleteUser("user1");
@@ -178,14 +209,13 @@ describe("Authentification", () => {
       const user = data.users.find((user) => user.login === "user1");
 
       expect(user).not.toBeDefined();
-      expect(data.users.length).toEqual(2)
+      expect(data.users.length).toEqual(2);
 
       // delete every users
       data.users.forEach((user) => auth.deleteUser(user.login));
       // check that there is no user
       data = auth.loadUsersFromDatabase();
       expect(data.users[0]).not.toBeDefined();
-
     } catch (error: unknown) {
       // unexpected error
       expect(error).not.toBeDefined();

@@ -9,7 +9,8 @@ import {
   SelectOptionType,
   ToastType,
   UptoDateOrNotState,
-  UptodateForm, NewUserType,
+  UptodateForm,
+  NewUserType,
 } from "./Global.types";
 
 export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {

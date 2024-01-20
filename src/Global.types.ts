@@ -146,8 +146,8 @@ export interface UptoDateOrNotStateResponseMonitoring
 }
 
 export type UsersType = {
-    users: UserType[];
-}
+  users: UserType[];
+};
 
 export type UserType = {
   login: string;
@@ -171,7 +171,7 @@ export type ChangePasswordType = {
 export type NewUserType = {
   login: string;
   password: string;
-}
+};
 
 export type ControlToPause = {
   uuid: string;

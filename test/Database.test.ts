@@ -68,7 +68,7 @@ const logger = winston.createLogger({
 });
 
 describe("Database", () => {
-  beforeAll(() => {
+  afterEach(() => {
     const file = "./test/data/database.json";
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     if (existsSync(file)) unlinkSync(file);

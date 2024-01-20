@@ -33,7 +33,7 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
 
   const login = useAppSelector((state) => state.context.user.login);
 
-    const [formData, setFormData] = useState<ChangePasswordType>(
+  const [formData, setFormData] = useState<ChangePasswordType>(
     INITIALIZED_CHANGEPASSWORD
   );
 
@@ -70,10 +70,12 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
       formData.newConfirmPassword &&
       formData.newPassword === formData.newConfirmPassword
     ) {
-    dispatch(mytinydcUPDONApi.endpoints.putChangePassword.initiate({
-        ...formData,
-        login
-      }))
+      dispatch(
+        mytinydcUPDONApi.endpoints.putChangePassword.initiate({
+          ...formData,
+          login,
+        })
+      )
         .unwrap()
         .then(() => {
           onHide();

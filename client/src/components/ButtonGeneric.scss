@@ -16,7 +16,8 @@
   &:not(:disabled) > .label:hover {
     cursor: pointer;
   }
-  &.disabled, &:disabled > .label {
+  &.disabled,
+  &:disabled > .label {
     background-color: $color-warning !important;
     color: $color-text-secondary !important;
     &:hover {

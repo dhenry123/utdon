@@ -99,24 +99,19 @@ export const Header = () => {
   };
 
   const displayDialogUsersManager = () => {
-      setDialogHeader(
-          intl.formatMessage({
-              id: "Users manager",
-          })
-      );
-      setDialogContent(
-          <UserManager />
-      );
-      setIsDialogVisible(true);
-  }
+    setDialogHeader(
+      intl.formatMessage({
+        id: "Users manager",
+      })
+    );
+    setDialogContent(<UserManager />);
+    setIsDialogVisible(true);
+  };
 
   const [dialogContent, setDialogContent] = useState(<></>);
 
-  const {
-      data: userInfo,
-      isSuccess
-  } = useGetUserInfoQuery(null, {
-      skip: false,
+  const { data: userInfo, isSuccess } = useGetUserInfoQuery(null, {
+    skip: false,
   });
 
   return (
@@ -164,13 +159,17 @@ export const Header = () => {
           className="curlcommands"
         />
         <div className="flexPushLeft logout">
-            <div className="loginName">
-                <div className="ti ti-user"></div>
-                {isSuccess ? userInfo.login && userInfo.login : "..."}
-            </div>
-            <ButtonGeneric onClick={displayDialogUsersManager} icon={"users"} title={intl.formatMessage({ id: "Change you password" })} />
+          <div className="loginName">
+            <div className="ti ti-user"></div>
+            {isSuccess ? userInfo.login && userInfo.login : "..."}
+          </div>
+          <ButtonGeneric
+            onClick={displayDialogUsersManager}
+            icon={"users"}
+            title={intl.formatMessage({ id: "Users manager" })}
+          />
 
-            <ButtonGeneric
+          <ButtonGeneric
             icon={"file-function"}
             title={intl.formatMessage({ id: "API Documentation" })}
             onClick={handleOnNavigateToApiDoc}
