@@ -1,50 +1,50 @@
-[English documentation](./README-en.md)
+[Documentation en Français](./README-fr.md)
 
-# UTDON (UpToDateOrNot??)
+# UTDON (UpToDateOrNot??) - [Translated by deepl.com]
 
-Vos applications FOSS (Free and open-source software) en production, sont-elles à jour ?
+Are your FOSS (Free and open-source software) applications in production up to date?
 
-## Présentation
+## Introducing
 
-UTDON est né d'un shell qui compare :
+UTDON was born from a shell that compares :
 
-- la version d'une application en cours d'exécution (production)
-- à la dernière version disponible (dépôt GITHUB).
+- the version of an application currently running (production)
+- the latest version available (GITHUB repository).
 
-N'ayant que des applications dont le dépôt des sources est situé sur "GitHub", UTDON ne fonctionne pour l'instant qu'avec GitHub.
+As UTDON only works with applications whose source repository is located on "GitHub", it currently only works with GitHub.
 
 ![dashboard](./doc/assets/utdon-dashboard-mytinydc.com.png)
 
-## Cas d'utilisation
+## Use cases
 
-- Surveillance par UI.
-- Surveillance par appel API.
-- Surveillance par appel API et mise à jour d'un service de monitoring (type ping).
-- Appel API pour déclencher la mise à jour par une action sur la chaine CI/CD.
+- Monitoring by UI.
+- Monitoring by API call.
+- Monitoring by API call and update of a monitoring service (ping type).
+- API call to trigger update by action on CI/CD chain.
 
-## Versioning UTDON
+## UTDON Versioning
 
-UDON suit le protocole "semver" (<https://semver.org/>), accessible par l'entrypoint "/api/v1/version" qui renvoit une valeur au format JSON : {"version":"[\d+]\.[\d+]\.[\d+]} (3 groupes de nombres séparés par un point).
+UDON follows the "semver" protocol (<https://semver.org/>), accessible via the "/api/v1/version" entrypoint, which returns a value in JSON format: {"version":"[\d+]\.[\d+]\.[\d+]} (3 groups of numbers separated by a dot).
 
-Les "tags" GitHub, ainsi que les "tags" des containers resteront similaires à cette réponse.
+GitHub "tags" and container "tags" will remain similar to this response.
 
-Les versions "Release Candidats" seront définies comme suit : "[\d+]\.[\d+]\.[\d+]-rc-[\d+]".
+Release Candidates will be defined as follows: "[\d+]\.[\d+]\.[\d+]-rc-[\d+]".
 
-## Comment çà marche ?
+## How does it work?
 
-- [Installer le service & le démarrer](./doc/INSTALL.md)
-- Utilisez votre navigateur web pour vous connecter au service :
-  - http://[Addresse IP]:[port]/
-  - login/mot de passe par défaut: admin/admin
-- Vous changez le mot de passe.
-- [Création du premier "contrôle" (qui peut être votre nouveau service UTDON... pour vérifier que tout fonctionne)](./doc/CONTROL.md)
-- Vous exécuter la comparaison.
-- Chaque contrôle indique son dernier état de "comparaison".
-- Pour automatiser l'ensemble, créez une tâche d'ordonnancement (cron) avec "curl" qui appelle l'entrypoint de votre choix :
-  - uniquement la comparaison, l'état est mis à jour au niveau de l'application
-  - la comparaison avec la mise à jour du service monitoring et vous serez averti des écarts constatés.
+- [Install the service & start it up](./doc/en/INSTALL.md)
+- Use your web browser to connect to the service:
+  - http://[IP address]:[port]/
+  - default login/password: admin/admin
+- Change the password.
+- [Create the first "control" (which may be your new UTDON service... to check that everything is working)](./doc/en/CONTROL.md)
+- You run the comparison.
+- Each control indicates its last "comparison" status.
+- To automate the process, create a cron job with "curl" that calls the entrypoint of your choice:
+  - comparison only: the state is updated at application level
+  - comparison with the monitoring service update, and you'll be notified of any discrepancies.
 
-## Flux
+## Flow
 
 ```mermaid
 graph TD
@@ -73,50 +73,50 @@ s-->|update|mps
 
 - Nodejs
 - React/Redux
-- Base de données JSON : Situées en RAM, si vous remplacer les fichiers en cours d'exécution, ceci n'aura aucun effet. Le contenu des bases est enregistré après chaque modification et lorsque le service reçoit le signal SGINT | SIGTERM | SIGUSR2.
-- Filtres RegExp et Jmespath pour Json.
+- JSON databases: located in RAM, replacing files during execution has no effect. Database contents are saved after each modification and when the service receives the SGINT | SIGTERM | SIGUSR2 signal.
+- RegExp and Jmespath filters for Json.
 - Swagger.
 
-## Securité
+## Security
 
-Ne jamais exposer UTDON directement sur internet (utilisez un VPN si nécessaire). UTDON est un outil interne, auto-hébergé, qui exécute des actions sur vos ressources privées (Monitoring/CI-CD).
+Never expose UTDON directly to the Internet (use a VPN if necessary). UTDON is an internal, self-hosted tool that performs actions on your private resources (Monitoring/CI-CD).
 
-**Refuser tout hébergement SAAS**: Ce produit n'a pas été dessiné pour être "multi-tenant" et n'est pas protégé par une solution "E2E". Les données d'authentification sont chiffrées au moyen d'une chaîne qui serait fournie pas le potentiel hébergeur et donc déchifrable par lui. Comprenez que les "contrôles" UTDON contiennent l'url du service à surveiller, et potentiellement les accès à votre chaîne CI/CD et/ou service de monitoring.
+**Refuse all SAAS hosting**: This product has not been designed to be multi-tenant, and is not protected by an E2E solution. Authentication data is encrypted using a string that would be supplied by the potential host and therefore decipherable by it. Understand that UTDON "controls" contain the url of the service to be monitored, and potentially access to your CI/CD chain and/or monitoring service.
 
-### Chiffrement
+### Encryption
 
-Le contenu des deux bases de données est chiffré partiellement :
+The contents of both databases are partially encrypted:
 
-- user.json: Le mot de passe de l'administrateur (non réversible) et le jeton d'authentification (réversible)
-- database.json: Les chaînes d'authentification pour les "urls" de monitoring et de la chaine CI/CD (réversibles).
+- user.json: Administrator password (non-reversible) and authentication token (reversible)
+- database.json: Authentication strings for monitoring urls and CI/CD chain (reversible).
 
-### Si vous avez perdu le mot de passe admin
+### If you've lost the admin password
 
-Arréter le service, supprimer le fichier "user.json", puis redémarrer. Connectez-vous ensuite avec le compte/mot de passe par défaut : admin/admin, puis changer le immédiatement.
+Stop the service, delete the "user.json" file, then restart. Then log in with the default account/password: admin/admin, then change it immediately.
 
 ### Session
 
-Les sessions sont gérées en RAM, un simple redémarrage du service réinitialise l'intégralité des sessions.
+Sessions are managed in RAM, so a simple service restart resets all sessions.
 
 ## Roadmap
 
-- Authentification Github pour supprimer la barrière "rate-limit".
-- Dupliquer un contrôle.
-- Filtres pour l'affichage.
-- Classement des contrôles par groupes.
-- Plusieurs "Auth Token" par contrôle pour éviter de fournir le jeton d'authentification de l'admin.
-- Stockage S3.
+- Github authentication to remove rate-limit barrier.
+- Duplicate a control.
+- Display filters.
+- Controls sorted into groups.
+- Multiple "Auth Token" per control to avoid providing admin authentication token.
+- S3 storage.
 - Entrypoint API metrics.
-- Authentification LDAP.
+- LDAP authentication.
 
-## Crédits
+## Credits
 
-- image de la page de connexion: générée par l'AI <https://www.artguru.ai/fr/>
+- login page image: generated by AI <https://www.artguru.ai/fr/>
 
-- Radioactive button : <https://zurb.com/playground/radioactive-buttons>
+- Radioactive button: <https://zurb.com/playground/radioactive-buttons>
 
 - Logo: <https://www.instagram.com/henry_redbeard/>
 
-## Si vous appréciez cette application
+## If you like this application
 
-Donnez lui une étoile...
+Give it a star...
