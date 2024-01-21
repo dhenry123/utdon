@@ -54,11 +54,13 @@ export const Header = () => {
   };
 
   const handleOnLogout = () => {
-    dispatch(mytinydcUPDONApi.endpoints.getUserLogout.initiate(null)).then(
-      () => {
-        return navigate("/login");
-      }
-    );
+    dispatch(
+      mytinydcUPDONApi.endpoints.getUserLogout.initiate(null, {
+        forceRefetch: true,
+      })
+    ).then(() => {
+      return navigate("/login");
+    });
   };
 
   const handleOnNavigateToApiDoc = () => {
@@ -152,37 +154,40 @@ export const Header = () => {
           }}
           className="addcontrol"
         />
-        <ButtonGeneric
-          icon={"slashes"}
-          title={intl.formatMessage({ id: "General curl commands" })}
-          onClick={displayDialogCurlCommands}
-          className="curlcommands"
-        />
-        <div className="flexPushLeft logout">
-          <div className="loginName">
-            <div className="ti ti-user"></div>
-            {isSuccess ? userInfo.login && userInfo.login : "..."}
-          </div>
-          <ButtonGeneric
-            onClick={displayDialogUsersManager}
-            icon={"users"}
-            title={intl.formatMessage({ id: "Users manager" })}
-          />
-
+        <div className="apicontrols">
           <ButtonGeneric
             icon={"file-function"}
             title={intl.formatMessage({ id: "API Documentation" })}
             onClick={handleOnNavigateToApiDoc}
           />
           <ButtonGeneric
-            icon={"key"}
-            title={intl.formatMessage({ id: "Change you password" })}
-            onClick={displayDialogChangePassword}
+            icon={"slashes"}
+            title={intl.formatMessage({ id: "General curl commands" })}
+            onClick={displayDialogCurlCommands}
           />
+        </div>
+        <div className="flexPushLeft logout">
+          <div className="manager">
+            <ButtonGeneric
+              onClick={displayDialogUsersManager}
+              icon={"users"}
+              title={intl.formatMessage({ id: "Users manager" })}
+            />
+
+            <ButtonGeneric
+              icon={"key"}
+              title={intl.formatMessage({ id: "Change you password" })}
+              onClick={displayDialogChangePassword}
+            />
+          </div>
           <ButtonGeneric
             icon={"ti ti-logout"}
-            title={intl.formatMessage({ id: "Logout" })}
+            title={`${intl.formatMessage({ id: "Logout" })}: ${
+              userInfo && userInfo.login ? userInfo.login : ""
+            }`}
             onClick={handleOnLogout}
+            label={isSuccess ? userInfo.login && userInfo.login : "..."}
+            className="buttonlogout"
           />
         </div>
       </div>

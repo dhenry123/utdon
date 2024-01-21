@@ -3,13 +3,7 @@
  * @license AGPL3
  */
 
-import {
-  existsSync,
-  rmSync,
-  copyFileSync,
-  readFileSync,
-  unlinkSync,
-} from "fs";
+import { existsSync, rmSync, copyFileSync, readFileSync, unlinkSync } from "fs";
 import { Authentification } from "../src/lib/Authentification";
 import { LOGIN_FAILED, PASSWORD_OR_USER_UNDEFINED } from "../src/Constants";
 import { Request } from "express";
@@ -120,7 +114,7 @@ describe("Authentification", () => {
     }
   });
 
-  test("make & store User", () => {
+  test("make & store User - admin could not be deleted", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
@@ -136,13 +130,16 @@ describe("Authentification", () => {
 
       // delete every users
       data.users.forEach((user) => auth.deleteUser(user.login));
-      // check that there is no user
-      data = auth.loadUsersFromDatabase();
-      expect(data.users[0]).not.toBeDefined();
+      // unexpected
+      expect(true).toBeFalsy();
     } catch (error: unknown) {
-      console.log(error);
-      // unexpected error
-      expect(error).not.toBeDefined();
+      expect(error).toBeDefined();
+      expect((error as Error).toString()).toMatch(
+        /Error: Admin user can't be deleted/i
+      );
+      const auth = new Authentification(userDatabase);
+      const data = auth.loadUsersFromDatabase();
+      expect(data.users[0].login).toEqual("admin");
     }
   });
 
@@ -173,7 +170,7 @@ describe("Authentification", () => {
     }
   });
 
-  test("make & store multiple User, then delete one of them", () => {
+  test("make & store multiple User - then delete one of them", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
@@ -210,15 +207,41 @@ describe("Authentification", () => {
 
       expect(user).not.toBeDefined();
       expect(data.users.length).toEqual(2);
-
-      // delete every users
-      data.users.forEach((user) => auth.deleteUser(user.login));
-      // check that there is no user
-      data = auth.loadUsersFromDatabase();
-      expect(data.users[0]).not.toBeDefined();
     } catch (error: unknown) {
       // unexpected error
       expect(error).not.toBeDefined();
+    }
+  });
+
+  test("make & store multiple User - user allready exists", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      const auth = new Authentification(userDatabase);
+      let data = auth.loadUsersFromDatabase();
+      // delete every users
+      data.users.forEach((user) => auth.deleteUser(user.login));
+      // reload
+      data = auth.loadUsersFromDatabase();
+
+      // check that there is no user
+      expect(data.users.length).toEqual(0);
+
+      const users = [
+        auth.makeUser("admin", "admin"),
+        auth.makeUser("user1", "user1"),
+        auth.makeUser("user1", "user1"),
+      ];
+
+      // add the users
+      users.forEach((user) => auth.addUser(user));
+      //unexpected
+      expect(true).toBeFalsy();
+    } catch (error: unknown) {
+      // unexpected error
+      expect(error).toBeDefined();
+      expect((error as Error).toString()).toMatch(
+        /Error: User.*already exist/i
+      );
     }
   });
 
@@ -486,6 +509,45 @@ describe("Authentification", () => {
       const req = {} as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeFalsy();
+    } catch (error: unknown) {
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  test("getUserBearer - User not found", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      const auth = new Authentification(userDatabase);
+      auth.store(auth.makeUser("admin", "admin"));
+      const authBearer = auth.getUserBearer("test");
+      expect(authBearer).toEqual("");
+    } catch (error: unknown) {
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  test("getUserBearer - User found", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      const auth = new Authentification(userDatabase);
+      auth.store(auth.makeUser("admin", "admin"));
+      const authBearer = auth.getUserBearer("admin");
+      expect(authBearer).not.toEqual("");
+    } catch (error: unknown) {
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  test("changeBearer - User not found", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      const auth = new Authentification(userDatabase);
+      auth.store(auth.makeUser("admin", "admin"));
+      const authBearer = auth.changeBearer("test");
+      expect(authBearer[0]).toEqual(500);
     } catch (error: unknown) {
       // unexpected error
       expect(error).not.toBeDefined();

@@ -4,7 +4,7 @@
  */
 
 import { useIntl } from "react-intl";
-import { useAppDispatch } from "../../app/hook";
+import { useAppDispatch, useAppSelector } from "../../app/hook";
 import { useNavigate } from "react-router-dom";
 
 import "./UserManager.scss";
@@ -21,6 +21,7 @@ import { Block } from "../../components/Block";
 import { mytinydcUPDONApi, useGetUsersQuery } from "../../api/mytinydcUPDONApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { showServiceMessage } from "../../app/serviceMessageSlice";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 export const UserManager = () => {
   const intl = useIntl();
@@ -28,13 +29,18 @@ export const UserManager = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<NewUserType>(INITIALIZED_NEWUSER);
+  const [httpMethod, setHttpMethod] = useState<"POST" | "PUT">("POST");
 
   const { data: users, isSuccess } = useGetUsersQuery(null, {
     skip: false,
   });
 
+  const userLogger = useAppSelector((state) => state.context.user);
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
+  const [userToDelete, setUserToDelete] = useState<null | string>(null);
+  const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
   /**
    * Used for server errors (api entrypoint call)
    * @param error
@@ -60,7 +66,10 @@ export const UserManager = () => {
   const handleOnPost = async (e: React.FormEvent | null) => {
     e?.preventDefault();
     if (formData.login && formData.password) {
-      dispatch(mytinydcUPDONApi.endpoints.postUser.initiate(formData))
+      (httpMethod === "POST"
+        ? dispatch(mytinydcUPDONApi.endpoints.postUser.initiate(formData))
+        : dispatch(mytinydcUPDONApi.endpoints.putUser.initiate(formData))
+      )
         .unwrap()
         .then(() => {
           // onHide();
@@ -69,22 +78,27 @@ export const UserManager = () => {
               ...INITIALIZED_TOAST,
               severity: "info",
               sticky: false,
-              detail: intl.formatMessage({
-                id: `User ${formData.login} created`,
-              }),
+              detail: `${
+                httpMethod === "POST"
+                  ? intl.formatMessage({ id: `User created` })
+                  : intl.formatMessage({ id: `User updated` })
+              }: ${formData.login}`,
             })
           );
           setFormData(INITIALIZED_NEWUSER);
         })
         .catch((error) => {
           dispatchServerError(error);
+        })
+        .finally(() => {
+          setHttpMethod("POST");
         });
     }
   };
 
-  const handleOnDelete = async (login: string) => {
-    if (login) {
-      dispatch(mytinydcUPDONApi.endpoints.deleteUser.initiate(login))
+  const deleteUser = () => {
+    if (userToDelete) {
+      dispatch(mytinydcUPDONApi.endpoints.deleteUser.initiate(userToDelete))
         .unwrap()
         .then(() => {
           dispatch(
@@ -92,16 +106,39 @@ export const UserManager = () => {
               ...INITIALIZED_TOAST,
               severity: "info",
               sticky: false,
-              detail: intl.formatMessage({
-                id: `User ${login} deleted`,
-              }),
+              detail: `${intl.formatMessage({
+                id: `User deleted`,
+              })}: ${userToDelete}`,
             })
           );
         })
         .catch((error) => {
           dispatchServerError(error);
+        })
+        .finally(() => {
+          setUserToDelete(null);
         });
     }
+  };
+  const handleOnDelete = async (user: string) => {
+    setUserToDelete(user);
+    setConfirmDeleteIsVisible(true);
+    return;
+  };
+
+  const handleOnEdit = async (user: string) => {
+    setFormData({ login: user, password: "" });
+    setHttpMethod("PUT");
+    dispatch(
+      showServiceMessage({
+        ...INITIALIZED_TOAST,
+        severity: "info",
+        sticky: false,
+        detail: `${intl.formatMessage({
+          id: `You can assign a new password for the selected user`,
+        })}: ${user}`,
+      })
+    );
   };
 
   const handleOnChange = (key: string, value: string) => {
@@ -151,7 +188,6 @@ export const UserManager = () => {
             <ButtonGeneric
               className="success submit-button"
               onClick={handleOnPost}
-              // icon={"device-floppy"}
               label={intl.formatMessage({ id: "Submit" })}
               disabled={isButtonDisabled}
             />
@@ -159,36 +195,64 @@ export const UserManager = () => {
         </form>
       </Block>
 
-      <table>
-        <thead>
-          <tr>
-            <th>{intl.formatMessage({ id: "Username" })}</th>
-            <th>{intl.formatMessage({ id: "Actions" })}</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Block className="userslist">
+        <h2 className={"new-user-label"}>
+          {intl.formatMessage({ id: "Users list" })}
+        </h2>
+        <div className="table-container">
+          <div className="flex-table flex-header" role="rowgroup">
+            <div className="flex-row first" role="columnheader">
+              #
+            </div>
+            <div className="flex-row" role="columnheader">
+              {intl.formatMessage({ id: "Username" })}
+            </div>
+            <div className="flex-row" role="columnheader">
+              {intl.formatMessage({ id: "Actions" })}
+            </div>
+          </div>
           {isSuccess &&
             (users as string[]).map((user) => {
               return (
-                <tr key={user}>
-                  <td>{user}</td>
-                  <td>
-                    <ButtonGeneric
-                      onClick={() => handleOnDelete(user)}
-                      label={intl.formatMessage({ id: "Delete" })}
-                      icon={"trash"}
-                    />
-                    <ButtonGeneric
-                      onClick={(e) => console.log(e)}
-                      label={intl.formatMessage({ id: "Edit" })}
-                      icon={"edit"}
-                    />
-                  </td>
-                </tr>
+                <div key={user} className="flex-table row" role="rowgroup">
+                  <div className="flex-row first" role="cell">
+                    {""}
+                  </div>
+                  <div className="flex-row " role="cell">
+                    {user}
+                  </div>
+                  <div className="flex-row " role="cell">
+                    {user !== "admin" && user !== userLogger.login ? (
+                      <div className="buttonsgroup">
+                        <ButtonGeneric
+                          onClick={() => handleOnDelete(user)}
+                          title={intl.formatMessage({ id: "Delete" })}
+                          icon={"trash"}
+                        />
+                        <ButtonGeneric
+                          onClick={() => handleOnEdit(user)}
+                          title={intl.formatMessage({ id: "Edit" })}
+                          icon={"edit"}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
               );
             })}
-        </tbody>
-      </table>
+        </div>
+      </Block>
+      <ConfirmDialog
+        visible={confirmDeleteIsVisible}
+        message={
+          intl.formatMessage({ id: "Are you sure to delete this user" }) + " ?"
+        }
+        onConfirm={() => {
+          setConfirmDeleteIsVisible(false);
+          deleteUser();
+        }}
+        onCancel={() => setConfirmDeleteIsVisible(false)}
+      />
     </div>
   );
 };

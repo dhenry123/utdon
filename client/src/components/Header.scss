@@ -52,9 +52,27 @@
     button {
       border-radius: 100%;
     }
-    .curlcommands,
+    .buttonlogout {
+      border-radius: 8px;
+      max-width: 7rem;
+      .label {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+    .apicontrols,
+    .manager {
+      display: inherit;
+      column-gap: inherit;
+    }
+    .apicontrols,
     .addcontrol {
       margin-left: 2rem;
+    }
+    .manager {
+      margin-right: 2rem;
     }
     .logout {
       display: flex;

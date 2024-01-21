@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Utdon API Documentation
-  version: 1.1.0
+  version: 1.2.0
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -358,6 +358,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    put:
+      summary: modify user in the database
+      description: UI modify user method
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      requestBody:
+        description: login and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserType'
+      responses:
+        "204":
+          description: modified user
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: User not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /users/{login}:
     delete:
       summary: delete user from the database
@@ -386,6 +413,8 @@ paths:
                     type: string
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+        "404":
+          description: User not found
         "500":
           description: Internal error
           content:

@@ -108,10 +108,7 @@ export class Authentification {
       users.users.push(user);
     }
 
-    writeFileSync(this.database, JSON.stringify(users), {
-      encoding: "utf-8",
-      mode: 0o600,
-    });
+    this.writeDB(JSON.stringify(users));
   };
 
   verifyPassword = (
@@ -160,10 +157,7 @@ export class Authentification {
     if (this.users.users.find((u) => u.login === user.login))
       throw new Error("User already exists");
     this.users.users.push(user);
-    writeFileSync(this.database, JSON.stringify(this.users), {
-      encoding: "utf-8",
-      mode: 0o600,
-    });
+    this.writeDB();
   };
 
   /*
@@ -172,13 +166,12 @@ export class Authentification {
    * @returns void
    */
   deleteUser = (user: string) => {
+    // admin user could not be deleted
+    if (user === "admin") throw new Error("Admin user can't be deleted");
     const uid = this.users.users.findIndex((u) => u.login === user);
     if (uid !== -1) {
       this.users.users.splice(uid, 1);
-      writeFileSync(this.database, JSON.stringify(this.users), {
-        encoding: "utf-8",
-        mode: 0o600,
-      });
+      this.writeDB();
     }
   };
 
@@ -245,10 +238,7 @@ export class Authentification {
       const uid = this.users.users.findIndex((u) => u.login === user);
       if (uid !== -1) {
         this.users.users[uid].bearer = this.generateBearerKey();
-        writeFileSync(this.database, JSON.stringify(user), {
-          encoding: "utf-8",
-          mode: 0o600,
-        });
+        this.writeDB();
         return [200, "User bearer has been changed"];
       } else {
         return [500, "User not found"];
@@ -291,10 +281,7 @@ export class Authentification {
           this.users.users[uid].password = this.encryptPassword(
             changepassword.newPassword
           );
-          writeFileSync(this.database, JSON.stringify(this.users), {
-            encoding: "utf-8",
-            mode: 0o600,
-          });
+          this.writeDB();
           return [200, "User password has been set"];
         } else {
           return [500, "The new password and its confirmation do not match"];
@@ -360,4 +347,11 @@ export class Authentification {
     msg.push(decipher.update(phrase, "hex", "binary"));
     return msg.join("");
   }
+
+  writeDB = (users?: string) => {
+    writeFileSync(this.database, users ? users : JSON.stringify(this.users), {
+      encoding: "utf-8",
+      mode: 0o600,
+    });
+  };
 }

@@ -123,6 +123,14 @@ export const mytinydcUPDONApi = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    putUser: builder.mutation({
+      query: (data: NewUserType) => ({
+        method: "PUT",
+        url: `/users/`,
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+    }),
     deleteUser: builder.mutation({
       query: (login: string) => ({
         method: "DELETE",

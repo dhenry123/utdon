@@ -75,6 +75,9 @@ $app-logo-height: $app-logo-width;
 //form scrap content
 $form-scrap-content-height: 10vh;
 
+// flex tables
+$table-header: transparent;
+$font-color-header: $color-text-primary;
 .logo {
   cursor: pointer;
   width: 180px;
@@ -83,10 +86,10 @@ $form-scrap-content-height: 10vh;
   background-image: url("/assets/MytinyDC_logo-brand-full.png");
   background-repeat: no-repeat;
 
-    @media (prefers-color-scheme: dark) {
-      background-image: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
-      background-size: 180px 50px;
-    }
+  @media (prefers-color-scheme: dark) {
+    background-image: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
+    background-size: 180px 50px;
+  }
 }
 
 :root {
@@ -132,18 +135,19 @@ body {
 
 // dark mode
 @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-      color: $text-dark;
-      background-color: $background-dark;
-    }
+  :root {
+    color-scheme: dark;
+    color: $text-dark;
+    background-color: $background-dark;
+  }
 
   .main {
     background-color: $background-dark;
   }
 
-  legend, h1, h2 {
+  legend,
+  h1,
+  h2 {
     color: $text-dark;
   }
-
 }
