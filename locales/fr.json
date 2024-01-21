@@ -82,6 +82,10 @@
   "Close": "Fermer",
   "The command has been copied to Clipboard": "La commande a été copiée dans le presse-papiers",
   "Copy command to the clipboard": "Copier la commande dans le presse-papiers",
+  "Users manager": "Gestion des utilisateurs",
+  "Add a new user": "Ajouter un nouvel utilisateur",
+  "Username": "Nom d'utilisateur",
+  "Submit": "Envoyer",
   "Change you password": "Changer votre mot de passe",
   "Renew your password or API authentication token": "Renouvelez votre mot de passe ou votre jeton d'authentification API",
   "Your current password": "Votre mot de passe actuel",
@@ -130,5 +134,13 @@
   "Github repository": "Dépôt Github",
   "Action to perform": "Action à effectuer",
   "API Documentation": "Documentation API",
-  "API entry point for the github version of the latest comparison": "Point d'entrée de l'API pour obtenir la version github de la dernière comparaison"
+  "API entry point for the github version of the latest comparison": "Point d'entrée de l'API pour obtenir la version github de la dernière comparaison",
+  "Actions": "Actions",
+  "Users list": "Liste des utilisateurs",
+  "Are you sure to delete this user": "Etes vous sur(e) de vouloir supprimer cet utilisateur",
+  "User deleted": "Utilisateur supprimé",
+  "You can assign a new password for the selected user": "Vous pouvez affecter un nouveau mot de passe pour l'utilisateur sélectionné",
+  "User already exists": "Cet utilisateur existe déjà",
+  "User created": "Utilisateur créé",
+  "User updated": "Le mot de passe de cette utilisateur a été mis à jour"
 }

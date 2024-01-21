@@ -5,7 +5,12 @@
 
 import express, { NextFunction, Request, Response } from "express";
 import { ERRORINVALIDREQUEST } from "../Constants";
-import { ChangePasswordType, InfoIuType } from "../Global.types";
+import {
+  ChangePasswordType,
+  InfoIuType,
+  NewUserType,
+  UsersType,
+} from "../Global.types";
 import { SessionExt } from "../ServerTypes";
 const routerAuth = express.Router();
 
@@ -63,11 +68,257 @@ routerAuth.post(
             user: req.body.login,
           });
           const session = req.session as SessionExt;
-          session.user = req.app.get("AUTH").getInfoForUi();
+          session.user = req.app.get("AUTH").getInfoForUi(req.body.login);
         }
       }
       res.status(verif[0]).json(verif[1]);
     } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ *
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: get users list
+ *     description: Used by the User Management UI to get users list
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: Users list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.get(
+  "/users",
+  async (req: Request, res: Response, next: NextFunction) => {
+    //next step: for admin users only
+    try {
+      res.status(200).json(req.app.get("AUTH").getUsersLogins());
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ *
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: create user in the database
+ *     description: UI create user method
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: login and password
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewUserType'
+ *
+ *     responses:
+ *       200:
+ *         description: created user
+ *         content:
+ *           application/text:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 login:
+ *                   type: string
+ *       400:
+ *          description: User already exists
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.post(
+  "/users",
+  async (req: Request, res: Response, next: NextFunction) => {
+    //next step: for admin users only
+    try {
+      // get the login and password
+      const newUser = req.body as NewUserType;
+      // get the list of current users, to check if user already exists
+      const users: string[] = req.app.get("AUTH").getUsersLogins();
+
+      // check if user already exists
+      if (!users.find((user) => user === newUser.login)) {
+        const user = req.app
+          .get("AUTH")
+          .makeUser(newUser.login, newUser.password);
+        req.app.get("AUTH").addUser(user); // add user to the list
+        req.app.get("LOGGER").info({
+          action: "create user",
+          user: newUser.login,
+        });
+        res.status(200).json({ login: newUser.login });
+      } else {
+        res.status(400).json({ error: "User already exists" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ *
+ * @swagger
+ * /users:
+ *   put:
+ *     summary: modify user in the database
+ *     description: UI modify user method
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: login and password
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/NewUserType'
+ *
+ *     responses:
+ *       204:
+ *         description: modified user
+ *       404:
+ *          description: User not found
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.put(
+  "/users",
+  async (req: Request, res: Response, next: NextFunction) => {
+    //next step: for admin users only
+    try {
+      // get the login and password
+      const newUser = req.body as NewUserType;
+      // get the list of current users, to check if user already exists
+      const users: UsersType = req.app.get("AUTH").users;
+      const idx = users.users.findIndex((u) => u.login === newUser.login);
+      if (idx !== -1) {
+        users.users[idx].password = req.app
+          .get("AUTH")
+          .encryptPassword(newUser.password);
+        req.app.get("AUTH").writeDB(JSON.stringify(users));
+        req.app.get("LOGGER").info({
+          action: "modify user",
+          user: newUser.login,
+        });
+        res.status(204).send();
+      } else {
+        res.status(400).json({ error: "User  not found" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ *
+ * @swagger
+ * /users/{login}:
+ *   delete:
+ *     summary: delete user from the database
+ *     description: UI delete user method
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     parameters:
+ *       - in: path
+ *         name: login
+ *         required: true
+ *         description: login of the user to delete
+ *         schema:
+ *           type: string
+ *           example: "user"
+ *
+ *     responses:
+ *       200:
+ *         description: deleted
+ *         content:
+ *           application/text:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 login:
+ *                   type: string
+ *       404:
+ *          description: User not found
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.delete(
+  "/users/:login",
+  async (req: Request, res: Response, next: NextFunction) => {
+    //next step: for admin users only
+    try {
+      // get the login
+      const userToDelete = req.params.login;
+      // get the list of current users, to check if user exists before deleting it
+      const users: string[] = req.app.get("AUTH").getUsersLogins();
+
+      const user = users.find((user) => user === userToDelete);
+
+      const session = req.session as SessionExt;
+
+      // check if user exists - user could not delete their account
+      if (user && session.user.login !== req.params.login) {
+        // if so, delete it
+        req.app.get("AUTH").deleteUser(user); // add user to the list
+        req.app.get("LOGGER").info({
+          action: "delete user",
+          user: userToDelete,
+        });
+        res.status(200).json({ login: userToDelete });
+      } else {
+        res.status(404).json({ error: "User not found" });
+      }
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -138,17 +389,16 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      if (session.user.login) {
-        req.app.get("LOGGER").info({
-          action: "logout",
-          user: session.user.login,
-        });
-        session.user.login = "";
-      }
-      res.clearCookie("connect.sid");
-      req.session.cookie.expires = new Date();
+      req.app.get("LOGGER").info({
+        action: "logout",
+        user: session.user.login ? session.user.login : "session user unknown",
+      });
+      session.user.login = "";
       req.session.destroy((error: Error) => {
-        if (error) req.app.get("LOGGER").error(error);
+        if (error) {
+          req.app.get("LOGGER").error(error);
+        }
+        res.clearCookie("connect.sid");
         res.status(204).json();
       });
     } catch (error) {
@@ -241,12 +491,63 @@ routerAuth.get(
       const session = req.session as SessionExt;
       if (
         session.user &&
-        session.user.login &&
-        session.user.login === "admin"
+        session.user.login // &&
+        // session.user.login === "admin"
       ) {
-        res.status(200).json({ bearer: req.app.get("AUTH").getUserBearer() });
+        res.status(200).json({
+          bearer: req.app.get("AUTH").getUserBearer(session.user.login),
+        });
       } else {
         res.status(500).json({ error: "User is not logged with session" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: get user's login
+ *     description: Used by UI to show the user's login in the header
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: User's login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 login:
+ *                   type: string
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.get(
+  "/user",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.login // &&
+        // session.user.login === "admin"
+      ) {
+        res.status(200).json({ login: session.user.login });
+      } else {
+        res.status(401).json({ error: "User is not logged with session" });
       }
     } catch (error: unknown) {
       next(error);
@@ -284,8 +585,8 @@ routerAuth.put(
       const session = req.session as SessionExt;
       if (
         session.user &&
-        session.user.login &&
-        session.user.login === "admin"
+        session.user.login // &&
+        // session.user.login === "admin"
       ) {
         const result = req.app.get("AUTH").changeBearer();
         if (result[0] === 200) {

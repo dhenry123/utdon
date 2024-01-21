@@ -4,7 +4,7 @@
  */
 
 import { useNavigate } from "react-router-dom";
-import { mytinydcUPDONApi } from "../api/mytinydcUPDONApi";
+import { mytinydcUPDONApi, useGetUserInfoQuery } from "../api/mytinydcUPDONApi";
 import { useIntl } from "react-intl";
 import ButtonGeneric from "./ButtonGeneric";
 import { useAppDispatch } from "../app/hook";
@@ -19,6 +19,7 @@ import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
 import { setRefetchuptodateForm } from "../app/contextSlice";
+import { UserManager } from "../features/usermanager/UserManager.tsx";
 
 export const Header = () => {
   const intl = useIntl();
@@ -53,11 +54,13 @@ export const Header = () => {
   };
 
   const handleOnLogout = () => {
-    dispatch(mytinydcUPDONApi.endpoints.getUserLogout.initiate(null)).then(
-      () => {
-        return navigate("/login");
-      }
-    );
+    dispatch(
+      mytinydcUPDONApi.endpoints.getUserLogout.initiate(null, {
+        forceRefetch: true,
+      })
+    ).then(() => {
+      return navigate("/login");
+    });
   };
 
   const handleOnNavigateToApiDoc = () => {
@@ -97,7 +100,21 @@ export const Header = () => {
       });
   };
 
+  const displayDialogUsersManager = () => {
+    setDialogHeader(
+      intl.formatMessage({
+        id: "Users manager",
+      })
+    );
+    setDialogContent(<UserManager />);
+    setIsDialogVisible(true);
+  };
+
   const [dialogContent, setDialogContent] = useState(<></>);
+
+  const { data: userInfo, isSuccess } = useGetUserInfoQuery(null, {
+    skip: false,
+  });
 
   return (
     <div className="header">
@@ -137,27 +154,40 @@ export const Header = () => {
           }}
           className="addcontrol"
         />
-        <ButtonGeneric
-          icon={"slashes"}
-          title={intl.formatMessage({ id: "General curl commands" })}
-          onClick={displayDialogCurlCommands}
-          className="curlcommands"
-        />
-        <div className="flexPushLeft logout">
+        <div className="apicontrols">
           <ButtonGeneric
             icon={"file-function"}
             title={intl.formatMessage({ id: "API Documentation" })}
             onClick={handleOnNavigateToApiDoc}
           />
           <ButtonGeneric
-            icon={"key"}
-            title={intl.formatMessage({ id: "Change you password" })}
-            onClick={displayDialogChangePassword}
+            icon={"slashes"}
+            title={intl.formatMessage({ id: "General curl commands" })}
+            onClick={displayDialogCurlCommands}
           />
+        </div>
+        <div className="flexPushLeft logout">
+          <div className="manager">
+            <ButtonGeneric
+              onClick={displayDialogUsersManager}
+              icon={"users"}
+              title={intl.formatMessage({ id: "Users manager" })}
+            />
+
+            <ButtonGeneric
+              icon={"key"}
+              title={intl.formatMessage({ id: "Change you password" })}
+              onClick={displayDialogChangePassword}
+            />
+          </div>
           <ButtonGeneric
             icon={"ti ti-logout"}
-            title={intl.formatMessage({ id: "Logout" })}
+            title={`${intl.formatMessage({ id: "Logout" })}: ${
+              userInfo && userInfo.login ? userInfo.login : ""
+            }`}
             onClick={handleOnLogout}
+            label={isSuccess ? userInfo.login && userInfo.login : "..."}
+            className="buttonlogout"
           />
         </div>
       </div>

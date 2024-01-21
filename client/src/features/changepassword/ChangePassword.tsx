@@ -4,7 +4,7 @@
  */
 
 import { useIntl } from "react-intl";
-import { useAppDispatch } from "../../app/hook";
+import { useAppDispatch, useAppSelector } from "../../app/hook";
 import { useNavigate } from "react-router-dom";
 
 import "./ChangePassword.scss";
@@ -30,6 +30,8 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const login = useAppSelector((state) => state.context.user.login);
 
   const [formData, setFormData] = useState<ChangePasswordType>(
     INITIALIZED_CHANGEPASSWORD
@@ -68,7 +70,12 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
       formData.newConfirmPassword &&
       formData.newPassword === formData.newConfirmPassword
     ) {
-      dispatch(mytinydcUPDONApi.endpoints.putChangePassword.initiate(formData))
+      dispatch(
+        mytinydcUPDONApi.endpoints.putChangePassword.initiate({
+          ...formData,
+          login,
+        })
+      )
         .unwrap()
         .then(() => {
           onHide();

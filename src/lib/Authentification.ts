@@ -3,8 +3,13 @@
  * @license AGPL3
  */
 
-import { readFileSync, existsSync, writeFileSync } from "fs";
-import { ChangePasswordType, InfoIuType, UserType } from "../Global.types";
+import { readFileSync, existsSync, writeFileSync, copyFileSync } from "fs";
+import {
+  ChangePasswordType,
+  InfoIuType,
+  UsersType,
+  UserType,
+} from "../Global.types";
 import crypto from "crypto";
 
 import {
@@ -19,7 +24,7 @@ import { SessionExt } from "../ServerTypes";
 const userDatabaseDefault = `${__dirname}/../../data/user.json`;
 
 export class Authentification {
-  user: UserType;
+  users: UsersType;
   database: string;
 
   constructor(databasePath: string) {
@@ -27,11 +32,25 @@ export class Authentification {
     this.database = userDatabaseDefault;
     if (databasePath) this.database = databasePath;
     if (!existsSync(this.database)) this.initDatabase();
-    this.user = this.loadUserFromDatabase();
+    this.users = this.loadUsersFromDatabase();
   }
 
-  loadUserFromDatabase = (): UserType => {
-    return JSON.parse(readFileSync(this.database, "utf-8"));
+  loadUsersFromDatabase = (): UsersType => {
+    // PR#15 : Modification of the user database schema: multi-administrators
+    let data = JSON.parse(readFileSync(this.database, "utf-8"));
+    if (!data.users) {
+      copyFileSync(
+        this.database,
+        this.database.replace(/\.json$/, "Before-PR#15-backup.json")
+      );
+      // save
+      this.initDatabase(data);
+      data = this.loadUsersFromDatabase();
+      console.log(
+        "[INFO] PR#15: The user database has been converted into a multi-administrator database."
+      );
+    }
+    return data;
   };
 
   encryptPassword = (clearPassword: string): string => {
@@ -71,42 +90,35 @@ export class Authentification {
     };
   };
 
-  store = (user: UserType): UserType => {
+  // test function
+  store = (user: UserType): UsersType => {
     if (user && user.login && user.password && user.uuid && user.bearer) {
       this.initDatabase(user);
-      //reset user
-      this.user = user;
-      return this.user;
+      //reset user ???
+      this.users = { users: [user] };
+      return this.users;
     } else {
       throw new Error("User is not well defined");
     }
   };
 
   initDatabase = (user?: UserType) => {
-    let finalUser: UserType | object;
-    if (!user) {
-      finalUser = {};
-    } else {
-      finalUser = user;
+    const users = { users: [] } as UsersType;
+    if (user) {
+      users.users.push(user);
     }
-    writeFileSync(this.database, JSON.stringify(finalUser), {
-      encoding: "utf-8",
-      mode: 0o600,
-    });
+
+    this.writeDB(JSON.stringify(users));
   };
 
   verifyPassword = (
     login: string,
     clearPassword: string
   ): [number, string | InfoIuType] => {
-    if (
-      this.user &&
-      this.user.login &&
-      this.user.password &&
-      clearPassword &&
-      process.env.USER_ENCRYPT_SECRET
-    ) {
-      if (login !== this.user.login) return [401, LOGIN_FAILED];
+    if (this.users && clearPassword && process.env.USER_ENCRYPT_SECRET) {
+      // find user in database
+      const currentUser = this.users.users.find((user) => user.login === login);
+      if (!currentUser) return [401, LOGIN_FAILED];
       const newHash = crypto
         .pbkdf2Sync(
           clearPassword,
@@ -117,8 +129,8 @@ export class Authentification {
         )
         .toString("hex");
 
-      if (this.user.password === newHash) {
-        return [200, this.getInfoForUi()];
+      if (currentUser.password === newHash) {
+        return [200, this.getInfoForUi(login)];
       } else {
         return [401, LOGIN_FAILED];
       }
@@ -127,19 +139,73 @@ export class Authentification {
     }
   };
 
-  getUserLogin = (): string => {
-    return this.user.login;
+  /*
+   * return all users logins
+   * @returns string[]
+   */
+  getUsersLogins = (): string[] => {
+    return this.users.users.map((user) => user.login);
   };
 
-  getUserBearer = (): string => {
+  /*
+   * add a user to the database
+   * @param user UserType
+   * @returns void
+   */
+  addUser = (user: UserType) => {
+    // check if user already exists
+    if (this.users.users.find((u) => u.login === user.login))
+      throw new Error("User already exists");
+    this.users.users.push(user);
+    this.writeDB();
+  };
+
+  /*
+   * delete a user from the database
+   * @param user string
+   * @returns void
+   */
+  deleteUser = (user: string) => {
+    // admin user could not be deleted
+    if (user === "admin") throw new Error("Admin user can't be deleted");
+    const uid = this.users.users.findIndex((u) => u.login === user);
+    if (uid !== -1) {
+      this.users.users.splice(uid, 1);
+      this.writeDB();
+    }
+  };
+
+  /*
+   * return the user's bearer, decrypted, to check if a bearer is valid
+   * @returns string
+   */
+  getUserBearer = (user: string): string => {
+    // return this.users.users.fil .map((user) => Authentification.dataDecrypt(user.bearer, process.env.USER_ENCRYPT_SECRET || ""));
+    const uid = this.users.users.findIndex((u) => u.login === user);
+    if (uid === -1) return "";
     return Authentification.dataDecrypt(
-      this.user.bearer,
+      this.users.users[uid].bearer,
       process.env.USER_ENCRYPT_SECRET || ""
     );
   };
 
-  getInfoForUi(): InfoIuType {
-    return { login: this.getUserLogin(), bearer: this.getUserBearer() };
+  /*
+   * gives all users bearers, decrypted, to check if a bearer is valid
+   * @returns string[]
+   * */
+  getUsersBearers = (): string[] => {
+    return this.users.users.map((user) =>
+      Authentification.dataDecrypt(
+        user.bearer,
+        process.env.USER_ENCRYPT_SECRET || ""
+      )
+    );
+  };
+
+  getInfoForUi(login: string): InfoIuType {
+    const user = this.users.users.find((user) => user.login === login);
+    if (!user) return { login: "", bearer: "" };
+    return { login: user.login, bearer: user.bearer };
   }
 
   isAuthenticated = (req: Request) => {
@@ -148,39 +214,35 @@ export class Authentification {
 
   isAuthSession = (req: Request) => {
     const session = req.session as SessionExt;
-    if (
+    return (
       session &&
       session.user &&
       session.user.login &&
-      this.getUserLogin() === session.user.login
-    ) {
-      return true;
-    }
-    return false;
+      !!this.getUsersLogins().find((login) => login === session.user.login)
+    );
   };
 
   isAuthBearer = (req: Request) => {
     if (req.headers) {
-      return req.headers["authorization"] === this.getUserBearer();
+      const bearers = this.getUsersBearers();
+      const bearer = bearers.find(
+        (bearer) => bearer === req.headers["authorization"]
+      );
+      return !!bearer;
     }
     return false;
   };
 
-  changeBearer = () => {
+  changeBearer = (user: string) => {
     try {
-      const user: UserType = {
-        ...this.user,
-        bearer: Authentification.dataEncrypt(
-          this.generateBearerKey(),
-          process.env.USER_ENCRYPT_SECRET
-        ),
-      };
-      this.user = { ...user };
-      writeFileSync(this.database, JSON.stringify(user), {
-        encoding: "utf-8",
-        mode: 0o600,
-      });
-      return [200, "User password has been set"];
+      const uid = this.users.users.findIndex((u) => u.login === user);
+      if (uid !== -1) {
+        this.users.users[uid].bearer = this.generateBearerKey();
+        this.writeDB();
+        return [200, "User bearer has been changed"];
+      } else {
+        return [500, "User not found"];
+      }
     } catch (error) {
       return [500, error]; //hard to test
     }
@@ -192,22 +254,34 @@ export class Authentification {
    * @returns
    */
   changePassword = (changepassword: ChangePasswordType) => {
+    // check if all parameters are provided
     if (
+      changepassword.login &&
       changepassword.password &&
       changepassword.newPassword &&
       changepassword.newConfirmPassword
     ) {
-      if (this.verifyPassword("admin", changepassword.password)[0] === 200) {
+      // check if current password is correct
+      if (
+        this.verifyPassword(
+          changepassword.login,
+          changepassword.password
+        )[0] === 200
+      ) {
+        // if new password and its confirmation match
         if (changepassword.newPassword === changepassword.newConfirmPassword) {
-          const user: UserType = {
-            ...this.user,
-            password: this.encryptPassword(changepassword.newPassword),
-          };
-          this.user = { ...user };
-          writeFileSync(this.database, JSON.stringify(user), {
-            encoding: "utf-8",
-            mode: 0o600,
-          });
+          // if so, find the uid of the user we want to change the password
+          // console.log(changepassword.login);
+          const uid = this.users.users.findIndex(
+            (u) => u.login === changepassword.login
+          );
+
+          if (uid === -1) return [500, "User not found"];
+
+          this.users.users[uid].password = this.encryptPassword(
+            changepassword.newPassword
+          );
+          this.writeDB();
           return [200, "User password has been set"];
         } else {
           return [500, "The new password and its confirmation do not match"];
@@ -273,4 +347,11 @@ export class Authentification {
     msg.push(decipher.update(phrase, "hex", "binary"));
     return msg.join("");
   }
+
+  writeDB = (users?: string) => {
+    writeFileSync(this.database, users ? users : JSON.stringify(this.users), {
+      encoding: "utf-8",
+      mode: 0o600,
+    });
+  };
 }

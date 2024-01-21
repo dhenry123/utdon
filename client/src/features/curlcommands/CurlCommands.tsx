@@ -70,7 +70,7 @@ export const CurlCommands = ({
               id: "API entry point for the github version of the latest comparison",
             })}
             userAuthBearer={auth}
-            apiEntrypoint={`/api/v1//action/lastcomparegitrealase/${uptodateForm.uuid}`}
+            apiEntrypoint={`/api/v1/action/lastcomparegitrealase/${uptodateForm.uuid}`}
             method={"GET"}
           />
           <FieldSetApiEntrypoint
