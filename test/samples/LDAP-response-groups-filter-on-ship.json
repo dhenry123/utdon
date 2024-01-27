@@ -1,0 +1,20 @@
+{
+  "messageId": 2,
+  "protocolOp": 100,
+  "type": "SearchResultEntry",
+  "objectName": "cn=ship_crew,ou=people,dc=planetexpress,dc=com",
+  "attributes": [
+    { "type": "objectClass", "values": ["Group", "top"] },
+    { "type": "groupType", "values": ["2147483650"] },
+    { "type": "cn", "values": ["ship_crew"] },
+    {
+      "type": "member",
+      "values": [
+        "cn=Philip J. Fry,ou=people,dc=planetexpress,dc=com",
+        "cn=Turanga Leela,ou=people,dc=planetexpress,dc=com",
+        "cn=Bender Bending Rodríguez,ou=people,dc=planetexpress,dc=com"
+      ]
+    }
+  ],
+  "controls": []
+}
