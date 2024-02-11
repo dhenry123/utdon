@@ -31,6 +31,7 @@ export type UptodateForm = {
   urlCICDAuth: string;
   isPause: boolean;
   compareResult: UptoDateOrNotState | null;
+  groups: GroupMembersType;
 };
 
 export type UptodateFormFields =

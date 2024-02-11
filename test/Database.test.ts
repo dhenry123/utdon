@@ -40,6 +40,7 @@ const check: UptodateForm = {
   isPause: false,
   compareResult: null,
   uuid: "",
+  groups: [],
 };
 
 // Special transport - For testing: error has been flushed by winston

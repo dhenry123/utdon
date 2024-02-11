@@ -50,7 +50,7 @@ export const compareVersion = (
   sourceCodeVersion: string,
   productionVersion: string,
   urlGitHub: string,
-  urlProduction: string,
+  urlProduction: string
 ): UptoDateOrNotState => {
   let uptodateState = false,
     githubLatestReleaseIncludesProductionVersion = false,

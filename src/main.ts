@@ -55,6 +55,9 @@ if (!process.env.USER_ENCRYPT_SECRET || !process.env.DATABASE_ENCRYPT_SECRET) {
   );
   process.exit(1);
 }
+
+const app = express();
+
 // Database
 let dbfile = dbConnect(getDbInitJsonFileName());
 if (!dbfile) {
@@ -93,8 +96,6 @@ if (data.users && data.users.length === 0) {
   // first user is admin
   auth.addGroupMember("admin", newUser.uuid);
 }
-
-const app = express();
 
 // shared objects
 app.set("LOGGER", logger);

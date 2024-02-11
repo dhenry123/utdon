@@ -108,6 +108,7 @@ export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   uuid: "",
   isPause: false,
   compareResult: null,
+  groups: [],
 };
 
 export const HTTP_METHOD_ENUM: SelectOptionType[] = [
