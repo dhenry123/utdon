@@ -235,14 +235,35 @@ export class Authentification {
     return this.isAuthBearer(req) || this.isAuthSession(req);
   };
 
+  /**
+   * is user set in session ?
+   * @param req
+   * @returns
+   */
   isAuthSession = (req: Request) => {
     const session = req.session as SessionExt;
-    return (
-      session &&
-      session.user &&
-      session.user.login &&
-      !!this.getUsersLogins().find((login) => login === session.user.login)
-    );
+    //By pass auth in development mode
+    if (process.env.environment === "development") {
+      req.app
+        .get("LOGGER")
+        .error(
+          'WARNING: process.env.environment === "development" Auth bypassed'
+        );
+      if (!session || !session.user) {
+        const adminUser = this.usersgroups.users.find(
+          (item) => item.login === "admin"
+        );
+        if (adminUser) session.user = this.getInfoForUi(adminUser.login);
+      }
+      return true;
+    } else {
+      return (
+        session &&
+        session.user &&
+        session.user.login &&
+        !!this.getUsersLogins().find((login) => login === session.user.login)
+      );
+    }
   };
 
   isAuthBearer = (req: Request) => {
@@ -437,5 +458,13 @@ export class Authentification {
         return true;
     }
     return false;
+  };
+
+  /**
+   * return groups list
+   * @returns
+   */
+  getGroups = (): string[] => {
+    return Object.getOwnPropertyNames(this.usersgroups.groups);
   };
 }

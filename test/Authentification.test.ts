@@ -10,6 +10,38 @@ import { Request } from "express";
 import { ChangePasswordType, InfoIuType } from "../src/Global.types";
 import { SessionExt } from "../src/ServerTypes";
 
+import winston from "winston";
+import Transport from "winston-transport";
+const { combine, timestamp, json } = winston.format;
+interface LastErrorTransportOptions {
+  level?: string;
+}
+
+// Special transport - For testing: error has been flushed by winston
+class LastErrorTransport extends Transport {
+  lastError: Error | null;
+  constructor(options: LastErrorTransportOptions = {}) {
+    super(options);
+    this.lastError = null;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  log(info: any, callback: () => void) {
+    if (info.level === "error") {
+      this.lastError = info;
+    }
+    callback();
+  }
+}
+
+const logger = winston.createLogger({
+  level: "info",
+  defaultMeta: {
+    service: "utdon",
+  },
+  format: combine(timestamp(), json()),
+  transports: [new LastErrorTransport()],
+});
+
 const userDatabase = `${__dirname}/data/userDatabase.json`;
 
 describe("Authentification", () => {
@@ -460,6 +492,36 @@ describe("Authentification", () => {
     }
   });
 
+  test("isAuthSession - development mode", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      process.env.environment = "development";
+      const auth = new Authentification(userDatabase);
+      auth.addUser(auth.makeUser("admin", "admin"));
+      const req = {
+        body: {},
+        app: {
+          get: (key: string) => {
+            if (key === "LOGGER") return logger;
+          },
+        },
+        session: {},
+      } as Request;
+      const isAuth = auth.isAuthSession(req);
+      expect(isAuth).toBeTruthy();
+      const lastErrorWinston = (logger.transports[0] as LastErrorTransport)
+        .lastError;
+      expect(lastErrorWinston).toBeDefined();
+      expect(lastErrorWinston?.message).toMatch(
+        /WARNING: process.env.environment/
+      );
+    } catch (error: unknown) {
+      console.log(error);
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
   test("isAuthBearer - authorization provided is ok", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
@@ -602,7 +664,15 @@ describe("Authentification", () => {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
-      const req = { body: {} } as Request;
+      const req = {
+        body: {},
+        app: {
+          get: (key: string) => {
+            if (key === "LOGGER") return logger;
+          },
+        },
+        session: {},
+      } as Request;
       req.session = { user: { login: "admin" } } as SessionExt;
       const isAuth = auth.isAuthenticated(req);
       expect(isAuth).toBeTruthy();
