@@ -9,10 +9,11 @@ import { LOGIN_FAILED, PASSWORD_OR_USER_UNDEFINED } from "../src/Constants";
 import { Request } from "express";
 import { ChangePasswordType, InfoIuType } from "../src/Global.types";
 import { SessionExt } from "../src/ServerTypes";
+
 const userDatabase = `${__dirname}/data/userDatabase.json`;
 
 describe("Authentification", () => {
-  afterEach(() => {
+  beforeEach(() => {
     // delete userdatabase
     if (existsSync(userDatabase)) rmSync(userDatabase);
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
@@ -27,22 +28,23 @@ describe("Authentification", () => {
     }
   });
 
-  test("loadUserFromDatabase no user", () => {
+  test("loadUserFromDatabase no user, admin group must be defined", () => {
     try {
       const auth = new Authentification(userDatabase);
       const data = auth.loadUsersFromDatabase();
       expect(data.users[0]).not.toBeDefined();
+      expect(data.groups.admin).toBeDefined();
     } catch (error: unknown) {
       // unexpected error
       expect(error).not.toBeDefined();
     }
   });
 
-  test("schema migration PR#15", () => {
+  test("schema migration from PR#15 to now...", () => {
     // old scheme
     copyFileSync("./test/samples/users-before-PR#15.json", userDatabase);
     try {
-      // get user values
+      // user data is older than PR#15
       const oldData = JSON.parse(readFileSync(userDatabase, "utf-8"));
       const auth = new Authentification(userDatabase);
       const data = auth.loadUsersFromDatabase();
@@ -57,9 +59,12 @@ describe("Authentification", () => {
       expect(data.users[0].uuid).toEqual(oldData.uuid);
       expect(data.users[0].password).toEqual(oldData.password);
       expect(data.users[0].bearer).toEqual(oldData.bearer);
+      // automatically added in admin group
+      expect(data.groups.admin[0]).toEqual(oldData.uuid);
       //cleaning
       unlinkSync(fileCopy);
     } catch (error: unknown) {
+      console.log(error);
       // unexpected error
       expect(error).not.toBeDefined();
     }
@@ -72,6 +77,7 @@ describe("Authentification", () => {
       const bearer = auth.generateBearerKey();
       expect(bearer).not.toEqual("");
     } catch (error: unknown) {
+      console.log(error);
       // unexpected error
       expect(error).not.toBeDefined();
     }
@@ -121,7 +127,8 @@ describe("Authentification", () => {
       let data = auth.loadUsersFromDatabase();
       expect(data.users[0]).not.toBeDefined();
       const user = auth.makeUser("admin", "admin");
-      auth.store(user);
+      auth.addUser(user);
+      auth.writeDB();
       //reload from disk
       data = auth.loadUsersFromDatabase();
       expect(data.users[0].login).toEqual("admin");
@@ -248,7 +255,7 @@ describe("Authentification", () => {
   test("make & store User - user malformed - login empty", () => {
     try {
       const auth = new Authentification(userDatabase);
-      auth.store({ login: "", password: "xxxx", uuid: "xxx", bearer: "xxx" });
+      auth.addUser({ login: "", password: "xxxx", uuid: "xxx", bearer: "xxx" });
       //unexpected
       expect(true).toBeFalsy();
     } catch (error: unknown) {
@@ -260,7 +267,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store({ login: "xxxx", password: "", uuid: "xxx", bearer: "xxx" });
+      auth.addUser({ login: "xxxx", password: "", uuid: "xxx", bearer: "xxx" });
       //unexpected
       expect(true).toBeFalsy();
     } catch (error: unknown) {
@@ -272,7 +279,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store({ login: "xxxx", password: "xxx", uuid: "", bearer: "xxx" });
+      auth.addUser({ login: "xxxx", password: "xxx", uuid: "", bearer: "xxx" });
       //unexpected
       expect(true).toBeFalsy();
     } catch (error: unknown) {
@@ -284,7 +291,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store({ login: "xxxx", password: "xxx", uuid: "xxx", bearer: "" });
+      auth.addUser({ login: "xxxx", password: "xxx", uuid: "xxx", bearer: "" });
       //unexpected
       expect(true).toBeFalsy();
     } catch (error: unknown) {
@@ -296,7 +303,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const verify = auth.verifyPassword("admin", "admin");
       expect(verify[0]).toEqual(200);
       const user = verify[1] as InfoIuType;
@@ -312,7 +319,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const verify = auth.verifyPassword("admin", "adminxx");
       expect(verify[0]).toEqual(401);
       expect(verify[1]).toEqual(LOGIN_FAILED);
@@ -326,7 +333,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const verify = auth.verifyPassword("admin", "");
       expect(verify[0]).toEqual(500);
       expect(verify[1]).toEqual(PASSWORD_OR_USER_UNDEFINED);
@@ -340,7 +347,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const verify = auth.verifyPassword("adminxx", "admin");
       expect(verify[0]).toEqual(401);
       expect(verify[1]).toEqual(LOGIN_FAILED);
@@ -368,7 +375,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       req.session = { user: { login: "admin" } } as SessionExt;
       const isAuth = auth.isAuthSession(req);
@@ -383,7 +390,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       req.session = { user: { login: "adminx" } } as SessionExt;
       const isAuth = auth.isAuthSession(req);
@@ -398,7 +405,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       req.session = { user: { login: "" } } as SessionExt;
       const isAuth = auth.isAuthSession(req);
@@ -413,7 +420,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       req.session = { user: {} } as SessionExt;
       const isAuth = auth.isAuthSession(req);
@@ -428,7 +435,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       req.session = {} as SessionExt;
       const isAuth = auth.isAuthSession(req);
@@ -443,7 +450,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       const isAuth = auth.isAuthSession(req);
       expect(isAuth).toBeFalsy();
@@ -457,7 +464,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: { authorization: `${auth.getUsersBearers()[0]}` },
       } as Request;
@@ -473,7 +480,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: { authorization: `xxxx` },
       } as Request;
@@ -489,7 +496,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: {},
       } as Request;
@@ -505,7 +512,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = {} as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeFalsy();
@@ -519,7 +526,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const authBearer = auth.getUserBearer("test");
       expect(authBearer).toEqual("");
     } catch (error: unknown) {
@@ -532,7 +539,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const authBearer = auth.getUserBearer("admin");
       expect(authBearer).not.toEqual("");
     } catch (error: unknown) {
@@ -545,10 +552,46 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const authBearer = auth.changeBearer("test");
       expect(authBearer[0]).toEqual(500);
     } catch (error: unknown) {
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  test("isAdmin - session is needed - OK ", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      const auth = new Authentification(userDatabase);
+      const user = auth.makeUser("admin", "admin");
+      auth.addUser(user);
+      auth.addGroupMember("admin", user.uuid);
+      const req = { body: {} } as Request;
+      req.session = {
+        user: { login: user.login, bearer: user.bearer, uuid: user.uuid },
+      } as SessionExt;
+      const isAuth = auth.isAdmin(req);
+      expect(isAuth).toBeTruthy();
+    } catch (error: unknown) {
+      console.log(error);
+      // unexpected error
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  test("isAdmin - session is not set", () => {
+    try {
+      process.env.USER_ENCRYPT_SECRET = "test";
+      const auth = new Authentification(userDatabase);
+      const user = auth.makeUser("admin", "admin");
+      auth.addUser(user);
+      auth.addGroupMember("admin", user.uuid);
+      const isAuth = auth.isAdmin();
+      expect(isAuth).toBeFalsy();
+    } catch (error: unknown) {
+      console.log(error);
       // unexpected error
       expect(error).not.toBeDefined();
     }
@@ -558,7 +601,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = { body: {} } as Request;
       req.session = { user: { login: "admin" } } as SessionExt;
       const isAuth = auth.isAuthenticated(req);
@@ -573,7 +616,7 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: { authorization: `${auth.getUsersBearers()[0]}` },
       } as Request;
@@ -589,19 +632,20 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      const user = auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
+
       const changepassword: ChangePasswordType = {
         login: "admin",
         password: "admin",
         newPassword: "newpassword",
         newConfirmPassword: "newpassword",
       };
-      const oldbearer = user.users[0].bearer;
+      const oldbearer = auth.usersgroups.users[0].bearer;
       const verify = auth.changePassword(changepassword);
 
       expect(verify[0]).toEqual(200);
-      expect(user.users[0].login).toEqual("admin");
-      expect(user.users[0].bearer).toEqual(oldbearer);
+      expect(auth.usersgroups.users[0].login).toEqual("admin");
+      expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
       const verifyPassword = auth.verifyPassword(
         "admin",
         changepassword.newPassword
@@ -617,18 +661,18 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      const user = auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
         login: "admin",
         password: "adminxxxx",
         newPassword: "newpassword",
         newConfirmPassword: "newpassword",
       };
-      const oldbearer = user.users[0].bearer;
+      const oldbearer = auth.usersgroups.users[0].bearer;
       const verify = auth.changePassword(changepassword);
       expect(verify[0]).toEqual(500);
-      expect(user.users[0].login).toEqual("admin");
-      expect(user.users[0].bearer).toEqual(oldbearer);
+      expect(auth.usersgroups.users[0].login).toEqual("admin");
+      expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
       const verifyPassword = auth.verifyPassword("admin", "admin");
       expect(verifyPassword[0]).toEqual(200);
     } catch (error: unknown) {
@@ -641,18 +685,18 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      const user = auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
         login: "admin",
         password: "",
         newPassword: "newpassword",
         newConfirmPassword: "newpassword",
       };
-      const oldbearer = user.users[0].bearer;
+      const oldbearer = auth.usersgroups.users[0].bearer;
       const verify = auth.changePassword(changepassword);
       expect(verify[0]).toEqual(500);
-      expect(user.users[0].login).toEqual("admin");
-      expect(user.users[0].bearer).toEqual(oldbearer);
+      expect(auth.usersgroups.users[0].login).toEqual("admin");
+      expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
       const verifyPassword = auth.verifyPassword("admin", "admin");
       expect(verifyPassword[0]).toEqual(200);
     } catch (error: unknown) {
@@ -665,18 +709,18 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      const user = auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
         login: "admin",
         password: "admin",
         newPassword: "",
         newConfirmPassword: "newpassword",
       };
-      const oldbearer = user.users[0].bearer;
+      const oldbearer = auth.usersgroups.users[0].bearer;
       const verify = auth.changePassword(changepassword);
       expect(verify[0]).toEqual(500);
-      expect(user.users[0].login).toEqual("admin");
-      expect(user.users[0].bearer).toEqual(oldbearer);
+      expect(auth.usersgroups.users[0].login).toEqual("admin");
+      expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
       const verifyPassword = auth.verifyPassword("admin", "admin");
       expect(verifyPassword[0]).toEqual(200);
     } catch (error: unknown) {
@@ -689,18 +733,18 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      const user = auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
         login: "admin",
         password: "admin",
         newPassword: "newpassword",
         newConfirmPassword: "",
       };
-      const oldbearer = user.users[0].bearer;
+      const oldbearer = auth.usersgroups.users[0].bearer;
       const verify = auth.changePassword(changepassword);
       expect(verify[0]).toEqual(500);
-      expect(user.users[0].login).toEqual("admin");
-      expect(user.users[0].bearer).toEqual(oldbearer);
+      expect(auth.usersgroups.users[0].login).toEqual("admin");
+      expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
       const verifyPassword = auth.verifyPassword("admin", "admin");
       expect(verifyPassword[0]).toEqual(200);
     } catch (error: unknown) {
@@ -713,18 +757,18 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      const user = auth.store(auth.makeUser("admin", "admin"));
+      auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
         login: "admin",
         password: "admin",
         newPassword: "newpassword",
         newConfirmPassword: "xxxxxx",
       };
-      const oldbearer = user.users[0].bearer;
+      const oldbearer = auth.usersgroups.users[0].bearer;
       const verify = auth.changePassword(changepassword);
       expect(verify[0]).toEqual(500);
-      expect(user.users[0].login).toEqual("admin");
-      expect(user.users[0].bearer).toEqual(oldbearer);
+      expect(auth.usersgroups.users[0].login).toEqual("admin");
+      expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
       const verifyPassword = auth.verifyPassword("admin", "admin");
       expect(verifyPassword[0]).toEqual(200);
     } catch (error: unknown) {
@@ -737,21 +781,20 @@ describe("Authentification", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
-      let user = auth.store(auth.makeUser("admin", "admin"));
-      const oldbearer = user.users[0].bearer;
-      const oldpasswd = user.users[0].password;
-      const oldlogin = user.users[0].login;
-      const olduuid = user.users[0].uuid;
-      const verify = auth.changeBearer(user.users[0].login);
+      auth.addUser(auth.makeUser("admin", "admin"));
+      const oldbearer = auth.usersgroups.users[0].bearer;
+      const oldpasswd = auth.usersgroups.users[0].password;
+      const oldlogin = auth.usersgroups.users[0].login;
+      const olduuid = auth.usersgroups.users[0].uuid;
+      const verify = auth.changeBearer(auth.usersgroups.users[0].login);
       expect(verify[0]).toEqual(200);
-      //reload user
-      user = auth.users;
-      expect(user.users[0].bearer).not.toEqual("");
-      expect(user.users[0].bearer).not.toEqual(oldbearer);
+
+      expect(auth.usersgroups.users[0].bearer).not.toEqual("");
+      expect(auth.usersgroups.users[0].bearer).not.toEqual(oldbearer);
       //check no changes elsewhere
-      expect(user.users[0].password).toEqual(oldpasswd);
-      expect(user.users[0].login).toEqual(oldlogin);
-      expect(user.users[0].uuid).toEqual(olduuid);
+      expect(auth.usersgroups.users[0].password).toEqual(oldpasswd);
+      expect(auth.usersgroups.users[0].login).toEqual(oldlogin);
+      expect(auth.usersgroups.users[0].uuid).toEqual(olduuid);
     } catch (error: unknown) {
       // unexpected error
       expect(error).not.toBeDefined();
@@ -818,6 +861,7 @@ describe("Authentification", () => {
       if (error) expect(error.toString()).toMatch(/DATABASE_ENCRYPT_SECRET/);
     }
   });
+
   test("dataDecrypt - decrypt data from database - secret not defined", () => {
     try {
       process.env.DATABASE_ENCRYPT_SECRET = "";

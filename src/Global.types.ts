@@ -58,6 +58,7 @@ export type ApiResponseType = {
 export type InfoIuType = {
   login: string;
   bearer: string;
+  uuid: string;
 };
 
 export type ActionStatusType = {
@@ -176,4 +177,18 @@ export type NewUserType = {
 export type ControlToPause = {
   uuid: string;
   state: boolean;
+};
+
+export type GroupMembersType = string[];
+
+/**
+ * {"group name" : [ members...] }
+ */
+export type GroupsType = {
+  [key: string]: GroupMembersType;
+};
+
+export type UsersGroupsType = {
+  users: UserType[];
+  groups: GroupsType;
 };

@@ -7,7 +7,7 @@ import { readFileSync, existsSync, writeFileSync, copyFileSync } from "fs";
 import {
   ChangePasswordType,
   InfoIuType,
-  UsersType,
+  UsersGroupsType,
   UserType,
 } from "../Global.types";
 import crypto from "crypto";
@@ -24,31 +24,46 @@ import { SessionExt } from "../ServerTypes";
 const userDatabaseDefault = `${__dirname}/../../data/user.json`;
 
 export class Authentification {
-  users: UsersType;
+  usersgroups: UsersGroupsType;
   database: string;
 
   constructor(databasePath: string) {
     // needed for tests
     this.database = userDatabaseDefault;
     if (databasePath) this.database = databasePath;
-    if (!existsSync(this.database)) this.initDatabase();
-    this.users = this.loadUsersFromDatabase();
+    if (!existsSync(this.database)) this.initDatabaseUsers();
+    this.usersgroups = this.loadUsersFromDatabase();
   }
 
-  loadUsersFromDatabase = (): UsersType => {
+  loadUsersFromDatabase = (): UsersGroupsType => {
     // PR#15 : Modification of the user database schema: multi-administrators
     let data = JSON.parse(readFileSync(this.database, "utf-8"));
-    if (!data.users) {
-      copyFileSync(
-        this.database,
-        this.database.replace(/\.json$/, "Before-PR#15-backup.json")
-      );
+    const targetBackup = this.database.replace(
+      /\.json$/,
+      "Before-PR#15-backup.json"
+    );
+    // Before-PR#15
+    if (data && !data.users) {
+      copyFileSync(this.database, targetBackup);
       // save
-      this.initDatabase(data);
-      data = this.loadUsersFromDatabase();
+      this.initDatabaseUsers(data);
+      data = { users: [{ ...data }] };
+      // data = this.loadUsersFromDatabase();
       console.log(
         "[INFO] PR#15: The user database has been converted into a multi-administrator database."
       );
+      //security
+      this.writeDB(JSON.stringify(data));
+    }
+    // Final model
+    if (data.users && !data.groups) {
+      data.groups = { admin: [] };
+      for (const item of data.users) {
+        const user = { ...item } as UserType;
+        data.groups.admin.push(user.uuid);
+      }
+      //security
+      this.writeDB(JSON.stringify(data));
     }
     return data;
   };
@@ -90,34 +105,42 @@ export class Authentification {
     };
   };
 
-  // test function
-  store = (user: UserType): UsersType => {
-    if (user && user.login && user.password && user.uuid && user.bearer) {
-      this.initDatabase(user);
-      //reset user ???
-      this.users = { users: [user] };
-      return this.users;
-    } else {
-      throw new Error("User is not well defined");
-    }
-  };
+  // // test function
+  // store = (user: UserType): UsersType => {
+  //   if (user && user.login && user.password && user.uuid && user.bearer) {
+  //     this.initDatabaseUsers( {users:[user],groups:{admin:[user.uuid]}});
+  //     //reset user ???
+  //     this.usersgroups.users = { users: [user] };
+  //     return this.users;
+  //   } else {
+  //     throw new Error("User is not well defined");
+  //   }
+  // };
 
-  initDatabase = (user?: UserType) => {
-    const users = { users: [] } as UsersType;
-    if (user) {
-      users.users.push(user);
+  initDatabaseUsers = (usersGroups?: UsersGroupsType) => {
+    let usersGroupsToWrite = {
+      users: [],
+      groups: { admin: [] },
+    } as UsersGroupsType;
+    if (usersGroups) {
+      usersGroupsToWrite = usersGroups;
     }
-
-    this.writeDB(JSON.stringify(users));
+    this.writeDB(JSON.stringify(usersGroupsToWrite));
   };
 
   verifyPassword = (
     login: string,
     clearPassword: string
   ): [number, string | InfoIuType] => {
-    if (this.users && clearPassword && process.env.USER_ENCRYPT_SECRET) {
+    if (
+      this.usersgroups.users &&
+      clearPassword &&
+      process.env.USER_ENCRYPT_SECRET
+    ) {
       // find user in database
-      const currentUser = this.users.users.find((user) => user.login === login);
+      const currentUser = this.usersgroups.users.find(
+        (user) => user.login === login
+      );
       if (!currentUser) return [401, LOGIN_FAILED];
       const newHash = crypto
         .pbkdf2Sync(
@@ -144,7 +167,7 @@ export class Authentification {
    * @returns string[]
    */
   getUsersLogins = (): string[] => {
-    return this.users.users.map((user) => user.login);
+    return this.usersgroups.users.map((user) => user.login);
   };
 
   /*
@@ -154,9 +177,9 @@ export class Authentification {
    */
   addUser = (user: UserType) => {
     // check if user already exists
-    if (this.users.users.find((u) => u.login === user.login))
+    if (this.usersgroups.users.find((u) => u.login === user.login))
       throw new Error("User already exists");
-    this.users.users.push(user);
+    this.usersgroups.users.push(user);
     this.writeDB();
   };
 
@@ -168,9 +191,9 @@ export class Authentification {
   deleteUser = (user: string) => {
     // admin user could not be deleted
     if (user === "admin") throw new Error("Admin user can't be deleted");
-    const uid = this.users.users.findIndex((u) => u.login === user);
+    const uid = this.usersgroups.users.findIndex((u) => u.login === user);
     if (uid !== -1) {
-      this.users.users.splice(uid, 1);
+      this.usersgroups.users.splice(uid, 1);
       this.writeDB();
     }
   };
@@ -181,10 +204,10 @@ export class Authentification {
    */
   getUserBearer = (user: string): string => {
     // return this.users.users.fil .map((user) => Authentification.dataDecrypt(user.bearer, process.env.USER_ENCRYPT_SECRET || ""));
-    const uid = this.users.users.findIndex((u) => u.login === user);
+    const uid = this.usersgroups.users.findIndex((u) => u.login === user);
     if (uid === -1) return "";
     return Authentification.dataDecrypt(
-      this.users.users[uid].bearer,
+      this.usersgroups.users[uid].bearer,
       process.env.USER_ENCRYPT_SECRET || ""
     );
   };
@@ -194,7 +217,7 @@ export class Authentification {
    * @returns string[]
    * */
   getUsersBearers = (): string[] => {
-    return this.users.users.map((user) =>
+    return this.usersgroups.users.map((user) =>
       Authentification.dataDecrypt(
         user.bearer,
         process.env.USER_ENCRYPT_SECRET || ""
@@ -203,9 +226,9 @@ export class Authentification {
   };
 
   getInfoForUi(login: string): InfoIuType {
-    const user = this.users.users.find((user) => user.login === login);
-    if (!user) return { login: "", bearer: "" };
-    return { login: user.login, bearer: user.bearer };
+    const user = this.usersgroups.users.find((user) => user.login === login);
+    if (!user) return { login: "", bearer: "", uuid: "" };
+    return { login: user.login, bearer: user.bearer, uuid: user.uuid };
   }
 
   isAuthenticated = (req: Request) => {
@@ -235,9 +258,9 @@ export class Authentification {
 
   changeBearer = (user: string) => {
     try {
-      const uid = this.users.users.findIndex((u) => u.login === user);
+      const uid = this.usersgroups.users.findIndex((u) => u.login === user);
       if (uid !== -1) {
-        this.users.users[uid].bearer = this.generateBearerKey();
+        this.usersgroups.users[uid].bearer = this.generateBearerKey();
         this.writeDB();
         return [200, "User bearer has been changed"];
       } else {
@@ -272,13 +295,13 @@ export class Authentification {
         if (changepassword.newPassword === changepassword.newConfirmPassword) {
           // if so, find the uid of the user we want to change the password
           // console.log(changepassword.login);
-          const uid = this.users.users.findIndex(
+          const uid = this.usersgroups.users.findIndex(
             (u) => u.login === changepassword.login
           );
 
           if (uid === -1) return [500, "User not found"];
 
-          this.users.users[uid].password = this.encryptPassword(
+          this.usersgroups.users[uid].password = this.encryptPassword(
             changepassword.newPassword
           );
           this.writeDB();
@@ -348,10 +371,71 @@ export class Authentification {
     return msg.join("");
   }
 
-  writeDB = (users?: string) => {
-    writeFileSync(this.database, users ? users : JSON.stringify(this.users), {
-      encoding: "utf-8",
-      mode: 0o600,
-    });
+  writeDB = (usersGroups?: string) => {
+    writeFileSync(
+      this.database,
+      usersGroups ? usersGroups : JSON.stringify(this.usersgroups),
+      {
+        encoding: "utf-8",
+        mode: 0o600,
+      }
+    );
+  };
+
+  /**
+   * is user member of group ?
+   * @param group
+   * @param userUuid
+   * @returns
+   */
+  isMemberOfGroup = (group: string, userUuid: string): boolean => {
+    //is user exists
+    if (!this.usersgroups.users.find((u) => u.uuid === userUuid)) return false;
+
+    if (!this.usersgroups.groups[group]) return false;
+
+    return this.usersgroups.groups[group].includes(userUuid);
+  };
+
+  /**
+   * simplicity : if non-existent group, creating group and add user inside
+   * addGroupMember could be restricted by controllers
+   * @param group
+   * @param userUuid
+   * @returns
+   */
+  addGroupMember = (group: string, userUuid: string): boolean => {
+    // user is not set
+    if (!userUuid) return false;
+    // is user exists ?
+    if (!this.usersgroups.users.find((u) => u.uuid === userUuid)) return false;
+    // non-existent group, creating group
+    if (!this.usersgroups.groups[group]) this.usersgroups.groups[group] = [];
+    // add user to group if not already present
+    if (!this.usersgroups.groups[group].includes(userUuid)) {
+      this.usersgroups.groups[group].push(userUuid);
+      this.writeDB();
+    }
+    return true;
+  };
+
+  /**
+   * Only available when session is set, non accesible via API
+   * @param req
+   * @returns
+   */
+  isAdmin = (req?: Request) => {
+    //is user exists in db
+    if (req) {
+      const session = req.session as SessionExt;
+      if (
+        session &&
+        session.user &&
+        session.user.uuid &&
+        this.isMemberOfGroup("admin", session.user.uuid)
+      )
+        return true;
+    }
+    return false;
   };
 }

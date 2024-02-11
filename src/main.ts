@@ -78,16 +78,20 @@ dbGetData(dbfile)
     process.exit(1);
   });
 
-// Checking user database
-const userDbPathDev = `${__dirname}/../data/user.json`;
-const userDbPath = `${__dirname}/data/user.json`;
+// Checking users/groups databases - need to be renamed
+const usersDbPathDev = `${__dirname}/../data/user.json`;
+const usersDbPath = `${__dirname}/data/user.json`;
+
 const auth = new Authentification(
-  process.env.environment === "development" ? userDbPathDev : userDbPath
+  process.env.environment === "development" ? usersDbPathDev : usersDbPath
 );
 const data = auth.loadUsersFromDatabase();
 if (data.users && data.users.length === 0) {
   logger.info({ action: "Creating user database, with admin/admin" });
-  auth.store(auth.makeUser(ADMINUSERLOGINDEFAULT, ADMINPASSWORDDEFAULT));
+  const newUser = auth.makeUser(ADMINUSERLOGINDEFAULT, ADMINPASSWORDDEFAULT);
+  auth.addUser(newUser);
+  // first user is admin
+  auth.addGroupMember("admin", newUser.uuid);
 }
 
 const app = express();
