@@ -36,6 +36,7 @@ import routerAuth from "./routes/routerAuth";
 
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
 // logs
 const { combine, timestamp, json } = winston.format;
@@ -168,9 +169,40 @@ const publicPath =
 });
 
 //Swagger
-if (existsSync(OPENAPIFILEYAML)) {
-  const swaggerDocument = parse(readFileSync(OPENAPIFILEYAML, "utf-8"));
-  app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+if (process.env.environment === "development") {
+  const swaggerDefinition = {
+    definition: {
+      openapi: "3.0.3",
+      info: {
+        title: "Utdon API Documentation",
+        version: "1.0.0",
+      },
+      components: {
+        securitySchemes: {
+          ApiKeyAuth: {
+            type: "apiKey",
+            in: "header",
+            name: "Bearer",
+          },
+        },
+      },
+      security: [
+        {
+          ApiKeyAuth: [],
+        },
+      ],
+      servers: [{ url: "/api/v1" }],
+    },
+    apis: ["./src/routes/*.ts"],
+  };
+
+  const swaggerSpec = swaggerJsdoc(swaggerDefinition);
+  app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+} else {
+  if (existsSync(OPENAPIFILEYAML)) {
+    const swaggerDocument = parse(readFileSync(OPENAPIFILEYAML, "utf-8"));
+    app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  }
 }
 
 app.use((req: Request, res: Response, next: NextFunction) => {
