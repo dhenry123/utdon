@@ -89,6 +89,7 @@ export const INITIALIZED_CHANGEPASSWORD: ChangePasswordType = {
 export const INITIALIZED_NEWUSER: NewUserType = {
   login: "",
   password: "",
+  groups: [],
 };
 
 export const INITIALIZED_UPTODATEFORM: UptodateForm = {

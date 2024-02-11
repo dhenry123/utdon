@@ -173,6 +173,7 @@ export type ChangePasswordType = {
 export type NewUserType = {
   login: string;
   password: string;
+  groups: string[];
 };
 
 export type ControlToPause = {
