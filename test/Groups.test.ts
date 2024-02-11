@@ -62,4 +62,19 @@ describe("Groups", () => {
     expect(auth.addGroupMember("test", user.uuid)).toBeTruthy();
     expect(auth.isMemberOfGroup("admin", user.uuid)).toBeFalsy();
   });
+
+  test("getGroups - with groups set", () => {
+    const auth = new Authentification(userDatabase);
+    let user = auth.makeUser("admin", "admin");
+    auth.addUser(user);
+    auth.addGroupMember("admin", user.uuid);
+    user = auth.makeUser("test", "test");
+    auth.addUser(user);
+    auth.addGroupMember("test", user.uuid);
+    auth.isMemberOfGroup("admin", user.uuid);
+    const groups = auth.getGroups();
+    expect(groups.length).toEqual(2);
+    expect(groups.includes("admin")).toBeTruthy();
+    expect(groups.includes("test")).toBeTruthy();
+  });
 });

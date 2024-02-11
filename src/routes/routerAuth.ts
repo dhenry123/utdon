@@ -603,4 +603,55 @@ routerAuth.put(
   }
 );
 
+/**
+ * @swagger
+ * /groups:
+ *   get:
+ *     summary: get user groups
+ *     description: Used by UI to display user groups, only admins is authorized
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: user groups
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               example: ["admin", "sysadminroom1"]
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.get(
+  "/groups",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.login &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        res.status(200).json(req.app.get("AUTH").getGroups());
+      } else {
+        res
+          .status(401)
+          .json({ error: "User is not logged with session or not admin" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
 export default routerAuth;
