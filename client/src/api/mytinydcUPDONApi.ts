@@ -16,7 +16,7 @@ export const mytinydcUPDONApi = createApi({
   // Query service name
   reducerPath: "api",
   // tag types
-  tagTypes: ["User", "Users"],
+  tagTypes: ["User", "Users", "Groups"],
   // Url Base API
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
@@ -139,6 +139,12 @@ export const mytinydcUPDONApi = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    getGroups: builder.query({
+      query: () => ({
+        url: `/groups/`,
+      }),
+      providesTags: ["Groups"],
+    }),
   }),
 });
 
@@ -147,4 +153,5 @@ export const {
   useGetCheckQuery,
   useGetUsersQuery,
   useGetUserInfoQuery,
+  useGetGroupsQuery,
 } = mytinydcUPDONApi;

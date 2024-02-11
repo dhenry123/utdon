@@ -18,10 +18,15 @@ import { ErrorServer, NewUserType } from "../../../../src/Global.types";
 import { FieldSet } from "../../components/FieldSet";
 import ButtonGeneric from "../../components/ButtonGeneric";
 import { Block } from "../../components/Block";
-import { mytinydcUPDONApi, useGetUsersQuery } from "../../api/mytinydcUPDONApi";
+import {
+  mytinydcUPDONApi,
+  useGetGroupsQuery,
+  useGetUsersQuery,
+} from "../../api/mytinydcUPDONApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { showServiceMessage } from "../../app/serviceMessageSlice";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { MultiSelect, Option } from "react-multi-select-component";
 
 export const UserManager = () => {
   const intl = useIntl();
@@ -32,6 +37,10 @@ export const UserManager = () => {
   const [httpMethod, setHttpMethod] = useState<"POST" | "PUT">("POST");
 
   const { data: users, isSuccess } = useGetUsersQuery(null, {
+    skip: false,
+  });
+
+  const { data: groups, isSuccess: isSuccessGroups } = useGetGroupsQuery(null, {
     skip: false,
   });
 
@@ -127,7 +136,7 @@ export const UserManager = () => {
   };
 
   const handleOnEdit = async (user: string) => {
-    setFormData({ login: user, password: "" });
+    setFormData(INITIALIZED_NEWUSER);
     setHttpMethod("PUT");
     dispatch(
       showServiceMessage({
@@ -141,8 +150,18 @@ export const UserManager = () => {
     );
   };
 
-  const handleOnChange = (key: string, value: string) => {
+  const handleOnChange = (key: string, value: string | Option[]) => {
     setFormData({ ...formData, [key]: value });
+  };
+
+  const buildStructGroups = (): Option[] => {
+    const selectGroupList: Option[] = [];
+    if (groups && groups.length > 0) {
+      for (const group of groups) {
+        selectGroupList.push({ label: group, value: group });
+      }
+    }
+    return selectGroupList;
   };
 
   useEffect(() => {
@@ -153,6 +172,10 @@ export const UserManager = () => {
     }
   }, [formData]);
 
+  // useEffect(() => {
+  //   if (groups) buildStructGroups();
+  // }, [groups]);
+
   return (
     <div className="UserManager">
       <h2 className={"new-user-label"}>
@@ -162,7 +185,7 @@ export const UserManager = () => {
         <form onSubmit={handleOnPost} className={"form"}>
           <FieldSet
             legend={intl.formatMessage({ id: "Username" })}
-            className="expression"
+            className="username"
           >
             <InputGeneric
               value={formData.login}
@@ -179,6 +202,17 @@ export const UserManager = () => {
               type={"password"}
               onChange={(value) => handleOnChange("password", value)}
               autoComplete="new-password"
+            />
+          </FieldSet>
+          <FieldSet
+            legend={intl.formatMessage({ id: "Groups" })}
+            className="groups"
+          >
+            <MultiSelect
+              options={buildStructGroups()}
+              value={[]}
+              onChange={(value: Option[]) => handleOnChange("groups", value)}
+              labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
             />
           </FieldSet>
           <FieldSet
@@ -212,6 +246,7 @@ export const UserManager = () => {
             </div>
           </div>
           {isSuccess &&
+            isSuccessGroups &&
             (users as string[]).map((user) => {
               return (
                 <div key={user} className="flex-table row" role="rowgroup">

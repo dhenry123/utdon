@@ -142,5 +142,7 @@
   "You can assign a new password for the selected user": "Vous pouvez affecter un nouveau mot de passe pour l'utilisateur sélectionné",
   "User already exists": "Cet utilisateur existe déjà",
   "User created": "Utilisateur créé",
-  "User updated": "Le mot de passe de cette utilisateur a été mis à jour"
+  "User updated": "Le mot de passe de cette utilisateur a été mis à jour",
+  "Group": "Groupe",
+  "Groups": "Groupes"
 }

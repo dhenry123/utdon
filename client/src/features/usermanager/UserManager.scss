@@ -15,6 +15,11 @@
 
   .form {
     display: flex;
+    .groups {
+      width: auto;
+      min-width: 10rem;
+      max-width: 20rem;
+    }
   }
 
   .userslist {
