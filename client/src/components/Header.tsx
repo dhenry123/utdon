@@ -10,7 +10,7 @@ import ButtonGeneric from "./ButtonGeneric";
 import { useAppDispatch } from "../app/hook";
 
 import "./Header.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog } from "./Dialog";
 import { ChangePassword } from "../features/changepassword/ChangePassword";
 import { CurlCommands } from "../features/curlcommands/CurlCommands";
@@ -31,13 +31,15 @@ export const Header = () => {
 
   const [dialogHeader, setDialogHeader] = useState("");
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   /**
    * Used for server errors (api entrypoint call)
    * @param error
    * @returns
    */
   const dispatchServerError = (error: FetchBaseQueryError) => {
-    if (error) {
+    if (error && error.data) {
       const servererror = error.data as ErrorServer;
       if (servererror.error) {
         dispatch(
@@ -116,6 +118,20 @@ export const Header = () => {
     skip: false,
   });
 
+  useEffect(() => {
+    dispatch(
+      mytinydcUPDONApi.endpoints.isAdmin.initiate(null, { forceRefetch: true })
+    )
+      .unwrap()
+      .then(() => {
+        setIsAdmin(true);
+      })
+      .catch((error: FetchBaseQueryError) => {
+        setIsAdmin(false);
+        if (error && error.status !== 401) dispatchServerError(error);
+      });
+  }, []);
+
   return (
     <div className="header">
       <div className="buttonsgroup">
@@ -168,11 +184,13 @@ export const Header = () => {
         </div>
         <div className="flexPushLeft logout">
           <div className="manager">
-            <ButtonGeneric
-              onClick={displayDialogUsersManager}
-              icon={"users"}
-              title={intl.formatMessage({ id: "Users manager" })}
-            />
+            {isAdmin ? (
+              <ButtonGeneric
+                onClick={displayDialogUsersManager}
+                icon={"users"}
+                title={intl.formatMessage({ id: "Users manager" })}
+              />
+            ) : null}
 
             <ButtonGeneric
               icon={"key"}

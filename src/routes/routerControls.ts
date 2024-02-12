@@ -13,6 +13,7 @@ import {
   dbUpdateRecord,
 } from "../lib/Database";
 import { recordsOrder } from "../lib/Features";
+import { SessionExt } from "../ServerTypes";
 const routerControl = express.Router();
 
 routerControl.post(
@@ -106,9 +107,21 @@ routerControl.get(
   "/control/:uuid",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const session = req.session as SessionExt;
+      console.log(session);
+
+      // if (
+      //   session.user &&
+      //   session.user.login &&
+      //   req.app.get("AUTH").isAdmin(req)
+      // )
+      const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
+      console.log("userGroups", userGroups);
       let rec = dbGetRecord(
         req.app.get("DB"),
         req.params.uuid,
+        userGroups,
+        req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
       );
       if (Array.isArray(rec) && rec.length > 0) {

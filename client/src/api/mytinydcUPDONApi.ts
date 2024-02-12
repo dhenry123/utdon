@@ -145,6 +145,11 @@ export const mytinydcUPDONApi = createApi({
       }),
       providesTags: ["Groups"],
     }),
+    isAdmin: builder.query({
+      query: () => ({
+        url: `/isadmin/`,
+      }),
+    }),
   }),
 });
 

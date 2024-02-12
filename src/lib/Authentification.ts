@@ -7,6 +7,7 @@ import { readFileSync, existsSync, writeFileSync, copyFileSync } from "fs";
 import {
   ChangePasswordType,
   InfoIuType,
+  UserDescriptionType,
   UsersGroupsType,
   UserType,
 } from "../Global.types";
@@ -20,6 +21,7 @@ import {
 } from "../Constants";
 import { Request } from "express";
 import { SessionExt } from "../ServerTypes";
+import { Option } from "../../client/node_modules/react-multi-select-component";
 
 const userDatabaseDefault = `${__dirname}/../../data/user.json`;
 
@@ -162,12 +164,33 @@ export class Authentification {
     }
   };
 
+  getUserMemberGroupsName = (userUuid: string): Option[] => {
+    const groups: Option[] = [];
+    Object.getOwnPropertyNames(this.usersgroups.groups).forEach((groupName) => {
+      if (this.usersgroups.groups[groupName].includes(userUuid))
+        groups.push({ label: groupName, value: groupName });
+    });
+    return groups;
+  };
+
   /*
    * return all users logins
    * @returns string[]
    */
-  getUsersLogins = (): string[] => {
-    return this.usersgroups.users.map((user) => user.login);
+  getUsersForUi = (): UserDescriptionType[] => {
+    const usersDescription: UserDescriptionType[] = [];
+    for (const user of this.usersgroups.users) {
+      usersDescription.push({
+        login: user.login,
+        groups: this.getUserMemberGroupsName(user.uuid),
+        uuid: user.uuid,
+      });
+    }
+    return usersDescription;
+  };
+
+  getUsers = (): UserType[] => {
+    return this.usersgroups.users;
   };
 
   /*
@@ -188,10 +211,10 @@ export class Authentification {
    * @param user string
    * @returns void
    */
-  deleteUser = (user: string) => {
+  deleteUser = (userUuid: string) => {
     // admin user could not be deleted
-    if (user === "admin") throw new Error("Admin user can't be deleted");
-    const uid = this.usersgroups.users.findIndex((u) => u.login === user);
+    if (userUuid === "admin") throw new Error("Admin user can't be deleted");
+    const uid = this.usersgroups.users.findIndex((u) => u.uuid === userUuid);
     if (uid !== -1) {
       this.usersgroups.users.splice(uid, 1);
       this.writeDB();
@@ -261,7 +284,7 @@ export class Authentification {
         session &&
         session.user &&
         session.user.login &&
-        !!this.getUsersLogins().find((login) => login === session.user.login)
+        !!this.getUsers().find((item) => item.login === session.user.login)
       );
     }
   };
@@ -440,6 +463,19 @@ export class Authentification {
     return true;
   };
 
+  removeUserFromGroups = (userUuid: string) => {
+    const newUsersGroups = { ...this.usersgroups.groups };
+    const dbGroups = Object.getOwnPropertyNames(this.usersgroups.groups);
+    for (const group of dbGroups) {
+      const newSet = this.usersgroups.groups[group].filter(
+        (item) => item !== userUuid
+      );
+      newUsersGroups[group] = newSet;
+    }
+    this.usersgroups.groups = newUsersGroups;
+    this.writeDB();
+  };
+
   /**
    * Only available when session is set, non accesible via API
    * @param req
@@ -464,7 +500,29 @@ export class Authentification {
    * return groups list
    * @returns
    */
-  getGroups = (): string[] => {
-    return Object.getOwnPropertyNames(this.usersgroups.groups);
+  getGroups = (req: Request): string[] => {
+    const session = req.session as SessionExt;
+    if (req.app.get("AUTH").isAdmin(req)) {
+      return Object.getOwnPropertyNames(this.usersgroups.groups);
+    } else {
+      return this.getUserGroups(session.user.uuid);
+    }
+  };
+
+  /**
+   * get user groups
+   * @param userUuid
+   * @returns
+   */
+  getUserGroups = (userUuid: string): string[] => {
+    const groups: string[] = [];
+    if (userUuid) {
+      const dbGroups = Object.getOwnPropertyNames(this.usersgroups.groups);
+      for (const group of dbGroups) {
+        if (this.usersgroups.groups[group].includes(userUuid))
+          groups.push(group);
+      }
+    }
+    return groups;
   };
 }

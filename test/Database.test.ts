@@ -69,9 +69,8 @@ const logger = winston.createLogger({
 });
 
 describe("Database", () => {
-  afterEach(() => {
+  beforeEach(() => {
     const file = "./test/data/database.json";
-    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     if (existsSync(file)) unlinkSync(file);
     writeFileSync(file, JSON.stringify([]), "utf-8");
   });
@@ -104,6 +103,8 @@ describe("Database", () => {
   test("dbCreate - db not exists", () => {
     const mytpath = "./test/data/database.json";
     if (existsSync(mytpath)) unlinkSync(mytpath);
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbCreate(mytpath)
       .then((res) => {
         expect(res).not.toEqual("");
@@ -117,6 +118,8 @@ describe("Database", () => {
   test("dbCreate - db allready exists", () => {
     const mytpath = "./test/data/database.json";
     if (existsSync(mytpath)) unlinkSync(mytpath);
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbCreate(mytpath)
       .then(() => {
         // try create twice
@@ -132,6 +135,8 @@ describe("Database", () => {
 
   test("dbGetData - with path & no records", () => {
     const mytpath = "./test/samples/database-empty.json";
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbGetData(mytpath)
       .then((res) => {
         expect(res).toEqual([]);
@@ -143,6 +148,8 @@ describe("Database", () => {
 
   test("dbGetData - malformed object", () => {
     const mytpath = "./test/samples/database-malformed-object.json";
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbGetData(mytpath)
       .then(() => {
         //unexpected
@@ -156,6 +163,8 @@ describe("Database", () => {
 
   test("dbGetData - malformed empty file non json", () => {
     const mytpath = "./test/samples/database-nocontent.json";
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbGetData(mytpath)
       .then((res) => {
         // unexpected
@@ -169,7 +178,8 @@ describe("Database", () => {
 
   test("dbInsert - without uuid", () => {
     const db: UptodateForm[] = [];
-
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then((res) => {
         expect(res).toBeDefined();
@@ -212,29 +222,32 @@ describe("Database", () => {
     });
   });
 
-  test("dbCommit - db is read only", () => {
+  test("dbCommit - db is read only", async () => {
     const db: UptodateForm[] = [];
     const file = "./test/samples/database-readonly.json";
     // to be sure
     chmodSync(file, "400");
-    dbInsert(db, check).then(() => {
+    await dbInsert(db, check).then(() => {
       dbCommit(file, db)
         .then(() => {
           // unexpected - file is read only
           expect(false).toBeTruthy();
         })
         .catch((error: Error) => {
-          expect(error).toBeDefined();
+          //expect(error).toBeDefined();
+          // console.log(error);
           expect(error.toString()).toMatch(/EACCES: permission denied/);
         });
     });
   });
 
-  test("dbGetRecord - uuid exists", () => {
+  test("dbGetRecord - uuid exists - admin", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then((res) => {
-        const rec = dbGetRecord(db, res, logger);
+        const rec = dbGetRecord(db, res, [], true, logger);
         if (!Array.isArray(rec)) {
           expect(rec?.uuid).toEqual(res);
         } else {
@@ -246,12 +259,14 @@ describe("Database", () => {
       });
   });
 
-  test("dbGetRecord - uuid exists impossible to decrypt secrets", () => {
+  test("dbGetRecord - uuid exists impossible to decrypt secrets - admin", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then((res) => {
         const newdb = [{ ...check, uuid: res }];
-        const rec = dbGetRecord(newdb, res, logger);
+        const rec = dbGetRecord(newdb, res, [], true, logger);
         const lastErrorWinston = (logger.transports[0] as LastErrorTransport)
           .lastError;
         expect(lastErrorWinston).toBeDefined();
@@ -270,11 +285,13 @@ describe("Database", () => {
       });
   });
 
-  test("dbGetRecord - uuid not exists", () => {
+  test("dbGetRecord - uuid not exists - admin", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
-        const rec = dbGetRecord(db, "xxxx", logger);
+        const rec = dbGetRecord(db, "xxxx", [], true, logger);
         expect(rec).toBeNull();
       })
       .catch((error) => {
@@ -282,11 +299,13 @@ describe("Database", () => {
       });
   });
 
-  test("dbGetRecord - uuid not provided", () => {
+  test("dbGetRecord - uuid not provided - admin", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
-        const rec = dbGetRecord(db, "", logger);
+        const rec = dbGetRecord(db, "", [], true, logger);
         expect(rec).toBeNull();
       })
       .catch((error) => {
@@ -294,11 +313,13 @@ describe("Database", () => {
       });
   });
 
-  test("dbGetRecord - get all records", () => {
+  test("dbGetRecord - get all records - admin", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
-        const rec = dbGetRecord(db, "all", logger);
+        const rec = dbGetRecord(db, "all", [], true, logger);
         expect(Array.isArray(rec)).toBeTruthy();
         expect(Array.isArray(rec) && rec.length).toEqual(1);
       })
@@ -309,6 +330,8 @@ describe("Database", () => {
 
   test("dbDeleteRecord - existing record", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
         dbInsert(db, check).then((uuid) => {
@@ -324,6 +347,8 @@ describe("Database", () => {
 
   test("dbDeleteRecord - non existing record", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
         dbInsert(db, check).then((uuid) => {
@@ -339,6 +364,8 @@ describe("Database", () => {
 
   test("dbDeleteRecord - empty uuid", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
         dbInsert(db, check).then(() => {
@@ -352,8 +379,10 @@ describe("Database", () => {
       });
   });
 
-  test("dbUpdateRecord - with uuid", () => {
+  test("dbUpdateRecord - with uuid and admin", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
         dbInsert(db, check).then((uuid) => {
@@ -363,7 +392,7 @@ describe("Database", () => {
           const rupd = dbUpdateRecord(db, upd);
           expect(rupd).toEqual(uuid);
           expect(Array.isArray(db) && db.length).toEqual(2);
-          const verif = dbGetRecord(db, uuid, logger);
+          const verif = dbGetRecord(db, uuid, [], true, logger);
           expect(verif).not.toBeNull();
           expect(verif && !Array.isArray(verif) && verif.urlProduction).toEqual(
             "test"
@@ -377,6 +406,8 @@ describe("Database", () => {
 
   test("dbUpdateRecord - uuid not found", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
         dbInsert(db, check).then(() => {
@@ -395,10 +426,11 @@ describe("Database", () => {
 
   test("dbUpdateRecord - uuid is not set", () => {
     const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
     dbInsert(db, check)
       .then(() => {
         dbInsert(db, check).then(() => {
-          // const upd = { ...check, uuid: uuid };
           const upd = { ...check };
           upd.urlProduction = "test";
           const rupd = dbUpdateRecord(db, upd);

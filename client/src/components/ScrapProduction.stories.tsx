@@ -37,7 +37,7 @@ const Component = (args: ScrapProductionProps) => {
   const [check, setCheck] = useState(args.activeUptodateForm);
   args = {
     ...args,
-    handleOnChange: (key: UptodateFormFields, value: string) => {
+    handleOnChange: (key: UptodateFormFields, value: string | string[]) => {
       // defined by stories
       if (key === "scrapTypeProduction") return;
       setCheck({ ...check, [key]: value });

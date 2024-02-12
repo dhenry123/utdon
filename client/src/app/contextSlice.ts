@@ -11,7 +11,7 @@ import { contextSliceType } from "../../../src/Global.types";
 const initialState: contextSliceType = {
   // French is default language
   language: { locale: "fr", lang: languageFr },
-  user: { login: "", bearer: "" },
+  user: { login: "", bearer: "", uuid: "" },
   application: {
     name: "UTdOn",
     applicationtitle: "UtDon",

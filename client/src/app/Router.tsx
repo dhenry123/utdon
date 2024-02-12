@@ -31,17 +31,7 @@ export const Router = () => {
         return await dispatch(
           mytinydcUPDONApi.endpoints.getUserIsAuthenticated.initiate(null)
         )
-          .then((response: unknown) => {
-            const convResponse: ApiResponseType = response as ApiResponseType;
-            // My api returns ... nothing only status 200 - Redux analyse like error !!!
-            if (
-              convResponse.error &&
-              convResponse.error.originalStatus !== 200
-            ) {
-              return redirect("/login");
-            }
-            return null;
-          })
+          .unwrap()
           .catch((error: unknown) => {
             dispatch(
               showServiceMessage({

@@ -31,10 +31,13 @@ import {
   SCRAPTYPEOPTIONJSON,
   SCRAPTYPEOPTIONTEXT,
 } from "../../../src/Constants";
+import { useGetGroupsQuery } from "../api/mytinydcUPDONApi";
+import { MultiSelect, Option } from "react-multi-select-component";
+import { buidMultiSelectGroups } from "../helpers/UiMiscHelper";
 
 export interface ScrapProductionProps {
   activeUptodateForm: UptodateForm;
-  handleOnChange: (key: UptodateFormFields, value: string) => void;
+  handleOnChange: (key: UptodateFormFields, value: string | string[]) => void;
   scrapUrl: (url: string) => Promise<string>;
   onDone: (changeDoneState: boolean) => void;
   displayError: (message: string) => void;
@@ -56,6 +59,15 @@ export const ScrapProduction = ({
     { value: "json", label: SCRAPTYPEOPTIONJSON },
     { value: "text", label: SCRAPTYPEOPTIONTEXT },
   ];
+
+  const {
+    data: groupsFromServer,
+    // isSuccess: isSuccessGroups,
+    // refetch: refetchGroups,
+    // isUninitialized: isUninitializedGroups,
+  } = useGetGroupsQuery(null, {
+    skip: false,
+  });
 
   /**
    * server return ALWAYS string
@@ -108,6 +120,14 @@ export const ScrapProduction = ({
     handleOnChange("exprProduction", value);
   };
 
+  const handleOnChangeGroups = (value: Option[]) => {
+    const controlGroups: string[] = [];
+    for (const item of value) {
+      controlGroups.push(item.value);
+    }
+    handleOnChange("groups", controlGroups);
+  };
+
   useEffect(() => {
     setProductionVersion("");
     handleApplyProductionContentRegExp();
@@ -156,6 +176,25 @@ export const ScrapProduction = ({
             onClick={handleGetProductionContent}
             icon="download"
             disabled={activeUptodateForm.urlProduction === ""}
+          />
+        </FieldSet>
+        <FieldSet
+          legend={intl.formatMessage({ id: "Groups" })}
+          className="groups"
+        >
+          <MultiSelect
+            options={groupsFromServer ? groupsFromServer : []}
+            value={
+              activeUptodateForm.groups && activeUptodateForm.groups.length > 0
+                ? buidMultiSelectGroups(activeUptodateForm.groups)
+                : []
+            }
+            onChange={(values: Option[]) => handleOnChangeGroups(values)}
+            labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
+            // isCreatable={true}
+            // onCreateOption={handleNewField}
+            // disabled={!formData.login}
+            // closeOnChangedValue
           />
         </FieldSet>
       </Block>

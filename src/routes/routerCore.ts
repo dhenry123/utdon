@@ -34,6 +34,13 @@ const routerCore = express.Router();
  *           type: string
  *         newConfirmPassword:
  *           type: string
+ *     Group:
+ *       type: object
+ *       properties:
+ *         label:
+ *           type: string
+ *         value:
+ *           type: string
  *     NewUserType:
  *       type: object
  *       properties:
@@ -45,6 +52,10 @@ const routerCore = express.Router();
  *           type: string
  *           description: password of the new user
  *           example: hunter2
+ *         groups:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Group'
  *     InfoIuType:
  *       type: object
  *       properties:

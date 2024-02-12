@@ -1,5 +1,7 @@
 import { existsSync, rmSync } from "fs";
 import { Authentification } from "../src/lib/Authentification";
+import { SessionExt } from "../src/ServerTypes";
+import { Request } from "express";
 
 const userDatabase = `${__dirname}/data/userDatabase.json`;
 
@@ -63,7 +65,66 @@ describe("Groups", () => {
     expect(auth.isMemberOfGroup("admin", user.uuid)).toBeFalsy();
   });
 
-  test("getGroups - with groups set", () => {
+  test("getGroups - with groups set and admin user", () => {
+    const auth = new Authentification(userDatabase);
+    const adminuser = auth.makeUser("admin", "admin");
+    auth.addUser(adminuser);
+    auth.addGroupMember("admin", adminuser.uuid);
+    const user = auth.makeUser("test", "test");
+    auth.addUser(user);
+    auth.addGroupMember("test", user.uuid);
+    auth.isMemberOfGroup("admin", user.uuid);
+    const req = {
+      body: {},
+      app: {
+        get: (key: string) => {
+          if (key === "AUTH") return auth;
+        },
+      },
+    } as Request;
+    req.session = {
+      user: {
+        login: adminuser.login,
+        bearer: adminuser.bearer,
+        uuid: adminuser.uuid,
+      },
+    } as SessionExt;
+    const groups = auth.getGroups(req);
+    expect(groups.length).toEqual(2);
+    expect(groups.includes("admin")).toBeTruthy();
+    expect(groups.includes("test")).toBeTruthy();
+  });
+
+  test("getGroups - with groups set and normal user", () => {
+    const auth = new Authentification(userDatabase);
+    const adminuser = auth.makeUser("admin", "admin");
+    auth.addUser(adminuser);
+    auth.addGroupMember("admin", adminuser.uuid);
+    const user = auth.makeUser("test", "test");
+    auth.addUser(user);
+    auth.addGroupMember("test", user.uuid);
+    auth.isMemberOfGroup("admin", user.uuid);
+    const req = {
+      body: {},
+      app: {
+        get: (key: string) => {
+          if (key === "AUTH") return auth;
+        },
+      },
+    } as Request;
+    req.session = {
+      user: {
+        login: user.login,
+        bearer: user.bearer,
+        uuid: user.uuid,
+      },
+    } as SessionExt;
+    const groups = auth.getGroups(req);
+    expect(groups.length).toEqual(1);
+    expect(groups.includes("test")).toBeTruthy();
+  });
+
+  test("removeUserFromGroups - user set in multi group then removed from all", () => {
     const auth = new Authentification(userDatabase);
     let user = auth.makeUser("admin", "admin");
     auth.addUser(user);
@@ -71,10 +132,53 @@ describe("Groups", () => {
     user = auth.makeUser("test", "test");
     auth.addUser(user);
     auth.addGroupMember("test", user.uuid);
-    auth.isMemberOfGroup("admin", user.uuid);
-    const groups = auth.getGroups();
-    expect(groups.length).toEqual(2);
-    expect(groups.includes("admin")).toBeTruthy();
-    expect(groups.includes("test")).toBeTruthy();
+    auth.addGroupMember("admin", user.uuid);
+    expect(auth.usersgroups.groups.admin.includes(user.uuid)).toBeTruthy();
+    expect(auth.usersgroups.groups.test.includes(user.uuid)).toBeTruthy();
+    auth.removeUserFromGroups(user.uuid);
+    expect(auth.usersgroups.groups.admin.includes(user.uuid)).toBeFalsy();
+    expect(auth.usersgroups.groups.test.includes(user.uuid)).toBeFalsy();
+  });
+
+  test("removeUserFromGroups - user not found", () => {
+    const auth = new Authentification(userDatabase);
+    let user = auth.makeUser("admin", "admin");
+    auth.addUser(user);
+    auth.addGroupMember("admin", user.uuid);
+    user = auth.makeUser("test", "test");
+    auth.addUser(user);
+    auth.addGroupMember("test", user.uuid);
+    auth.addGroupMember("admin", user.uuid);
+    expect(auth.usersgroups.groups.admin.includes(user.uuid)).toBeTruthy();
+    expect(auth.usersgroups.groups.test.includes(user.uuid)).toBeTruthy();
+    auth.removeUserFromGroups("xxxx");
+    expect(auth.usersgroups.groups.admin.includes(user.uuid)).toBeTruthy();
+    expect(auth.usersgroups.groups.test.includes(user.uuid)).toBeTruthy();
+  });
+
+  test("getUserGroups - existent user", () => {
+    const auth = new Authentification(userDatabase);
+    let user = auth.makeUser("admin", "admin");
+    auth.addUser(user);
+    auth.addGroupMember("admin", user.uuid);
+    user = auth.makeUser("test", "test");
+    auth.addUser(user);
+    auth.addGroupMember("test", user.uuid);
+    auth.addGroupMember("admin", user.uuid);
+    expect(auth.getUserGroups(user.uuid).length).toEqual(2);
+    expect(auth.getUserGroups(user.uuid).includes("test")).toBeTruthy();
+    expect(auth.getUserGroups(user.uuid).includes("admin")).toBeTruthy();
+  });
+
+  test("getUserGroups - non-existent user", () => {
+    const auth = new Authentification(userDatabase);
+    let user = auth.makeUser("admin", "admin");
+    auth.addUser(user);
+    auth.addGroupMember("admin", user.uuid);
+    user = auth.makeUser("test", "test");
+    auth.addUser(user);
+    auth.addGroupMember("test", user.uuid);
+    auth.addGroupMember("admin", user.uuid);
+    expect(auth.getUserGroups("xxx").length).toEqual(0);
   });
 });

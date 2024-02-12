@@ -3,6 +3,8 @@
  * @license AGPL3
  */
 
+import { Option } from "../client/node_modules/react-multi-select-component";
+
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 export type JSONLang = Record<string, string>;
@@ -49,7 +51,8 @@ export type UptodateFormFields =
   | "urlCICD"
   | "httpMethodCICD"
   | "urlCICDAuth"
-  | "isPause";
+  | "isPause"
+  | "groups";
 
 export type ApiResponseType = {
   data?: JSON;
@@ -173,7 +176,8 @@ export type ChangePasswordType = {
 export type NewUserType = {
   login: string;
   password: string;
-  groups: string[];
+  groups: Option[];
+  uuid?: string;
 };
 
 export type ControlToPause = {
@@ -193,4 +197,10 @@ export type GroupsType = {
 export type UsersGroupsType = {
   users: UserType[];
   groups: GroupsType;
+};
+
+export type UserDescriptionType = {
+  login: string;
+  uuid: string;
+  groups: Option[];
 };

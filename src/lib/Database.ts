@@ -158,22 +158,44 @@ const decryptDb = (records: UptodateForm[], logger: Logger) => {
   return decryptedDb;
 };
 
+const isRecordInUserGroups = (
+  record: UptodateForm,
+  userGroups: string[]
+): boolean => {
+  const groupsControl = record.groups || [];
+  for (const groupControl of groupsControl) {
+    if (userGroups.includes(groupControl)) return true;
+  }
+  return false;
+};
+
 export const dbGetRecord = (
   db: UptodateForm[],
   uuid: string,
+  userGroups: string[],
+  isAdmin: boolean,
   logger: Logger
 ): UptodateForm[] | UptodateForm | null => {
   if (!uuid) return null;
   if (uuid !== "all") {
     const control = db.filter((item) => item.uuid === uuid);
-
     if (control.length === 1) {
       // do not throw error, just log
       const recordDecrypted = decryptRecord(control[0], logger);
-      return recordDecrypted;
+      if (isAdmin || isRecordInUserGroups(recordDecrypted, userGroups))
+        return recordDecrypted;
+      return null;
     }
   } else {
-    return decryptDb(db, logger);
+    // All controls are asked
+    const controlsToReturn: UptodateForm[] = [];
+    const dbDecrypted = decryptDb(db, logger);
+    // is control has group which matchs with userGroups
+    for (const control of dbDecrypted) {
+      if (isAdmin || isRecordInUserGroups(control, userGroups))
+        controlsToReturn.push(control);
+    }
+    return controlsToReturn;
   }
   return null;
 };

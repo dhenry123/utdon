@@ -148,7 +148,7 @@ export const ControlManager = () => {
    */
   const handleOnChangeUptodateForm = (
     key: UptodateFormFields,
-    value: string
+    value: string | string[]
   ) => {
     dispatch(updateKeyUptodateFrom({ key: key, value: value }));
     // each time the model change to indicate user have to save

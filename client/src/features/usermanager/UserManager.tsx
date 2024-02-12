@@ -14,7 +14,11 @@ import {
   INITIALIZED_NEWUSER,
   INITIALIZED_TOAST,
 } from "../../../../src/Constants";
-import { ErrorServer, NewUserType } from "../../../../src/Global.types";
+import {
+  ErrorServer,
+  NewUserType,
+  UserDescriptionType,
+} from "../../../../src/Global.types";
 import { FieldSet } from "../../components/FieldSet";
 import ButtonGeneric from "../../components/ButtonGeneric";
 import { Block } from "../../components/Block";
@@ -35,12 +39,22 @@ export const UserManager = () => {
 
   const [formData, setFormData] = useState<NewUserType>(INITIALIZED_NEWUSER);
   const [httpMethod, setHttpMethod] = useState<"POST" | "PUT">("POST");
-
-  const { data: users, isSuccess } = useGetUsersQuery(null, {
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const {
+    data: users,
+    isSuccess,
+    refetch,
+    isUninitialized,
+  } = useGetUsersQuery(null, {
     skip: false,
   });
 
-  const { data: groups, isSuccess: isSuccessGroups } = useGetGroupsQuery(null, {
+  const {
+    data: groupsFromServer,
+    isSuccess: isSuccessGroups,
+    refetch: refetchGroups,
+    isUninitialized: isUninitializedGroups,
+  } = useGetGroupsQuery(null, {
     skip: false,
   });
 
@@ -48,8 +62,11 @@ export const UserManager = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-  const [userToDelete, setUserToDelete] = useState<null | string>(null);
+  const [userToDelete, setUserToDelete] = useState<null | UserDescriptionType>(
+    null
+  );
   const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
+
   /**
    * Used for server errors (api entrypoint call)
    * @param error
@@ -72,15 +89,22 @@ export const UserManager = () => {
     }
   };
 
+  const setContextAsNewUser = () => {
+    setEditMode(false);
+    setFormData({ ...INITIALIZED_NEWUSER });
+    setHttpMethod("POST");
+  };
+
   const handleOnPost = async (e: React.FormEvent | null) => {
     e?.preventDefault();
-    if (formData.login && formData.password) {
+    if (isFormComplete()) {
       (httpMethod === "POST"
         ? dispatch(mytinydcUPDONApi.endpoints.postUser.initiate(formData))
         : dispatch(mytinydcUPDONApi.endpoints.putUser.initiate(formData))
       )
         .unwrap()
         .then(() => {
+          setContextAsNewUser();
           // onHide();
           dispatch(
             showServiceMessage({
@@ -89,25 +113,24 @@ export const UserManager = () => {
               sticky: false,
               detail: `${
                 httpMethod === "POST"
-                  ? intl.formatMessage({ id: `User created` })
-                  : intl.formatMessage({ id: `User updated` })
+                  ? intl.formatMessage({ id: `The user has been created` })
+                  : intl.formatMessage({ id: `The user has been updated` })
               }: ${formData.login}`,
             })
           );
           setFormData(INITIALIZED_NEWUSER);
         })
-        .catch((error) => {
+        .catch((error: FetchBaseQueryError) => {
           dispatchServerError(error);
-        })
-        .finally(() => {
-          setHttpMethod("POST");
         });
     }
   };
 
   const deleteUser = () => {
     if (userToDelete) {
-      dispatch(mytinydcUPDONApi.endpoints.deleteUser.initiate(userToDelete))
+      dispatch(
+        mytinydcUPDONApi.endpoints.deleteUser.initiate(userToDelete.uuid)
+      )
         .unwrap()
         .then(() => {
           dispatch(
@@ -129,14 +152,21 @@ export const UserManager = () => {
         });
     }
   };
-  const handleOnDelete = async (user: string) => {
+  const handleOnDelete = async (user: UserDescriptionType) => {
+    setContextAsNewUser();
     setUserToDelete(user);
     setConfirmDeleteIsVisible(true);
-    return;
   };
 
-  const handleOnEdit = async (user: string) => {
-    setFormData(INITIALIZED_NEWUSER);
+  const handleOnEdit = async (user: UserDescriptionType) => {
+    const userDesc = {
+      ...user,
+      groups: user.groups,
+      password: "",
+      uuid: user.uuid,
+    } as NewUserType;
+    setEditMode(true);
+    setFormData(userDesc);
     setHttpMethod("PUT");
     dispatch(
       showServiceMessage({
@@ -144,43 +174,69 @@ export const UserManager = () => {
         severity: "info",
         sticky: false,
         detail: `${intl.formatMessage({
-          id: `You can assign a new password for the selected user`,
-        })}: ${user}`,
+          id: `You can assign a new password, or groups to the selected user`,
+        })}: ${user.login}`,
+        life: 8000,
       })
     );
   };
 
   const handleOnChange = (key: string, value: string | Option[]) => {
+    console.log("change", key, value);
     setFormData({ ...formData, [key]: value });
   };
 
-  const buildStructGroups = (): Option[] => {
-    const selectGroupList: Option[] = [];
-    if (groups && groups.length > 0) {
-      for (const group of groups) {
-        selectGroupList.push({ label: group, value: group });
-      }
-    }
-    return selectGroupList;
+  const handleNewField = (value: string) => ({
+    label: value,
+    value: value,
+  });
+
+  const isFormComplete = () => {
+    // mandatory password if new user
+    if (!formData.uuid && !formData.password) return false;
+    // mandatory login and group
+    if (formData.login && formData.groups.length > 0) return true;
+    return false;
   };
 
   useEffect(() => {
-    if (formData.password && formData.login) {
+    console.log("formdata has changed, new value ", formData);
+    if (isFormComplete()) {
       setIsButtonDisabled(false);
     } else {
       setIsButtonDisabled(true);
     }
   }, [formData]);
 
-  // useEffect(() => {
-  //   if (groups) buildStructGroups();
-  // }, [groups]);
+  useEffect(() => {
+    if (!isUninitialized) refetch();
+    if (!isUninitializedGroups) refetchGroups();
+  }, []);
 
   return (
     <div className="UserManager">
-      <h2 className={"new-user-label"}>
-        {intl.formatMessage({ id: "Add a new user" })}
-      </h2>
+      {!editMode ? (
+        <div className="title">
+          <h2 className={"new-user-label"}>
+            {intl.formatMessage({ id: "Add a new user" })}
+          </h2>
+        </div>
+      ) : (
+        <div className="title">
+          <h2 className={"new-user-label"}>
+            {intl.formatMessage({ id: "Edit user" })}
+          </h2>
+          <ButtonGeneric
+            icon="plus"
+            onClick={() => {
+              setFormData(INITIALIZED_NEWUSER);
+              setEditMode(false);
+              setHttpMethod("POST");
+            }}
+            title={intl.formatMessage({ id: "Add a new user" })}
+          />
+        </div>
+      )}
       <Block>
         <form onSubmit={handleOnPost} className={"form"}>
           <FieldSet
@@ -209,10 +265,18 @@ export const UserManager = () => {
             className="groups"
           >
             <MultiSelect
-              options={buildStructGroups()}
-              value={[]}
-              onChange={(value: Option[]) => handleOnChange("groups", value)}
+              options={groupsFromServer ? groupsFromServer : []}
+              value={
+                formData.groups && formData.groups.length > 0
+                  ? formData.groups
+                  : []
+              }
+              onChange={(values: Option[]) => handleOnChange("groups", values)}
               labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
+              isCreatable={true}
+              onCreateOption={handleNewField}
+              disabled={!formData.login}
+              closeOnChangedValue
             />
           </FieldSet>
           <FieldSet
@@ -242,22 +306,33 @@ export const UserManager = () => {
               {intl.formatMessage({ id: "Username" })}
             </div>
             <div className="flex-row" role="columnheader">
+              {intl.formatMessage({ id: "Groups" })}
+            </div>
+            <div className="flex-row" role="columnheader">
               {intl.formatMessage({ id: "Actions" })}
             </div>
           </div>
           {isSuccess &&
             isSuccessGroups &&
-            (users as string[]).map((user) => {
+            (users as UserDescriptionType[]).map((user) => {
               return (
-                <div key={user} className="flex-table row" role="rowgroup">
+                <div key={user.uuid} className="flex-table row" role="rowgroup">
                   <div className="flex-row first" role="cell">
                     {""}
                   </div>
                   <div className="flex-row " role="cell">
-                    {user}
+                    {user.login}
+                  </div>
+                  <div
+                    className="flex-row groups"
+                    role="cell"
+                    title={user.groups.map((item) => item.value).join(",")}
+                  >
+                    {user.groups.map((item) => item.value).join(",")}
                   </div>
                   <div className="flex-row " role="cell">
-                    {user !== "admin" && user !== userLogger.login ? (
+                    {user.login !== "admin" &&
+                    user.login !== userLogger.login ? (
                       <div className="buttonsgroup">
                         <ButtonGeneric
                           onClick={() => handleOnDelete(user)}
@@ -279,9 +354,9 @@ export const UserManager = () => {
       </Block>
       <ConfirmDialog
         visible={confirmDeleteIsVisible}
-        message={
+        message={`${
           intl.formatMessage({ id: "Are you sure to delete this user" }) + " ?"
-        }
+        } [${userToDelete?.login} - ${userToDelete?.uuid}]`}
         onConfirm={() => {
           setConfirmDeleteIsVisible(false);
           deleteUser();

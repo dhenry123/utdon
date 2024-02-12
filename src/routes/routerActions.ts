@@ -12,6 +12,7 @@ import {
 import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database";
 import { scrapUrl, getUpToDateOrNotState } from "../lib/Features";
 import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
+import { SessionExt } from "../ServerTypes";
 const routerActions = express.Router();
 
 const updateExternalStatus = (
@@ -87,6 +88,15 @@ routerActions.get(
   "/action/compare/:controlUuid/:setStatus",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const session = req.session as SessionExt;
+      console.log(session);
+
+      // if (
+      //   session.user &&
+      //   session.user.login &&
+      //   req.app.get("AUTH").isAdmin(req)
+      // )
+      const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
       // in regards the value of controlUuid, response could be UptodateForm | UptodateForm[]
       // data will processed as UptodateForm[]
       let finalRecords: UptodateForm[] = [];
@@ -95,6 +105,8 @@ routerActions.get(
       const record = dbGetRecord(
         req.app.get("DB"),
         req.params.controlUuid,
+        userGroups,
+        req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
       );
       let errorFound = false;
@@ -262,9 +274,20 @@ routerActions.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.body && req.body.uuid) {
+        const session = req.session as SessionExt;
+        console.log(session);
+
+        // if (
+        //   session.user &&
+        //   session.user.login &&
+        //   req.app.get("AUTH").isAdmin(req)
+        // )
+        const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
         const record = dbGetRecord(
           req.app.get("DB"),
           req.body.uuid,
+          userGroups,
+          req.app.get("AUTH").isAdmin(req),
           req.app.get("LOGGER")
         );
         if (record && !Array.isArray(record) && record.urlCICD) {
@@ -305,9 +328,20 @@ routerActions.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.body && req.body.uuid) {
+        const session = req.session as SessionExt;
+        console.log(session);
+
+        // if (
+        //   session.user &&
+        //   session.user.login &&
+        //   req.app.get("AUTH").isAdmin(req)
+        // )
+        const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
         const record = (await dbGetRecord(
           req.app.get("DB"),
           req.body.uuid,
+          userGroups,
+          req.app.get("AUTH").isAdmin(req),
           req.app.get("LOGGER")
         )) as UptodateForm;
         if (record && !Array.isArray(record) && record.urlCronJobMonitoring) {
@@ -390,9 +424,20 @@ routerActions.get(
   "/action/lastcomparegitrealase/:controlUuid/",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const session = req.session as SessionExt;
+      console.log(session);
+
+      // if (
+      //   session.user &&
+      //   session.user.login &&
+      //   req.app.get("AUTH").isAdmin(req)
+      // )
+      const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
       const record = (await dbGetRecord(
         req.app.get("DB"),
         req.params.controlUuid,
+        userGroups,
+        req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
       )) as UptodateForm;
       if (record) {

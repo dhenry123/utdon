@@ -139,10 +139,11 @@
   "Users list": "Liste des utilisateurs",
   "Are you sure to delete this user": "Etes vous sur(e) de vouloir supprimer cet utilisateur",
   "User deleted": "Utilisateur supprimé",
-  "You can assign a new password for the selected user": "Vous pouvez affecter un nouveau mot de passe pour l'utilisateur sélectionné",
+  "You can assign a new password, or groups to the selected user": "Vous pouvez attribuer un nouveau mot de passe ou des groupes à l'utilisateur sélectionné",
   "User already exists": "Cet utilisateur existe déjà",
-  "User created": "Utilisateur créé",
-  "User updated": "Le mot de passe de cette utilisateur a été mis à jour",
+  "The user has been created": "L'utilisateur a bien été créé",
+  "The user has been updated": "L'utilisateur a bien été mis à jour",
   "Group": "Groupe",
-  "Groups": "Groupes"
+  "Groups": "Groupes",
+  "Edit user": "Modifier cet utilisateur"
 }

@@ -9,7 +9,7 @@ import {
   ChangePasswordType,
   InfoIuType,
   NewUserType,
-  UsersType,
+  UserType,
 } from "../Global.types";
 import { SessionExt } from "../ServerTypes";
 const routerAuth = express.Router();
@@ -83,7 +83,7 @@ routerAuth.post(
  * @swagger
  * /users:
  *   get:
- *     summary: get users list
+ *     summary: get users list - only admin is authorized
  *     description: Used by the User Management UI to get users list
  *     security:
  *       - ApiKeyAuth: []
@@ -110,9 +110,17 @@ routerAuth.post(
 routerAuth.get(
   "/users",
   async (req: Request, res: Response, next: NextFunction) => {
-    //next step: for admin users only
     try {
-      res.status(200).json(req.app.get("AUTH").getUsersLogins());
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.login &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        res.status(200).json(req.app.get("AUTH").getUsersForUi());
+      } else {
+        res.status(401).send();
+      }
     } catch (error: unknown) {
       next(error);
     }
@@ -164,24 +172,36 @@ routerAuth.post(
   async (req: Request, res: Response, next: NextFunction) => {
     //next step: for admin users only
     try {
-      // get the login and password
-      const newUser = req.body as NewUserType;
-      // get the list of current users, to check if user already exists
-      const users: string[] = req.app.get("AUTH").getUsersLogins();
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.login &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        // get the login and password
+        const newUser = req.body as NewUserType;
+        // get the list of current users, to check if user already exists
+        const users: UserType[] = req.app.get("AUTH").getUsers();
 
-      // check if user already exists
-      if (!users.find((user) => user === newUser.login)) {
-        const user = req.app
-          .get("AUTH")
-          .makeUser(newUser.login, newUser.password);
-        req.app.get("AUTH").addUser(user); // add user to the list
-        req.app.get("LOGGER").info({
-          action: "create user",
-          user: newUser.login,
-        });
-        res.status(200).json({ login: newUser.login });
+        // check if user already exists
+        if (!users.find((user) => user.login === newUser.login)) {
+          const user = req.app
+            .get("AUTH")
+            .makeUser(newUser.login, newUser.password);
+          req.app.get("AUTH").addUser(user); // add user to the list
+          for (const group of newUser.groups) {
+            req.app.get("AUTH").addGroupMember(group.value, user.uuid);
+          }
+          req.app.get("LOGGER").info({
+            action: "create user",
+            user: newUser.login,
+          });
+          res.status(200).json({ login: newUser.login });
+        } else {
+          res.status(400).json({ error: "User already exists" });
+        }
       } else {
-        res.status(400).json({ error: "User already exists" });
+        res.status(401).send();
       }
     } catch (error: unknown) {
       next(error);
@@ -227,23 +247,49 @@ routerAuth.put(
   async (req: Request, res: Response, next: NextFunction) => {
     //next step: for admin users only
     try {
-      // get the login and password
-      const newUser = req.body as NewUserType;
-      // get the list of current users, to check if user already exists
-      const users: UsersType = req.app.get("AUTH").users;
-      const idx = users.users.findIndex((u) => u.login === newUser.login);
-      if (idx !== -1) {
-        users.users[idx].password = req.app
-          .get("AUTH")
-          .encryptPassword(newUser.password);
-        req.app.get("AUTH").writeDB(JSON.stringify(users));
-        req.app.get("LOGGER").info({
-          action: "modify user",
-          user: newUser.login,
-        });
-        res.status(204).send();
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.login &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        // get the login and password
+        const userToUpdate = req.body as NewUserType;
+        if (userToUpdate.uuid) {
+          // get the list of current users, to check if user already exists
+          // get the list of current users, to check if user already exists
+          const users: UserType[] = req.app.get("AUTH").getUsers();
+
+          const idx = users.findIndex((u) => u.uuid === userToUpdate.uuid);
+          if (idx !== -1) {
+            //change password only if provided
+            if (userToUpdate.password) {
+              users[idx].password = req.app
+                .get("AUTH")
+                .encryptPassword(userToUpdate.password);
+              req.app.get("AUTH").writeDB(JSON.stringify(users));
+            }
+
+            // update groups
+            req.app.get("AUTH").removeUserFromGroups(userToUpdate.uuid);
+            for (const group of userToUpdate.groups) {
+              req.app
+                .get("AUTH")
+                .addGroupMember(group.value, userToUpdate.uuid);
+            }
+            req.app.get("LOGGER").info({
+              action: "modify user",
+              user: userToUpdate.login,
+            });
+            res.status(204).send();
+          } else {
+            res.status(400).json({ error: "User  not found" });
+          }
+        } else {
+          next(new Error("User uuid not set, mandatory for update"));
+        }
       } else {
-        res.status(400).json({ error: "User  not found" });
+        res.status(401).send();
       }
     } catch (error: unknown) {
       next(error);
@@ -254,7 +300,7 @@ routerAuth.put(
 /**
  *
  * @swagger
- * /users/{login}:
+ * /users/{uuid}:
  *   delete:
  *     summary: delete user from the database
  *     description: UI delete user method
@@ -264,12 +310,12 @@ routerAuth.put(
  *       - Authentication
  *     parameters:
  *       - in: path
- *         name: login
+ *         name: uuid
  *         required: true
- *         description: login of the user to delete
+ *         description: uuid of the user to delete
  *         schema:
  *           type: string
- *           example: "user"
+ *           example: "xxxxxxxxxxxxxxxxxx"
  *
  *     responses:
  *       200:
@@ -280,6 +326,8 @@ routerAuth.put(
  *               type: object
  *               properties:
  *                 login:
+ *                   type: string
+ *                 uuid:
  *                   type: string
  *       404:
  *          description: User not found
@@ -293,30 +341,39 @@ routerAuth.put(
  *                $ref: '#/components/schemas/Error'
  */
 routerAuth.delete(
-  "/users/:login",
+  "/users/:uuid",
   async (req: Request, res: Response, next: NextFunction) => {
     //next step: for admin users only
     try {
-      // get the login
-      const userToDelete = req.params.login;
-      // get the list of current users, to check if user exists before deleting it
-      const users: string[] = req.app.get("AUTH").getUsersLogins();
-
-      const user = users.find((user) => user === userToDelete);
-
       const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.uuid &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        // get the login
+        const userToDelete = req.params.uuid;
+        // get the list of current users, to check if user exists before deleting it
+        const users: UserType[] = req.app.get("AUTH").getUsers();
 
-      // check if user exists - user could not delete their account
-      if (user && session.user.login !== req.params.login) {
-        // if so, delete it
-        req.app.get("AUTH").deleteUser(user); // add user to the list
-        req.app.get("LOGGER").info({
-          action: "delete user",
-          user: userToDelete,
-        });
-        res.status(200).json({ login: userToDelete });
+        const user = users.find((user) => user.uuid === userToDelete);
+
+        const session = req.session as SessionExt;
+
+        // check if user exists - user could not delete their account
+        if (user && session.user.uuid !== req.params.uuid) {
+          // if so, delete it
+          req.app.get("AUTH").deleteUser(user.uuid); // add user to the list
+          req.app.get("LOGGER").info({
+            action: "delete user",
+            user: `${user.uuid} - ${user.login}`,
+          });
+          res.status(200).json({ login: user.login, uuid: user.uuid });
+        } else {
+          res.status(404).json({ error: "User not found" });
+        }
       } else {
-        res.status(404).json({ error: "User not found" });
+        res.status(401).send();
       }
     } catch (error: unknown) {
       next(error);
@@ -336,12 +393,8 @@ routerAuth.delete(
  *     tags:
  *       - Authentication
  *     responses:
- *       200:
- *         description: User is logged
- *         content:
- *           application/json:
- *             schema:
- *               type: string
+ *       204:
+ *         description: User is logged - no content
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  *       500:
@@ -356,7 +409,43 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const verif = req.app.get("AUTH").isAuthenticated(req);
-      res.status(verif ? 200 : 401).json();
+      res.status(verif ? 204 : 401).json();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ *
+ * @swagger
+ * /isadmin:
+ *   get:
+ *     summary: is user admin
+ *     description: Used by UI to verify user is admin (session is needed)
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       204:
+ *         description: User is admin - no content
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.get(
+  "/isadmin",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const verif = req.app.get("AUTH").isAdmin(req);
+      console.log(verif);
+      res.status(verif ? 204 : 401).send();
     } catch (error) {
       next(error);
     }
@@ -639,10 +728,12 @@ routerAuth.get(
       const session = req.session as SessionExt;
       if (
         session.user &&
-        session.user.login &&
-        req.app.get("AUTH").isAdmin(req)
+        session.user.login 
+        
       ) {
-        res.status(200).json(req.app.get("AUTH").getGroups());
+        let groups: string[] = []
+        groups = req.app.get("AUTH").getGroups(req)
+        res.status(200).json(groups);
       } else {
         res
           .status(401)
