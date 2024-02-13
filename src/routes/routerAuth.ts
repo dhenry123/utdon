@@ -83,7 +83,7 @@ routerAuth.post(
  * @swagger
  * /users:
  *   get:
- *     summary: get users list - only admin is authorized
+ *     summary: get users list - only admin
  *     description: Used by the User Management UI to get users list
  *     security:
  *       - ApiKeyAuth: []
@@ -132,7 +132,7 @@ routerAuth.get(
  * @swagger
  * /users:
  *   post:
- *     summary: create user in the database
+ *     summary: create user in the database - only admin
  *     description: UI create user method
  *     security:
  *       - ApiKeyAuth: []
@@ -214,7 +214,7 @@ routerAuth.post(
  * @swagger
  * /users:
  *   put:
- *     summary: modify user in the database
+ *     summary: modify user in the database - only admin
  *     description: UI modify user method
  *     security:
  *       - ApiKeyAuth: []
@@ -300,7 +300,7 @@ routerAuth.put(
  * @swagger
  * /users/{uuid}:
  *   delete:
- *     summary: delete user from the database
+ *     summary: delete user from the database - only admin
  *     description: UI delete user method
  *     security:
  *       - ApiKeyAuth: []
@@ -384,7 +384,7 @@ routerAuth.delete(
  * @swagger
  * /isauthenticated:
  *   get:
- *     summary: is user logged
+ *     summary: is the user logged in ?
  *     description: Used by UI to verify user is logged
  *     security:
  *       - ApiKeyAuth: []
@@ -419,7 +419,7 @@ routerAuth.get(
  * @swagger
  * /isadmin:
  *   get:
- *     summary: is user admin
+ *     summary: does the user have the administrator role ?
  *     description: Used by UI to verify user is admin (session is needed)
  *     security:
  *       - ApiKeyAuth: []
@@ -575,11 +575,7 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      if (
-        session.user &&
-        session.user.login // &&
-        // session.user.login === "admin"
-      ) {
+      if (session.user && session.user.login) {
         res.status(200).json({
           bearer: req.app.get("AUTH").getUserBearer(session.user.login),
         });
@@ -626,10 +622,7 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      if (
-        session.user &&
-        session.user.login // &&
-      ) {
+      if (session.user && session.user.login) {
         res.status(200).json({ login: session.user.login });
       } else {
         res.status(401).json({ error: "User is not logged with session" });
@@ -671,7 +664,6 @@ routerAuth.put(
       if (
         session.user &&
         session.user.login // &&
-        // session.user.login === "admin"
       ) {
         const result = req.app.get("AUTH").changeBearer();
         if (result[0] === 200) {
@@ -692,8 +684,8 @@ routerAuth.put(
  * @swagger
  * /groups:
  *   get:
- *     summary: get user groups
- *     description: Used by UI to display user groups, only admins is authorized
+ *     summary: get user's groups in regards the role of the user
+ *     description: Used by UI to display user's groups
  *     security:
  *       - ApiKeyAuth: []
  *     tags:

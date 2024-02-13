@@ -42,7 +42,7 @@ routerControl.post(
       // finally, is user allowed to manipulate object ?
       validate = req.app.get("AUTH").isAllowedForObject(req, req.body.groups);
       if (!validate) {
-        res.status(503).json("check is not valid");
+        res.status(503).json("control is not valid");
       } else {
         if (req.body.uuid) {
           // uuid update
@@ -195,7 +195,7 @@ routerControl.delete(
             .then(() => {
               req.app
                 .get("LOGGER")
-                .info({ action: "check deleted", uuid: req.params.uuid });
+                .info({ action: "control deleted", uuid: req.params.uuid });
               res.status(200).json({ uuid: rec });
             })
             .catch((error: Error) => {

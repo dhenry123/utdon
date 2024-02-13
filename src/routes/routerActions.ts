@@ -269,13 +269,6 @@ routerActions.put(
     try {
       if (req.body && req.body.uuid) {
         const session = req.session as SessionExt;
-        console.log(session);
-
-        // if (
-        //   session.user &&
-        //   session.user.login &&
-        //   req.app.get("AUTH").isAdmin(req)
-        // )
         const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
         const record = dbGetRecord(
           req.app.get("DB"),
@@ -323,13 +316,6 @@ routerActions.put(
     try {
       if (req.body && req.body.uuid) {
         const session = req.session as SessionExt;
-        console.log(session);
-
-        // if (
-        //   session.user &&
-        //   session.user.login &&
-        //   req.app.get("AUTH").isAdmin(req)
-        // )
         const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
         const record = (await dbGetRecord(
           req.app.get("DB"),
@@ -419,13 +405,6 @@ routerActions.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      console.log(session);
-
-      // if (
-      //   session.user &&
-      //   session.user.login &&
-      //   req.app.get("AUTH").isAdmin(req)
-      // )
       const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
       const record = (await dbGetRecord(
         req.app.get("DB"),
