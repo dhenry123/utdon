@@ -3,16 +3,16 @@
  * @license AGPL3
  */
 
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import { ErrorInRouter } from "../features/errors/ErrorInRouter";
 import { PageLogin } from "../features/login/PageLogin";
 import { useAppDispatch } from "../app/hook";
 import { mytinydcUPDONApi } from "../api/mytinydcUPDONApi";
 import { showServiceMessage } from "./serviceMessageSlice";
 import { PageHome } from "../features/homepage/PageHome";
-import { ApiResponseType } from "../../../src/Global.types";
 import { DisplayControls } from "../features/displaycontrols/DisplayControls";
 import { ControlManager } from "../features/controlmanagement/ControlManager";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
  * Logic :
@@ -32,12 +32,19 @@ export const Router = () => {
           mytinydcUPDONApi.endpoints.getUserIsAuthenticated.initiate(null)
         )
           .unwrap()
-          .catch((error: unknown) => {
-            dispatch(
-              showServiceMessage({
-                detail: error,
-              })
-            );
+          .catch((error: FetchBaseQueryError) => {
+            if (error.status === 401) {
+              return <PageLogin></PageLogin>;
+            } else {
+              dispatch(
+                showServiceMessage({
+                  detail:
+                    error && error.data
+                      ? error.data.toString()
+                      : "Unknown check server logs",
+                })
+              );
+            }
           });
       },
       children: [
