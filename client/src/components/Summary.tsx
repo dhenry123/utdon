@@ -81,6 +81,15 @@ export const Summary = ({
         <FieldSet legend={intl.formatMessage({ id: "Name" })}>
           <div className="label">{uptodateForm.name}</div>
         </FieldSet>
+        <FieldSet
+          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
+        >
+          <div className="label">
+            {uptodateForm &&
+              uptodateForm.groups &&
+              uptodateForm.groups.join(",")}
+          </div>
+        </FieldSet>
         {uptodateForm.uuid ? (
           <>
             <FieldSet legend={intl.formatMessage({ id: "Control Uuid" })}>

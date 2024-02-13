@@ -21,7 +21,6 @@ import {
 } from "../Constants";
 import { Request } from "express";
 import { SessionExt } from "../ServerTypes";
-import { Option } from "../../client/node_modules/react-multi-select-component";
 
 const userDatabaseDefault = `${__dirname}/../../data/user.json`;
 
@@ -164,11 +163,11 @@ export class Authentification {
     }
   };
 
-  getUserMemberGroupsName = (userUuid: string): Option[] => {
-    const groups: Option[] = [];
+  getUserMemberGroupsName = (userUuid: string): string[] => {
+    const groups: string[] = [];
     Object.getOwnPropertyNames(this.usersgroups.groups).forEach((groupName) => {
       if (this.usersgroups.groups[groupName].includes(userUuid))
-        groups.push({ label: groupName, value: groupName });
+        groups.push(groupName);
     });
     return groups;
   };
@@ -250,8 +249,13 @@ export class Authentification {
 
   getInfoForUi(login: string): InfoIuType {
     const user = this.usersgroups.users.find((user) => user.login === login);
-    if (!user) return { login: "", bearer: "", uuid: "" };
-    return { login: user.login, bearer: user.bearer, uuid: user.uuid };
+    if (!user) return { login: "", bearer: "", uuid: "", groups: [] };
+    return {
+      login: user.login,
+      bearer: user.bearer,
+      uuid: user.uuid,
+      groups: this.getUserMemberGroupsName(user.uuid),
+    };
   }
 
   isAuthenticated = (req: Request) => {
@@ -524,5 +528,32 @@ export class Authentification {
       }
     }
     return groups;
+  };
+
+  /**
+   * object has a groups attribut (string[]) which are name of groups
+   * authorized to manipulate it
+   * @param req
+   * @param objectGroups
+   * @returns
+   */
+  isAllowedForObject = (req: Request, objectGroups: string[]) => {
+    // user is admin
+    if (req.app.get("AUTH").isAdmin(req)) {
+      return true;
+    } else {
+      //check groups
+      const session = req.session as SessionExt;
+      const groupsAuthorized = req.app
+        .get("AUTH")
+        .getUserGroups(session.user.uuid);
+      if (groupsAuthorized.length > 0) {
+        return groupsAuthorized.some(
+          (v: string) => objectGroups.indexOf(v) !== -1
+        );
+      } else {
+        return false;
+      }
+    }
   };
 }

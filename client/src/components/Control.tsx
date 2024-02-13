@@ -21,6 +21,7 @@ import { Badge } from "./Badge";
 import { ResultCompare } from "./ResultCompare";
 import { getRelativeTime } from "../helpers/DateHelper";
 import { INPROGRESS_UPTODATEORNOTSTATE } from "../../../src/Constants";
+import { useAppSelector } from "../app/hook";
 
 interface ControlProps {
   data: UptodateForm;
@@ -55,6 +56,8 @@ export const Control = ({
   );
   const [isDialogCompareVisible, setIsDialogCompareVisible] = useState(false);
 
+  const isAdmin = useAppSelector((state) => state.context.isAdmin);
+
   /**
    * To update the badge's relative time without having to update the entire content
    */
@@ -79,7 +82,7 @@ export const Control = ({
               alt={`logo app ${data.name}`}
             />
           ) : (
-            ""
+            <></>
           )}
         </FieldSet>
         <div className="nameuuid">
@@ -94,6 +97,17 @@ export const Control = ({
           </FieldSet>
         </div>
       </div>
+      {isAdmin ? (
+        <FieldSet
+          className="groups"
+          legend={intl.formatMessage({ id: "Groups" })}
+        >
+          <div>{data.groups && data.groups.join(",")}</div>
+        </FieldSet>
+      ) : (
+        <></>
+      )}
+
       <FieldSetClickableUrl
         legend={intl.formatMessage({ id: "Production version url" })}
         url={data.urlProduction}

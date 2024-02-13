@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { mytinydcUPDONApi, useGetUserInfoQuery } from "../api/mytinydcUPDONApi";
 import { useIntl } from "react-intl";
 import ButtonGeneric from "./ButtonGeneric";
-import { useAppDispatch } from "../app/hook";
+import { useAppDispatch, useAppSelector } from "../app/hook";
 
 import "./Header.scss";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import { setRefetchuptodateForm } from "../app/contextSlice";
+import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
 
 export const Header = () => {
@@ -31,7 +31,7 @@ export const Header = () => {
 
   const [dialogHeader, setDialogHeader] = useState("");
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const isAdmin = useAppSelector((state) => state.context.isAdmin);
 
   /**
    * Used for server errors (api entrypoint call)
@@ -61,6 +61,9 @@ export const Header = () => {
         forceRefetch: true,
       })
     ).then(() => {
+      // cache behavior uneexpected !!!
+      // dispatch(mytinydcUPDONApi.util.resetApiState());
+      // dispatch(mytinydcUPDONApi.util.invalidateTags(["Controls"]));
       return navigate("/login");
     });
   };
@@ -124,10 +127,10 @@ export const Header = () => {
     )
       .unwrap()
       .then(() => {
-        setIsAdmin(true);
+        dispatch(setIsAdmin(true));
       })
       .catch((error: FetchBaseQueryError) => {
-        setIsAdmin(false);
+        dispatch(setIsAdmin(false));
         if (error && error.status !== 401) dispatchServerError(error);
       });
   }, []);

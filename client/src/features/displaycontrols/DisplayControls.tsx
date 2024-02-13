@@ -7,7 +7,10 @@ import { useIntl } from "react-intl";
 import { useAppDispatch, useAppSelector } from "../../app/hook";
 
 import "./DisplayControls.scss";
-import { mytinydcUPDONApi, useGetCheckQuery } from "../../api/mytinydcUPDONApi";
+import {
+  mytinydcUPDONApi,
+  useGetControlQuery,
+} from "../../api/mytinydcUPDONApi";
 import {
   ControlToPause,
   ErrorServer,
@@ -64,7 +67,7 @@ export const DisplayControls = () => {
     isError,
     refetch,
     error: ErrorOnFetch,
-  } = useGetCheckQuery("all", {
+  } = useGetControlQuery("all", {
     skip: false,
   });
 

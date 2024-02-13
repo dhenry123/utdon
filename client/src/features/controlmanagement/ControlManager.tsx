@@ -106,6 +106,9 @@ export const ControlManager = () => {
         break;
       }
     }
+    if (activeUptodateForm.groups && activeUptodateForm.groups.length === 0) {
+      recordableState = false;
+    }
     setIsRecordable(recordableState);
   };
 
@@ -246,7 +249,7 @@ export const ControlManager = () => {
       const uuid = location.pathname.replace(/\/ui\/editcontrol\//, "");
       if (uuid) {
         dispatch(
-          mytinydcUPDONApi.endpoints.getCheck.initiate(uuid, {
+          mytinydcUPDONApi.endpoints.getControl.initiate(uuid, {
             forceRefetch: true,
           })
         )

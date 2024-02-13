@@ -145,5 +145,6 @@
   "The user has been updated": "L'utilisateur a bien été mis à jour",
   "Group": "Groupe",
   "Groups": "Groupes",
-  "Edit user": "Modifier cet utilisateur"
+  "Edit user": "Modifier cet utilisateur",
+  "Authorized for group(s)": "Autorisé pour le(s) groupe(s)"
 }

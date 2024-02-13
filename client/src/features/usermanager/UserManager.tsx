@@ -31,6 +31,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { showServiceMessage } from "../../app/serviceMessageSlice";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { MultiSelect, Option } from "react-multi-select-component";
+import { buidMultiSelectGroups } from "../../helpers/UiMiscHelper";
 
 export const UserManager = () => {
   const intl = useIntl();
@@ -40,6 +41,9 @@ export const UserManager = () => {
   const [formData, setFormData] = useState<NewUserType>(INITIALIZED_NEWUSER);
   const [httpMethod, setHttpMethod] = useState<"POST" | "PUT">("POST");
   const [editMode, setEditMode] = useState<boolean>(false);
+
+  const [userGroups, setUserGroups] = useState<string[]>([]);
+
   const {
     data: users,
     isSuccess,
@@ -181,15 +185,23 @@ export const UserManager = () => {
     );
   };
 
-  const handleOnChange = (key: string, value: string | Option[]) => {
-    console.log("change", key, value);
+  const handleOnChange = (key: string, value: string | string[] | Option[]) => {
+    // Convert Option[] to string[]
+    if (key === "groups" && Array.isArray(value)) {
+      const updateGroups: string[] = [];
+      const newGroups: string[] = [];
+      for (const option of value as Option[]) {
+        const test = { ...option } as any; //__isNew__ not set as normal attribut ???
+        if (test.__isNew__) updateGroups.push(option.label);
+        newGroups.push(option.label);
+      }
+      value = [...newGroups];
+      if (updateGroups.length > 0) {
+        setUserGroups(userGroups.concat(updateGroups));
+      }
+    }
     setFormData({ ...formData, [key]: value });
   };
-
-  const handleNewField = (value: string) => ({
-    label: value,
-    value: value,
-  });
 
   const isFormComplete = () => {
     // mandatory password if new user
@@ -200,13 +212,16 @@ export const UserManager = () => {
   };
 
   useEffect(() => {
-    console.log("formdata has changed, new value ", formData);
     if (isFormComplete()) {
       setIsButtonDisabled(false);
     } else {
       setIsButtonDisabled(true);
     }
   }, [formData]);
+
+  useEffect(() => {
+    if (groupsFromServer) setUserGroups(groupsFromServer);
+  }, [groupsFromServer]);
 
   useEffect(() => {
     if (!isUninitialized) refetch();
@@ -265,18 +280,16 @@ export const UserManager = () => {
             className="groups"
           >
             <MultiSelect
-              options={groupsFromServer ? groupsFromServer : []}
+              options={userGroups ? buidMultiSelectGroups(userGroups) : []}
               value={
                 formData.groups && formData.groups.length > 0
-                  ? formData.groups
+                  ? buidMultiSelectGroups(formData.groups)
                   : []
               }
               onChange={(values: Option[]) => handleOnChange("groups", values)}
               labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
               isCreatable={true}
-              onCreateOption={handleNewField}
               disabled={!formData.login}
-              closeOnChangedValue
             />
           </FieldSet>
           <FieldSet
@@ -326,9 +339,9 @@ export const UserManager = () => {
                   <div
                     className="flex-row groups"
                     role="cell"
-                    title={user.groups.map((item) => item.value).join(",")}
+                    title={user.groups.join(",")}
                   >
-                    {user.groups.map((item) => item.value).join(",")}
+                    {user.groups.join(",")}
                   </div>
                   <div className="flex-row " role="cell">
                     {user.login !== "admin" &&

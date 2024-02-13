@@ -88,14 +88,8 @@ routerActions.get(
   "/action/compare/:controlUuid/:setStatus",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // controlUuid could be an uuid or 'all'
       const session = req.session as SessionExt;
-      console.log(session);
-
-      // if (
-      //   session.user &&
-      //   session.user.login &&
-      //   req.app.get("AUTH").isAdmin(req)
-      // )
       const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
       // in regards the value of controlUuid, response could be UptodateForm | UptodateForm[]
       // data will processed as UptodateForm[]

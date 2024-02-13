@@ -16,7 +16,7 @@ export const mytinydcUPDONApi = createApi({
   // Query service name
   reducerPath: "api",
   // tag types
-  tagTypes: ["User", "Users", "Groups"],
+  tagTypes: ["User", "Users", "Groups", "Controls"],
   // Url Base API
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
@@ -57,10 +57,11 @@ export const mytinydcUPDONApi = createApi({
         url: `/action/compare/${encodeURIComponent(uuid)}/0`,
       }),
     }),
-    getCheck: builder.query({
+    getControl: builder.query({
       query: (uuidOrAll: string) => ({
         url: `/control/${uuidOrAll}`,
       }),
+      providesTags: ["Controls"],
     }),
     deleteCheck: builder.mutation({
       query: (uuid: string) => ({
@@ -121,7 +122,7 @@ export const mytinydcUPDONApi = createApi({
         url: `/users/`,
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Users", "Groups"],
     }),
     putUser: builder.mutation({
       query: (data: NewUserType) => ({
@@ -129,7 +130,7 @@ export const mytinydcUPDONApi = createApi({
         url: `/users/`,
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Users", "Groups"],
     }),
     deleteUser: builder.mutation({
       query: (login: string) => ({
@@ -150,12 +151,17 @@ export const mytinydcUPDONApi = createApi({
         url: `/isadmin/`,
       }),
     }),
+    getUserGroups: builder.query({
+      query: () => ({
+        url: `/userGroups/`,
+      }),
+    }),
   }),
 });
 
 export const {
   usePostUserLoginMutation,
-  useGetCheckQuery,
+  useGetControlQuery,
   useGetUsersQuery,
   useGetUserInfoQuery,
   useGetGroupsQuery,

@@ -3,8 +3,6 @@
  * @license AGPL3
  */
 
-import { Option } from "../client/node_modules/react-multi-select-component";
-
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 export type JSONLang = Record<string, string>;
@@ -63,6 +61,7 @@ export type InfoIuType = {
   login: string;
   bearer: string;
   uuid: string;
+  groups: string[];
 };
 
 export type ActionStatusType = {
@@ -88,6 +87,7 @@ export type contextSliceType = {
   };
   uptodateForm: UptodateForm;
   refetchuptodateForm: boolean;
+  isAdmin: boolean;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";
@@ -176,7 +176,7 @@ export type ChangePasswordType = {
 export type NewUserType = {
   login: string;
   password: string;
-  groups: Option[];
+  groups: string[];
   uuid?: string;
 };
 
@@ -202,5 +202,5 @@ export type UsersGroupsType = {
 export type UserDescriptionType = {
   login: string;
   uuid: string;
-  groups: Option[];
+  groups: string[];
 };

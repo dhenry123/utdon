@@ -20,6 +20,7 @@ const initialState: contextSliceType = {
   },
   uptodateForm: INITIALIZED_UPTODATEFORM,
   refetchuptodateForm: false,
+  isAdmin: false,
 };
 
 export const contextSlice = createSlice({
@@ -55,6 +56,9 @@ export const contextSlice = createSlice({
     setRefetchuptodateForm(state, value) {
       state.refetchuptodateForm = value.payload;
     },
+    setIsAdmin(state, value) {
+      state.isAdmin = value.payload || false;
+    },
   },
 });
 
@@ -66,5 +70,6 @@ export const {
   resetUpdateForm,
   setUpdateForm,
   setRefetchuptodateForm,
+  setIsAdmin,
 } = contextSlice.actions;
 export default contextSlice.reducer;

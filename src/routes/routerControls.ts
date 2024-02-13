@@ -27,14 +27,20 @@ routerControl.post(
         "exprProduction",
         "urlGitHub",
         "exprGithub",
+        "groups",
       ];
       let validate = true;
       for (const attr of Object.getOwnPropertyNames(req.body as UptodateForm)) {
-        if (mfields.includes(attr) && !req.body[attr]) {
+        if (
+          (mfields.includes(attr) && !req.body[attr]) ||
+          (attr === "groups" && req.body[attr].length === 0)
+        ) {
           validate = false;
           break;
         }
       }
+      // finally, is user allowed to manipulate object ?
+      validate = req.app.get("AUTH").isAllowedForObject(req, req.body.groups);
       if (!validate) {
         res.status(503).json("check is not valid");
       } else {
@@ -108,15 +114,7 @@ routerControl.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      console.log(session);
-
-      // if (
-      //   session.user &&
-      //   session.user.login &&
-      //   req.app.get("AUTH").isAdmin(req)
-      // )
       const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
-      console.log("userGroups", userGroups);
       let rec = dbGetRecord(
         req.app.get("DB"),
         req.params.uuid,
@@ -179,23 +177,37 @@ routerControl.delete(
   "/control/:uuid",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const rec = dbDeleteRecord(req.app.get("DB"), req.params.uuid);
-      if (rec === req.params.uuid) {
-        //commit
-        dbCommit(req.app.get("DBFILE") as string, req.app.get("DB"))
-          .then(() => {
-            req.app
-              .get("LOGGER")
-              .info({ action: "check deleted", uuid: req.params.uuid });
-            res.status(200).json({ uuid: rec });
-          })
-          .catch((error: Error) => {
-            next(error);
+      const session = req.session as SessionExt;
+      const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
+      // get record filtered on authorized groups
+      const rec = dbGetRecord(
+        req.app.get("DB"),
+        req.params.uuid,
+        userGroups,
+        req.app.get("AUTH").isAdmin(req),
+        req.app.get("LOGGER")
+      );
+      if (rec && !Array.isArray(rec)) {
+        const rec = dbDeleteRecord(req.app.get("DB"), req.params.uuid);
+        if (rec === req.params.uuid) {
+          //commit
+          dbCommit(req.app.get("DBFILE") as string, req.app.get("DB"))
+            .then(() => {
+              req.app
+                .get("LOGGER")
+                .info({ action: "check deleted", uuid: req.params.uuid });
+              res.status(200).json({ uuid: rec });
+            })
+            .catch((error: Error) => {
+              next(error);
+            });
+        } else {
+          res.status(404).json({
+            message: `Something went wrong during control deletion process, non-existent uuid: ${req.params.uuid}`,
           });
+        }
       } else {
-        res.status(404).json({
-          message: `Try to delete a non-existent uuid: ${req.params.uuid}`,
-        });
+        res.status(404).send();
       }
     } catch (error: unknown) {
       next(error);

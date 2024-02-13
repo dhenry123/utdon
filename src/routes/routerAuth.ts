@@ -190,7 +190,7 @@ routerAuth.post(
             .makeUser(newUser.login, newUser.password);
           req.app.get("AUTH").addUser(user); // add user to the list
           for (const group of newUser.groups) {
-            req.app.get("AUTH").addGroupMember(group.value, user.uuid);
+            req.app.get("AUTH").addGroupMember(group, user.uuid);
           }
           req.app.get("LOGGER").info({
             action: "create user",
@@ -273,9 +273,7 @@ routerAuth.put(
             // update groups
             req.app.get("AUTH").removeUserFromGroups(userToUpdate.uuid);
             for (const group of userToUpdate.groups) {
-              req.app
-                .get("AUTH")
-                .addGroupMember(group.value, userToUpdate.uuid);
+              req.app.get("AUTH").addGroupMember(group, userToUpdate.uuid);
             }
             req.app.get("LOGGER").info({
               action: "modify user",
@@ -444,7 +442,6 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const verif = req.app.get("AUTH").isAdmin(req);
-      console.log(verif);
       res.status(verif ? 204 : 401).send();
     } catch (error) {
       next(error);
@@ -632,7 +629,6 @@ routerAuth.get(
       if (
         session.user &&
         session.user.login // &&
-        // session.user.login === "admin"
       ) {
         res.status(200).json({ login: session.user.login });
       } else {
@@ -726,18 +722,60 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      if (
-        session.user &&
-        session.user.login 
-        
-      ) {
-        let groups: string[] = []
-        groups = req.app.get("AUTH").getGroups(req)
+      if (session.user && session.user.login) {
+        let groups: string[] = [];
+        groups = req.app.get("AUTH").getGroups(req);
         res.status(200).json(groups);
       } else {
         res
           .status(401)
           .json({ error: "User is not logged with session or not admin" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /userGroups:
+ *   get:
+ *     summary: get the user's groups
+ *     description: Used by UI
+ *     security:
+ *       - ApiKeyAuth: []
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       200:
+ *         description: user groups
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               example: ["admin", "sysadminroom1"]
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         description: Internal error
+ *         content:
+ *           application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Error'
+ */
+routerAuth.get(
+  "/userGroups",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        const user = req.app.get("AUTH").getInfoForUi(session.user.login);
+        res.status(200).json({ groups: user.groups });
+      } else {
+        res.status(401).json({ error: "User is not logged with session" });
       }
     } catch (error: unknown) {
       next(error);
