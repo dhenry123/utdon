@@ -110,9 +110,12 @@ export const mytinydcUPDONApi = createApi({
       }),
       providesTags: ["Users"],
     }),
-    getUserInfo: builder.query({
+    // needed to keep context when use press F5
+    // login method return info needed but if user press F5 once connected
+    // login method is not recalled
+    getUserLogin: builder.query({
       query: () => ({
-        url: `/user/`,
+        url: `/userlogin/`,
       }),
       providesTags: ["User"],
     }),
@@ -163,6 +166,6 @@ export const {
   usePostUserLoginMutation,
   useGetControlQuery,
   useGetUsersQuery,
-  useGetUserInfoQuery,
+  useGetUserLoginQuery,
   useGetGroupsQuery,
 } = mytinydcUPDONApi;

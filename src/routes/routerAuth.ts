@@ -590,7 +590,7 @@ routerAuth.get(
 
 /**
  * @swagger
- * /user:
+ * /userlogin:
  *   get:
  *     summary: get user's login
  *     description: Used by UI to show the user's login in the header
@@ -618,7 +618,7 @@ routerAuth.get(
  *                $ref: '#/components/schemas/Error'
  */
 routerAuth.get(
-  "/user",
+  "/userlogin",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;

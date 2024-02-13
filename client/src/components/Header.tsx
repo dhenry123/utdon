@@ -4,7 +4,10 @@
  */
 
 import { useNavigate } from "react-router-dom";
-import { mytinydcUPDONApi, useGetUserInfoQuery } from "../api/mytinydcUPDONApi";
+import {
+  mytinydcUPDONApi,
+  useGetUserLoginQuery,
+} from "../api/mytinydcUPDONApi";
 import { useIntl } from "react-intl";
 import ButtonGeneric from "./ButtonGeneric";
 import { useAppDispatch, useAppSelector } from "../app/hook";
@@ -117,7 +120,7 @@ export const Header = () => {
 
   const [dialogContent, setDialogContent] = useState(<></>);
 
-  const { data: userInfo, isSuccess } = useGetUserInfoQuery(null, {
+  const { data: userInfo, isSuccess } = useGetUserLoginQuery(null, {
     skip: false,
   });
 
