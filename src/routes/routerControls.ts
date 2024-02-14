@@ -49,8 +49,10 @@ routerControl.post(
           const rupd = dbUpdateRecord(req.app.get("DB"), req.body);
           if (rupd) {
             dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));
-            req.app.get("LOGGER").info({ action: "check updated", uuid: rupd });
-            res.status(200).json({ check: { ...req.body, uuid: rupd } });
+            req.app
+              .get("LOGGER")
+              .info({ action: "control updated", uuid: rupd });
+            res.status(200).json({ control: { ...req.body, uuid: rupd } });
           } else {
             next(new Error("update return empty"));
           }
@@ -59,8 +61,10 @@ routerControl.post(
           dbInsert(req.app.get("DB"), { ...req.body })
             .then((uuid) => {
               dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));
-              req.app.get("LOGGER").info({ action: "check added", uuid: uuid });
-              res.status(200).json({ check: { ...req.body, uuid: uuid } });
+              req.app
+                .get("LOGGER")
+                .info({ action: "control added", uuid: uuid });
+              res.status(200).json({ control: { ...req.body, uuid: uuid } });
             })
             .catch((error: Error) => {
               next(error);

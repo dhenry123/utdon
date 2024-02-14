@@ -189,12 +189,12 @@ export const ControlManager = () => {
       dispatch(mytinydcUPDONApi.endpoints.postCheck.initiate(uptodateForm))
         .unwrap()
         .then((response) => {
-          const check = response?.check as UptodateForm;
+          const control = response?.control as UptodateForm;
           //update uuid
-          if (check.uuid) {
-            handleOnChangeUptodateForm("uuid", check.uuid);
+          if (control.uuid) {
+            handleOnChangeUptodateForm("uuid", control.uuid);
             setIsChangesOnModel(false);
-            resolv(check);
+            resolv(control);
           } else {
             const message = "the uuid is missing from the server response";
             dispatch(

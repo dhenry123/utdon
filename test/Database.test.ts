@@ -25,7 +25,7 @@ interface LastErrorTransportOptions {
   level?: string;
 }
 
-const check: UptodateForm = {
+const control: UptodateForm = {
   name: "xxxxxx",
   urlProduction: "https://xxxxxxxx",
   scrapTypeProduction: "json",
@@ -181,7 +181,7 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then((res) => {
         expect(res).toBeDefined();
         expect(typeof res).toEqual("string");
@@ -194,7 +194,7 @@ describe("Database", () => {
 
   test("dbInsert - with uuid", () => {
     const db: UptodateForm[] = [];
-    dbInsert(db, { ...check, uuid: "xxxx" })
+    dbInsert(db, { ...control, uuid: "xxxx" })
       .then((res) => {
         expect(res).not.toBeDefined();
       })
@@ -206,7 +206,7 @@ describe("Database", () => {
   test("dbCommit", () => {
     const db: UptodateForm[] = [];
     const file = "./test/data/database.json";
-    dbInsert(db, check).then((uuid: string) => {
+    dbInsert(db, control).then((uuid: string) => {
       dbCommit(file, db)
         .then((res) => {
           expect(res).toBeNull();
@@ -228,7 +228,7 @@ describe("Database", () => {
     const file = "./test/samples/database-readonly.json";
     // to be sure
     chmodSync(file, "400");
-    await dbInsert(db, check).then(() => {
+    await dbInsert(db, control).then(() => {
       dbCommit(file, db)
         .then(() => {
           // unexpected - file is read only
@@ -246,7 +246,7 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then((res) => {
         const rec = dbGetRecord(db, res, [], true, logger);
         if (!Array.isArray(rec)) {
@@ -264,9 +264,9 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then((res) => {
-        const newdb = [{ ...check, uuid: res }];
+        const newdb = [{ ...control, uuid: res }];
         const rec = dbGetRecord(newdb, res, [], true, logger);
         const lastErrorWinston = (logger.transports[0] as LastErrorTransport)
           .lastError;
@@ -290,7 +290,7 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
         const rec = dbGetRecord(db, "xxxx", [], true, logger);
         expect(rec).toBeNull();
@@ -304,7 +304,7 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
         const rec = dbGetRecord(db, "", [], true, logger);
         expect(rec).toBeNull();
@@ -318,7 +318,7 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
         const rec = dbGetRecord(db, "all", [], true, logger);
         expect(Array.isArray(rec)).toBeTruthy();
@@ -334,7 +334,7 @@ describe("Database", () => {
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
     // check groups is 'admin'
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then((uuid: string) => {
         //user wants all and member of xxxx
         const rec = dbGetRecord(db, uuid, ["xxxx"], false, logger);
@@ -350,7 +350,7 @@ describe("Database", () => {
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
     // check groups is 'admin'
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
         //user wants all and member of xxxx
         const rec = dbGetRecord(db, "all", ["xxxx"], false, logger);
@@ -366,9 +366,9 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        dbInsert(db, check).then((uuid) => {
+        dbInsert(db, control).then((uuid) => {
           const rdel = dbDeleteRecord(db, uuid);
           expect(rdel).toEqual(uuid);
           expect(Array.isArray(db) && db.length).toEqual(1);
@@ -383,9 +383,9 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        dbInsert(db, check).then((uuid) => {
+        dbInsert(db, control).then((uuid) => {
           const rdel = dbDeleteRecord(db, `${uuid}xxx`);
           expect(rdel).toEqual("");
           expect(Array.isArray(db) && db.length).toEqual(2);
@@ -400,9 +400,9 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        dbInsert(db, check).then(() => {
+        dbInsert(db, control).then(() => {
           const rdel = dbDeleteRecord(db, "");
           expect(rdel).toEqual("");
           expect(Array.isArray(db) && db.length).toEqual(2);
@@ -417,11 +417,10 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        dbInsert(db, check).then((uuid) => {
-          // const upd = { ...check, uuid: uuid };
-          const upd = { ...check, uuid };
+        dbInsert(db, control).then((uuid) => {
+          const upd = { ...control, uuid };
           upd.urlProduction = "test";
           const rupd = dbUpdateRecord(db, upd);
           expect(rupd).toEqual(uuid);
@@ -442,11 +441,10 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        dbInsert(db, check).then(() => {
-          // const upd = { ...check, uuid: uuid };
-          const upd = { ...check, uuid: "xxxx" };
+        dbInsert(db, control).then(() => {
+          const upd = { ...control, uuid: "xxxx" };
           upd.urlProduction = "test";
           const rupd = dbUpdateRecord(db, upd);
           expect(rupd).toEqual("");
@@ -462,10 +460,10 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        dbInsert(db, check).then(() => {
-          const upd = { ...check };
+        dbInsert(db, control).then(() => {
+          const upd = { ...control };
           upd.urlProduction = "test";
           const rupd = dbUpdateRecord(db, upd);
           expect(rupd).toEqual("");
@@ -481,15 +479,15 @@ describe("Database", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
     process.env.USER_ENCRYPT_SECRET = "test";
-    dbInsert(db, check)
+    dbInsert(db, control)
       .then(() => {
-        expect(isRecordInUserGroups(check, ["admin"])).toBeTruthy();
-        expect(isRecordInUserGroups(check, ["test"])).toBeFalsy();
-        expect(isRecordInUserGroups(check, [])).toBeFalsy();
-        const upd = { ...check };
+        expect(isRecordInUserGroups(control, ["admin"])).toBeTruthy();
+        expect(isRecordInUserGroups(control, ["test"])).toBeFalsy();
+        expect(isRecordInUserGroups(control, [])).toBeFalsy();
+        const upd = { ...control };
         upd.urlProduction = "test";
         upd.groups = ["admin", "test"];
-        dbInsert(db, check).then(() => {
+        dbInsert(db, control).then(() => {
           expect(isRecordInUserGroups(upd, ["admin", "test"])).toBeTruthy();
           expect(isRecordInUserGroups(upd, ["xxx", "yyy"])).toBeFalsy();
           expect(isRecordInUserGroups(upd, [])).toBeFalsy();

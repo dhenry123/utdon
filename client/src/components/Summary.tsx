@@ -183,7 +183,7 @@ export const Summary = ({
       >
         <ResultCompare
           result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          check={uptodateForm}
+          control={uptodateForm}
         />
       </Dialog>
     </div>

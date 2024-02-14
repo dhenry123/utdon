@@ -83,27 +83,27 @@ export const dbGetData = (file: string): Promise<UptodateForm[]> => {
 /**
  * This method must be called in try catch block
  * @param db
- * @param check
+ * @param control
  * @returns
  */
 export const dbInsert = (
   db: UptodateForm[],
-  check: UptodateForm
+  control: UptodateForm
 ): Promise<string> => {
   return new Promise((resolv, reject) => {
-    if (check.uuid) {
+    if (control.uuid) {
       reject(new Error("Impossible to add object with an uuid"));
     }
     const uuid = uuidv4();
     db.push({
-      ...check,
+      ...control,
       uuid: uuid,
       urlCICDAuth: Authentification.dataEncrypt(
-        check.urlCICDAuth,
+        control.urlCICDAuth,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
       urlCronJobMonitoringAuth: Authentification.dataEncrypt(
-        check.urlCronJobMonitoringAuth,
+        control.urlCronJobMonitoringAuth,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
     });

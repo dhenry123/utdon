@@ -26,8 +26,8 @@ import { useAppSelector } from "../app/hook";
 interface ControlProps {
   data: UptodateForm;
   handleOnDelete: (uuid: string) => void;
-  handleOnCompare: (check: UptodateForm) => void;
-  handleOnPause: (check: ChangeEvent<HTMLInputElement>, uuid: string) => void;
+  handleOnCompare: (control: UptodateForm) => void;
+  handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
   userAuthBearer: string;
 }
 export const Control = ({
@@ -236,7 +236,7 @@ export const Control = ({
       >
         <ResultCompare
           result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          check={data}
+          control={data}
         />
       </Dialog>
     </Block>

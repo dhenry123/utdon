@@ -181,7 +181,7 @@ export const ScrapProduction = ({
         </FieldSet>
         <FieldSet
           className="name"
-          legend={intl.formatMessage({ id: "Give the check name" })}
+          legend={intl.formatMessage({ id: "Give the control name" })}
         >
           <InputGeneric
             value={activeUptodateForm.name}

@@ -161,10 +161,10 @@ export const DisplayControls = () => {
       });
   };
 
-  const handleOnCompare = async (check: UptodateForm) => {
-    if (check.uuid) {
+  const handleOnCompare = async (control: UptodateForm) => {
+    if (control.uuid) {
       await dispatch(
-        mytinydcUPDONApi.endpoints.getCompare.initiate(check.uuid, {
+        mytinydcUPDONApi.endpoints.getCompare.initiate(control.uuid, {
           forceRefetch: true,
         })
       )
@@ -174,7 +174,7 @@ export const DisplayControls = () => {
             refetch();
             setIsDialogVisible(true);
             setResultCompare(response);
-            setcheckInProgress(check);
+            setcheckInProgress(control);
           }
         })
         .catch((error: FetchBaseQueryError) => {
@@ -266,7 +266,7 @@ export const DisplayControls = () => {
       >
         <ResultCompare
           result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          check={checkInProgress}
+          control={checkInProgress}
         />
       </Dialog>
       <ConfirmDialog
