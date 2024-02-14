@@ -20,6 +20,7 @@ const initialState: contextSliceType = {
   uptodateForm: INITIALIZED_UPTODATEFORM,
   refetchuptodateForm: false,
   isAdmin: false,
+  search: "",
 };
 
 export const contextSlice = createSlice({
@@ -55,6 +56,9 @@ export const contextSlice = createSlice({
     setIsAdmin(state, value) {
       state.isAdmin = value.payload || false;
     },
+    setSearch(state, value) {
+      state.search = value.payload;
+    },
   },
 });
 
@@ -66,5 +70,6 @@ export const {
   setUpdateForm,
   setRefetchuptodateForm,
   setIsAdmin,
+  setSearch,
 } = contextSlice.actions;
 export default contextSlice.reducer;

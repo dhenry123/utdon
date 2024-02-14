@@ -21,8 +21,13 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
+import {
+  setIsAdmin,
+  setRefetchuptodateForm,
+  setSearch,
+} from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
+import InputGeneric from "./InputGeneric.tsx";
 
 export const Header = () => {
   const intl = useIntl();
@@ -35,6 +40,8 @@ export const Header = () => {
   const [dialogHeader, setDialogHeader] = useState("");
 
   const isAdmin = useAppSelector((state) => state.context.isAdmin);
+
+  const searchString = useAppSelector((state) => state.context.search);
 
   /**
    * Used for server errors (api entrypoint call)
@@ -103,7 +110,7 @@ export const Header = () => {
         );
         setIsDialogVisible(true);
       })
-      .catch((error) => {
+      .catch((error: FetchBaseQueryError) => {
         dispatchServerError(error);
       });
   };
@@ -188,6 +195,16 @@ export const Header = () => {
             onClick={displayDialogCurlCommands}
           />
         </div>
+        {location.pathname === "/" ? (
+          <InputGeneric
+            value={searchString}
+            placeholder={intl.formatMessage({ id: "Search" })}
+            onChange={(value) => {
+              dispatch(setSearch(value));
+            }}
+            className="search"
+          />
+        ) : null}
         <div className="flexPushLeft logout">
           <div className="manager">
             {isAdmin ? (

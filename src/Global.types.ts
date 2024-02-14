@@ -87,6 +87,7 @@ export type contextSliceType = {
   uptodateForm: UptodateForm;
   refetchuptodateForm: boolean;
   isAdmin: boolean;
+  search: string;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";

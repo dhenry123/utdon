@@ -61,6 +61,8 @@ export const DisplayControls = () => {
 
   const [userAuthBearer, setuserAuthBearer] = useState("");
 
+  const searchString = useAppSelector((state) => state.context.search);
+
   const {
     data,
     isSuccess,
@@ -241,6 +243,11 @@ export const DisplayControls = () => {
           {/* <div className="filters">Filter on :</div> */}
           <div className="list">
             {data.map((item: UptodateForm) => {
+              if (
+                searchString &&
+                !item.name.match(new RegExp(searchString, "i"))
+              )
+                return null;
               return (
                 <Control
                   handleOnDelete={handleOnDelete}
