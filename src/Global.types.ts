@@ -78,7 +78,6 @@ export type ActionCiCdType = {
 export type contextSliceType = {
   // French is default language
   language: { locale: string; lang: JSONLang };
-  user: InfoIuType;
   application: {
     name: string;
     applicationtitle: string;

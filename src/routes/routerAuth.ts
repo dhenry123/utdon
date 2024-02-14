@@ -71,7 +71,9 @@ routerAuth.post(
           session.user = req.app.get("AUTH").getInfoForUi(req.body.login);
         }
       }
-      res.status(verif[0]).json(verif[1]);
+      // no need to send info, login page is isolated, if user press F5
+      // UI loose user infos
+      res.status(verif[0]).send();
     } catch (error) {
       next(error);
     }

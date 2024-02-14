@@ -11,7 +11,6 @@ import { contextSliceType } from "../../../src/Global.types";
 const initialState: contextSliceType = {
   // French is default language
   language: { locale: "fr", lang: languageFr },
-  user: { login: "", bearer: "", uuid: "", groups: [] },
   application: {
     name: "UTdOn",
     applicationtitle: "UtDon",
@@ -27,9 +26,6 @@ export const contextSlice = createSlice({
   name: "context",
   initialState,
   reducers: {
-    setUser: (state, value) => {
-      state.user = value.payload;
-    },
     setLanguage: (state, value) => {
       if (value.payload === "fr") {
         state.language.locale = value.payload;
@@ -65,7 +61,6 @@ export const contextSlice = createSlice({
 // Exportable actions
 export const {
   setLanguage,
-  setUser,
   updateKeyUptodateFrom,
   resetUpdateForm,
   setUpdateForm,
