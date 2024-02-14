@@ -112,12 +112,9 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      if (
-        session.user &&
-        session.user.login &&
-        req.app.get("AUTH").isAdmin(req)
-      ) {
-        res.status(200).json(req.app.get("AUTH").getUsersForUi());
+      const isAdmin = req.app.get("AUTH").isAdmin(req);
+      if (session.user && session.user.login && isAdmin) {
+        res.status(200).json(req.app.get("AUTH").getUsersForUi(isAdmin));
       } else {
         res.status(401).send();
       }
@@ -275,6 +272,8 @@ routerAuth.put(
             for (const group of userToUpdate.groups) {
               req.app.get("AUTH").addGroupMember(group, userToUpdate.uuid);
             }
+            // groups cleaning
+            req.app.get("AUTH").cleanGroups();
             req.app.get("LOGGER").info({
               action: "modify user",
               user: userToUpdate.login,

@@ -158,10 +158,12 @@ const decryptDb = (records: UptodateForm[], logger: Logger) => {
   return decryptedDb;
 };
 
-const isRecordInUserGroups = (
+export const isRecordInUserGroups = (
   record: UptodateForm,
   userGroups: string[]
 ): boolean => {
+  // could be remove "|| []" - for compatibility between 1.3 & 1.4 release
+  // with 1.3 data groups attribut was not defined
   const groupsControl = record.groups || [];
   for (const groupControl of groupsControl) {
     if (userGroups.includes(groupControl)) return true;
@@ -182,8 +184,10 @@ export const dbGetRecord = (
     if (control.length === 1) {
       // do not throw error, just log
       const recordDecrypted = decryptRecord(control[0], logger);
+      // ok if admin or record groups includes in groups
       if (isAdmin || isRecordInUserGroups(recordDecrypted, userGroups))
         return recordDecrypted;
+      // user is not authorized to get this control
       return null;
     }
   } else {

@@ -15,6 +15,7 @@ import {
   dbInsert,
   dbUpdateRecord,
   getDbInitJsonFileName,
+  isRecordInUserGroups,
 } from "../src/lib/Database";
 import winston from "winston";
 import Transport from "winston-transport";
@@ -40,7 +41,7 @@ const check: UptodateForm = {
   isPause: false,
   compareResult: null,
   uuid: "",
-  groups: [],
+  groups: ["admin"],
 };
 
 // Special transport - For testing: error has been flushed by winston
@@ -328,6 +329,39 @@ describe("Database", () => {
       });
   });
 
+  test("dbGetRecord - user is not admin and member of group which is not authorized to get this control", () => {
+    const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
+    // check groups is 'admin'
+    dbInsert(db, check)
+      .then((uuid: string) => {
+        //user wants all and member of xxxx
+        const rec = dbGetRecord(db, uuid, ["xxxx"], false, logger);
+        expect(rec).toBeNull();
+      })
+      .catch((error) => {
+        expect(error).not.toBeDefined();
+      });
+  });
+
+  test("dbGetRecord - user is not admin and member of group which is not authorized to get ALL controls", () => {
+    const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
+    // check groups is 'admin'
+    dbInsert(db, check)
+      .then(() => {
+        //user wants all and member of xxxx
+        const rec = dbGetRecord(db, "all", ["xxxx"], false, logger);
+        expect(Array.isArray(rec)).toBeTruthy();
+        if (Array.isArray(rec)) expect(rec.length).toEqual(0);
+      })
+      .catch((error) => {
+        expect(error).not.toBeDefined();
+      });
+  });
+
   test("dbDeleteRecord - existing record", () => {
     const db: UptodateForm[] = [];
     process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
@@ -436,6 +470,29 @@ describe("Database", () => {
           const rupd = dbUpdateRecord(db, upd);
           expect(rupd).toEqual("");
           expect(Array.isArray(db) && db.length).toEqual(2);
+        });
+      })
+      .catch((error) => {
+        expect(error).not.toBeDefined();
+      });
+  });
+
+  test("isRecordInUserGroups", () => {
+    const db: UptodateForm[] = [];
+    process.env.DATABASE_ENCRYPT_SECRET = "mysecret";
+    process.env.USER_ENCRYPT_SECRET = "test";
+    dbInsert(db, check)
+      .then(() => {
+        expect(isRecordInUserGroups(check, ["admin"])).toBeTruthy();
+        expect(isRecordInUserGroups(check, ["test"])).toBeFalsy();
+        expect(isRecordInUserGroups(check, [])).toBeFalsy();
+        const upd = { ...check };
+        upd.urlProduction = "test";
+        upd.groups = ["admin", "test"];
+        dbInsert(db, check).then(() => {
+          expect(isRecordInUserGroups(upd, ["admin", "test"])).toBeTruthy();
+          expect(isRecordInUserGroups(upd, ["xxx", "yyy"])).toBeFalsy();
+          expect(isRecordInUserGroups(upd, [])).toBeFalsy();
         });
       })
       .catch((error) => {

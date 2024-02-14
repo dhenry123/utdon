@@ -181,4 +181,166 @@ describe("Groups", () => {
     auth.addGroupMember("admin", user.uuid);
     expect(auth.getUserGroups("xxx").length).toEqual(0);
   });
+
+  test("cleanGroups - cleaning, without empty groups", () => {
+    // adding users with groups
+    const auth = new Authentification(userDatabase);
+
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+    auth.addGroupMember("test", test.uuid);
+
+    const test1 = auth.makeUser("test1", "test");
+    auth.addUser(test1);
+    auth.addGroupMember("test1", test1.uuid);
+
+    expect(auth.getUserGroups(admin.uuid).length).toEqual(1);
+    expect(auth.getUserGroups(test.uuid).length).toEqual(1);
+    expect(auth.getUserGroups(test1.uuid).length).toEqual(1);
+    // 3 groups
+    expect(Object.getOwnPropertyNames(auth.usersgroups.groups).length).toEqual(
+      3
+    );
+    auth.cleanGroups();
+    expect(Object.getOwnPropertyNames(auth.usersgroups.groups).length).toEqual(
+      3
+    );
+    expect(auth.usersgroups.groups.admin).toBeDefined();
+    expect(auth.usersgroups.groups.test).toBeDefined();
+    expect(auth.usersgroups.groups.test1).toBeDefined();
+  });
+
+  test("cleanGroups - I empty 1 group and clean", () => {
+    // adding users with groups
+    const auth = new Authentification(userDatabase);
+
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+    auth.addGroupMember("test", test.uuid);
+
+    const test1 = auth.makeUser("test1", "test");
+    auth.addUser(test1);
+    auth.addGroupMember("test1", test1.uuid);
+
+    expect(auth.getUserGroups(admin.uuid).length).toEqual(1);
+    expect(auth.getUserGroups(test.uuid).length).toEqual(1);
+    expect(auth.getUserGroups(test1.uuid).length).toEqual(1);
+    // remove test from all groups
+    auth.removeUserFromGroups(test.uuid);
+    expect(auth.getUserGroups(test.uuid).length).toEqual(0);
+    // 3 groups
+    expect(Object.getOwnPropertyNames(auth.usersgroups.groups).length).toEqual(
+      3
+    );
+    auth.cleanGroups();
+    expect(Object.getOwnPropertyNames(auth.usersgroups.groups).length).toEqual(
+      2
+    );
+    expect(auth.usersgroups.groups.admin).toBeDefined();
+    expect(auth.usersgroups.groups.test).not.toBeDefined();
+    expect(auth.usersgroups.groups.test1).toBeDefined();
+  });
+
+  test("isAllowedForObject - admin user", () => {
+    const auth = new Authentification(userDatabase);
+
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+    auth.addGroupMember("test", test.uuid);
+
+    const req = {
+      body: {},
+      app: {
+        get: (key: string) => {
+          if (key === "AUTH") return auth;
+        },
+      },
+    } as Request;
+    req.session = {
+      user: {
+        login: admin.login,
+        bearer: admin.bearer,
+        uuid: admin.uuid,
+      },
+    } as SessionExt;
+
+    expect(auth.isAllowedForObject(req, ["xxx", "yyy"])).toBeTruthy();
+  });
+
+  test("isAllowedForObject - NON admin user", () => {
+    const auth = new Authentification(userDatabase);
+
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+    auth.addGroupMember("test", test.uuid);
+
+    const req = {
+      body: {},
+      app: {
+        get: (key: string) => {
+          if (key === "AUTH") return auth;
+        },
+      },
+    } as Request;
+    req.session = {
+      user: {
+        login: test.login,
+        bearer: test.bearer,
+        uuid: test.uuid,
+      },
+    } as SessionExt;
+
+    // test is not member of xxx
+    expect(auth.isAllowedForObject(req, ["xxx"])).toBeFalsy();
+    // test is member of test
+    expect(auth.isAllowedForObject(req, ["test"])).toBeTruthy();
+  });
+
+  test("isAllowedForObject - user without group", () => {
+    const auth = new Authentification(userDatabase);
+
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+
+    const req = {
+      body: {},
+      app: {
+        get: (key: string) => {
+          if (key === "AUTH") return auth;
+        },
+      },
+    } as Request;
+    req.session = {
+      user: {
+        login: test.login,
+        bearer: test.bearer,
+        uuid: test.uuid,
+      },
+    } as SessionExt;
+
+    // test is not member of xxx
+    expect(auth.isAllowedForObject(req, ["xxx"])).toBeFalsy();
+    // test is member of test
+    expect(auth.isAllowedForObject(req, ["test"])).toBeFalsy();
+  });
 });

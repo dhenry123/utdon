@@ -6,6 +6,7 @@
 import { readFileSync, existsSync, writeFileSync, copyFileSync } from "fs";
 import {
   ChangePasswordType,
+  GroupsType,
   InfoIuType,
   UserDescriptionType,
   UsersGroupsType,
@@ -173,17 +174,19 @@ export class Authentification {
   };
 
   /*
-   * return all users logins
+   * return all users logins - must be used on by admin
    * @returns string[]
    */
-  getUsersForUi = (): UserDescriptionType[] => {
+  getUsersForUi = (isAdmin: boolean): UserDescriptionType[] => {
     const usersDescription: UserDescriptionType[] = [];
-    for (const user of this.usersgroups.users) {
-      usersDescription.push({
-        login: user.login,
-        groups: this.getUserMemberGroupsName(user.uuid),
-        uuid: user.uuid,
-      });
+    if (isAdmin) {
+      for (const user of this.usersgroups.users) {
+        usersDescription.push({
+          login: user.login,
+          groups: this.getUserMemberGroupsName(user.uuid),
+          uuid: user.uuid,
+        });
+      }
     }
     return usersDescription;
   };
@@ -465,6 +468,20 @@ export class Authentification {
       this.writeDB();
     }
     return true;
+  };
+
+  /**
+   * autocleaning groups without users
+   */
+  cleanGroups = () => {
+    const newGroups: GroupsType = {};
+    Object.getOwnPropertyNames(this.usersgroups.groups).forEach((group) => {
+      // keep only groups with member(s)
+      if (this.usersgroups.groups[group].length > 0)
+        newGroups[group] = this.usersgroups.groups[group];
+    });
+    this.usersgroups.groups = newGroups;
+    this.writeDB();
   };
 
   removeUserFromGroups = (userUuid: string) => {

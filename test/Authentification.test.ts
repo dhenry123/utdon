@@ -438,6 +438,34 @@ describe("Authentification", () => {
     }
   });
 
+  test("getUsersForUi - admin", () => {
+    process.env.USER_ENCRYPT_SECRET = "test";
+    const auth = new Authentification(userDatabase);
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+    auth.addGroupMember("test", test.uuid);
+
+    expect(auth.getUsersForUi(true).length).toEqual(2);
+  });
+
+  test("getUsersForUi - Non admin", () => {
+    process.env.USER_ENCRYPT_SECRET = "test";
+    const auth = new Authentification(userDatabase);
+    const admin = auth.makeUser("admin", "admin");
+    auth.addUser(admin);
+    auth.addGroupMember("admin", admin.uuid);
+
+    const test = auth.makeUser("test", "test");
+    auth.addUser(test);
+    auth.addGroupMember("test", test.uuid);
+
+    expect(auth.getUsersForUi(false).length).toEqual(0);
+  });
+
   test("isAuthSession - true", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
