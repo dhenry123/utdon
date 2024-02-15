@@ -36,53 +36,6 @@ const updateExternalStatus = (
 
 /**
  * Call compare entrypoint for control uuid, control Uuid value could be "all"
- *
- * @swagger
- * /action/compare/{controlUuid}/{setStatus}:
- *   get:
- *     summary: Call compare method
- *     description: Call compare method for one or all controls, and call url monitoring
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Actions
- *     parameters:
- *       - in: path
- *         name: controlUuid
- *         required: true
- *         description: control uuid, could be 'all'
- *         schema:
- *           type: string
- *       - in: path
- *         name: setStatus
- *         required: true
- *         description: control uuid
- *         schema:
- *           type: string
- *           enum:
- *            - 0
- *            - 1
- *     responses:
- *       200:
- *         description: The response varies according to the parameters provided
- *         content:
- *           application/text:
- *             schema:
- *               type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       404:
- *         description: control uuid not found
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
  */
 routerActions.get(
   "/action/compare/:controlUuid/:setStatus",
@@ -114,7 +67,7 @@ routerActions.get(
         for (const item of finalRecords) {
           // get state
           await getUpToDateOrNotState(item)
-            .then((compareResult) => {
+            .then(async (compareResult) => {
               // Update dbRecord
               dbUpdateRecord(req.app.get("DB"), {
                 ...item,
@@ -127,7 +80,7 @@ routerActions.get(
                   // 0 : uptodate 1:toupdate state is true when uptodate
                   const payload = compareResult.state ? "0" : "1";
                   // call and set external status
-                  updateExternalStatus(item, payload)
+                  await updateExternalStatus(item, payload)
                     .then((response) => {
                       const finalResponse: UptoDateOrNotStateResponseMonitoring =
                         {
@@ -214,6 +167,7 @@ routerActions.get(
         res.status(404).json({ error: UUIDNOTFOUND });
       }
     } catch (error: unknown) {
+      console.log(error);
       next(error);
     }
   }
@@ -221,52 +175,12 @@ routerActions.get(
 
 /**
  * Call ci/cd for uuid provided
- *
- * @swagger
- * /action/cicd/:
- *   put:
- *     summary: Call CI/CD
- *     description: Call url CI/CD for control uuid provided
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Actions
- *     requestBody:
- *       description: uuid
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               uuid:
- *                 type: string
- *     responses:
- *       200:
- *         description: CI/CD response body
- *         content:
- *           application/text:
- *             schema:
- *               type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       404:
- *         description: control uuid not found
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
  */
 routerActions.put(
   "/action/cicd/",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(req.body);
       if (req.body && req.body.uuid) {
         const session = req.session as SessionExt;
         const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
@@ -361,47 +275,9 @@ routerActions.put(
 /**
  * return the git release of lastcompare
  * usefull to be called by CI/CD
- *
- * @swagger
- * /action/lastcomparegitrealase/{controlUuid}/:
- *   get:
- *     summary: Get the github release
- *     description: Get the github release of the latest comparison (history) for one control uuid
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Actions
- *     parameters:
- *       - in: path
- *         name: controlUuid
- *         required: true
- *         description: control uuid
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Value of the github release
- *         content:
- *           application/text:
- *             schema:
- *               type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       404:
- *         description: control uuid not found or github release is empty
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
  */
 routerActions.get(
-  "/action/lastcomparegitrealase/:controlUuid/",
+  "/action/lastcomparegitrelease/:controlUuid/",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
@@ -415,7 +291,7 @@ routerActions.get(
       )) as UptodateForm;
       if (record) {
         if (record.compareResult?.githubLatestRelease) {
-          res.status(200).send(record.compareResult?.githubLatestRelease);
+          res.status(200).json(record.compareResult?.githubLatestRelease);
         } else {
           req.app.get("LOGGER").error("githubLatestRelease is empty");
           res.status(404).json({ error: "githubLatestRelease is empty" });

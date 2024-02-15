@@ -78,41 +78,8 @@ routerControl.post(
 );
 
 /**
- * uuid value could be "all"
- *
- * @swagger
- * /control/{uuid}:
- *   get:
- *     summary: Get control values
- *     description: Get all control data per uuid or all controls (all)
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Control
- *     parameters:
- *       - in: path
- *         name: uuid
- *         required: true
- *         description: control uuid||all
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: control data or Array of controls data
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/UptodateForm'
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * Get control - uuid value could be "all"
  */
-
 routerControl.get(
   "/control/:uuid",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -137,45 +104,7 @@ routerControl.get(
 );
 
 /**
- * Delete controle per uuid
- *
- * @swagger
- * /control/{uuid}:
- *   delete:
- *     summary: Delete one control
- *     description: Delete control per uuid
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Control
- *     parameters:
- *       - in: path
- *         name: uuid
- *         required: true
- *         description: control uuid
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: control uuid as JSON
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/DeletedRecord'
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       404:
- *         description: control uuid not found
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * Delete control per uuid
  */
 routerControl.delete(
   "/control/:uuid",

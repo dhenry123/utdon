@@ -15,43 +15,7 @@ import { SessionExt } from "../ServerTypes";
 const routerAuth = express.Router();
 
 /**
- *
- * @swagger
- * /userlogin:
- *   post:
- *     summary: login to the system with UI
- *     description: UI login method
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     requestBody:
- *       description: login properties
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               login:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login OK
- *         content:
- *           application/text:
- *             schema:
- *               $ref: '#/components/schemas/InfoIuType'
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * login to the system with UI
  */
 routerAuth.post(
   "/userlogin",
@@ -81,33 +45,7 @@ routerAuth.post(
 );
 
 /**
- *
- * @swagger
- * /users:
- *   get:
- *     summary: get users list - only admin
- *     description: Used by the User Management UI to get users list
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       200:
- *         description: Users list
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * get users list - only admin
  */
 routerAuth.get(
   "/users",
@@ -127,44 +65,7 @@ routerAuth.get(
 );
 
 /**
- *
- * @swagger
- * /users:
- *   post:
- *     summary: create user in the database - only admin
- *     description: UI create user method
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     requestBody:
- *       description: login and password
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/NewUserType'
- *
- *     responses:
- *       200:
- *         description: created user
- *         content:
- *           application/text:
- *             schema:
- *               type: object
- *               properties:
- *                 login:
- *                   type: string
- *       400:
- *          description: User already exists
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * create user in the database - only admin
  */
 routerAuth.post(
   "/users",
@@ -209,37 +110,7 @@ routerAuth.post(
 );
 
 /**
- *
- * @swagger
- * /users:
- *   put:
- *     summary: modify user in the database - only admin
- *     description: UI modify user method
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     requestBody:
- *       description: login and password
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/NewUserType'
- *
- *     responses:
- *       204:
- *         description: modified user
- *       404:
- *          description: User not found
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * modify user in the database - only admin
  */
 routerAuth.put(
   "/users",
@@ -297,47 +168,7 @@ routerAuth.put(
 );
 
 /**
- *
- * @swagger
- * /users/{uuid}:
- *   delete:
- *     summary: delete user from the database - only admin
- *     description: UI delete user method
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     parameters:
- *       - in: path
- *         name: uuid
- *         required: true
- *         description: uuid of the user to delete
- *         schema:
- *           type: string
- *           example: "xxxxxxxxxxxxxxxxxx"
- *
- *     responses:
- *       200:
- *         description: deleted
- *         content:
- *           application/text:
- *             schema:
- *               type: object
- *               properties:
- *                 login:
- *                   type: string
- *                 uuid:
- *                   type: string
- *       404:
- *          description: User not found
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * delete user from the database - only admin
  */
 routerAuth.delete(
   "/users/:uuid",
@@ -381,27 +212,7 @@ routerAuth.delete(
 );
 
 /**
- *
- * @swagger
- * /isauthenticated:
- *   get:
- *     summary: is the user logged in ?
- *     description: Used by UI to verify user is logged
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       204:
- *         description: User is logged - no content
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * is the user logged in ?
  */
 routerAuth.get(
   "/isauthenticated",
@@ -416,27 +227,7 @@ routerAuth.get(
 );
 
 /**
- *
- * @swagger
- * /isadmin:
- *   get:
- *     summary: does the user have the administrator role ?
- *     description: Used by UI to verify user is admin (session is needed)
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       204:
- *         description: User is admin - no content
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * does the user have the administrator role ?
  */
 routerAuth.get(
   "/isadmin",
@@ -451,26 +242,8 @@ routerAuth.get(
 );
 
 /**
- * @swagger
- * /userlogout:
- *   get:
- *     summary: user logout method
- *     description: Used by UI to logout user
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       204:
- *         description: User is logged out
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * user logout method
  */
-
 routerAuth.get(
   "/userlogout",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -495,35 +268,8 @@ routerAuth.get(
 );
 
 /**
- * @swagger
- * /changepassword:
- *   put:
- *     summary: user change password
- *     description: Used by UI to change user password
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     requestBody:
- *       description: passwords list
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/ChangePasswordType'
- *     responses:
- *       204:
- *         description: Password has been changed
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * user change password
  */
-
 routerAuth.put(
   "/changepassword",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -542,35 +288,8 @@ routerAuth.put(
 );
 
 /**
- * @swagger
- * /bearer:
- *   get:
- *     summary: get user user auth Token
- *     description: Used by UI to get user auth Token
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       200:
- *         description: User auth Token
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 bearer:
- *                   type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * get user user auth Token
  */
-
 routerAuth.get(
   "/bearer",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -590,33 +309,7 @@ routerAuth.get(
 );
 
 /**
- * @swagger
- * /userlogin:
- *   get:
- *     summary: get user's login
- *     description: Used by UI to show the user's login in the header
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       200:
- *         description: User's login
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 login:
- *                   type: string
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * Used by UI to show the user's login in the header
  */
 routerAuth.get(
   "/userlogin",
@@ -635,28 +328,8 @@ routerAuth.get(
 );
 
 /**
- * @swagger
- * /bearer:
- *   put:
- *     summary: change user auth Token
- *     description: Used by UI to get new user auth Token
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       204:
- *         description: User auth Token has been changed
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * Used by UI to get new user auth Token
  */
-
 routerAuth.put(
   "/bearer",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -682,33 +355,7 @@ routerAuth.put(
 );
 
 /**
- * @swagger
- * /groups:
- *   get:
- *     summary: get user's groups in regards the role of the user
- *     description: Used by UI to display user's groups
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       200:
- *         description: user groups
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: string
- *               example: ["admin", "sysadminroom1"]
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * Used by UI to display user's groups
  */
 routerAuth.get(
   "/groups",
@@ -731,33 +378,7 @@ routerAuth.get(
 );
 
 /**
- * @swagger
- * /userGroups:
- *   get:
- *     summary: get the user's groups
- *     description: Used by UI
- *     security:
- *       - ApiKeyAuth: []
- *     tags:
- *       - Authentication
- *     responses:
- *       200:
- *         description: user groups
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: string
- *               example: ["admin", "sysadminroom1"]
- *       401:
- *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         description: Internal error
- *         content:
- *           application/json:
- *             schema:
- *                $ref: '#/components/schemas/Error'
+ * Used by UI to get the user's groups
  */
 routerAuth.get(
   "/userGroups",

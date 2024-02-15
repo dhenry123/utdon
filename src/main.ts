@@ -36,7 +36,6 @@ import routerAuth from "./routes/routerAuth";
 
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";
-import swaggerJsdoc from "swagger-jsdoc";
 
 // logs
 const { combine, timestamp, json } = winston.format;
@@ -121,7 +120,7 @@ app.use(express.json({ limit: JSON_POST_MAX_SIZE }));
 const sessionOpts = {
   secret: crypto.randomBytes(16).toString("hex"),
   resave: false,
-  saveUninitialized: true, // create non initialized session
+  saveUninitialized: false,
 };
 const serverSession = session(sessionOpts);
 app.use(serverSession);
@@ -169,40 +168,9 @@ const publicPath =
 });
 
 //Swagger
-if (process.env.environment === "development") {
-  const swaggerDefinition = {
-    definition: {
-      openapi: "3.0.3",
-      info: {
-        title: "Utdon API Documentation",
-        version: "1.0.0",
-      },
-      components: {
-        securitySchemes: {
-          ApiKeyAuth: {
-            type: "apiKey",
-            in: "header",
-            name: "Bearer",
-          },
-        },
-      },
-      security: [
-        {
-          ApiKeyAuth: [],
-        },
-      ],
-      servers: [{ url: "/api/v1" }],
-    },
-    apis: ["./src/routes/*.ts"],
-  };
-
-  const swaggerSpec = swaggerJsdoc(swaggerDefinition);
-  app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-} else {
-  if (existsSync(OPENAPIFILEYAML)) {
-    const swaggerDocument = parse(readFileSync(OPENAPIFILEYAML, "utf-8"));
-    app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  }
+if (existsSync(OPENAPIFILEYAML)) {
+  const swaggerDocument = parse(readFileSync(OPENAPIFILEYAML, "utf-8"));
+  app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -270,9 +238,9 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 const httpServer = http.createServer(app);
 httpServer.listen(app.get("PORT"), app.get("IPADDRESS"), function () {
   logger.info(
-    `[Httpserver] listening at http://${app.get("IPADDRESS")}:${app.get(
-      "PORT"
-    )}`
+    `[Httpserver - ${
+      process.env.environment !== "development" ? "production" : "development"
+    }] listening at http://${app.get("IPADDRESS")}:${app.get("PORT")}`
   );
 });
 
