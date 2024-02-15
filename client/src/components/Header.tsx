@@ -21,13 +21,9 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import {
-  setIsAdmin,
-  setRefetchuptodateForm,
-  setSearch,
-} from "../app/contextSlice";
+import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
-import InputGeneric from "./InputGeneric.tsx";
+import { Search } from "./Search.tsx";
 
 export const Header = () => {
   const intl = useIntl();
@@ -196,14 +192,7 @@ export const Header = () => {
           />
         </div>
         {location.pathname === "/" ? (
-          <InputGeneric
-            value={searchString}
-            placeholder={intl.formatMessage({ id: "Search" })}
-            onChange={(value) => {
-              dispatch(setSearch(value));
-            }}
-            className="search"
-          />
+          <Search searchString={searchString} />
         ) : null}
         <div className="flexPushLeft logout">
           <div className="manager">
