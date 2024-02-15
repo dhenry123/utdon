@@ -296,13 +296,39 @@ export class Authentification {
     }
   };
 
+  /**
+   * user connect with token
+   * if token found, load user in session
+   * @param req
+   * @returns
+   */
   isAuthBearer = (req: Request) => {
-    if (req.headers) {
+    if (req.headers && req.headers["authorization"]) {
       const bearers = this.getUsersBearers();
       const bearer = bearers.find(
         (bearer) => bearer === req.headers["authorization"]
       );
-      return !!bearer;
+      if (bearer) {
+        const session = req.session as SessionExt;
+        for (const user of this.usersgroups.users) {
+          const bearer = Authentification.dataDecrypt(
+            user.bearer,
+            process.env.USER_ENCRYPT_SECRET || ""
+          );
+          if (bearer === req.headers["authorization"]) {
+            // as there is no cookie, the session is completed programmatically.
+            session.user = {
+              login: user.login,
+              bearer: user.bearer,
+              uuid: user.uuid,
+              groups: this.getUserGroups(user.uuid),
+            };
+
+            break;
+          }
+        }
+        if (session && session.user && session.user.uuid) return true;
+      }
     }
     return false;
   };

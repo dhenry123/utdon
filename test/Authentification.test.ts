@@ -592,26 +592,30 @@ describe("Authentification", () => {
       auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: { authorization: `${auth.getUsersBearers()[0]}` },
+        session: {},
       } as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeTruthy();
     } catch (error: unknown) {
+      console.log(error);
       // unexpected error
       expect(error).not.toBeDefined();
     }
   });
 
-  test("isAuthBearer - authorization provided is false", () => {
+  test("isAuthBearer - authorization provided is wrong", () => {
     try {
       process.env.USER_ENCRYPT_SECRET = "test";
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: { authorization: `xxxx` },
+        session: {},
       } as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeFalsy();
     } catch (error: unknown) {
+      console.log(error);
       // unexpected error
       expect(error).not.toBeDefined();
     }
@@ -624,6 +628,7 @@ describe("Authentification", () => {
       auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: {},
+        session: {},
       } as Request;
       const isAuth = auth.isAuthBearer(req);
       expect(isAuth).toBeFalsy();
@@ -752,6 +757,7 @@ describe("Authentification", () => {
       auth.addUser(auth.makeUser("admin", "admin"));
       const req = {
         headers: { authorization: `${auth.getUsersBearers()[0]}` },
+        session: {},
       } as Request;
       const isAuth = auth.isAuthenticated(req);
       expect(isAuth).toBeTruthy();
