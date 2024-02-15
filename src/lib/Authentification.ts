@@ -353,27 +353,22 @@ export class Authentification {
    * @param changepassword
    * @returns
    */
-  changePassword = (changepassword: ChangePasswordType) => {
+  changePassword = (changepassword: ChangePasswordType, userLogin: string) => {
     // check if all parameters are provided
     if (
-      changepassword.login &&
+      userLogin &&
       changepassword.password &&
       changepassword.newPassword &&
       changepassword.newConfirmPassword
     ) {
       // check if current password is correct
-      if (
-        this.verifyPassword(
-          changepassword.login,
-          changepassword.password
-        )[0] === 200
-      ) {
+      if (this.verifyPassword(userLogin, changepassword.password)[0] === 200) {
         // if new password and its confirmation match
         if (changepassword.newPassword === changepassword.newConfirmPassword) {
           // if so, find the uid of the user we want to change the password
           // console.log(changepassword.login);
           const uid = this.usersgroups.users.findIndex(
-            (u) => u.login === changepassword.login
+            (u) => u.login === userLogin
           );
 
           if (uid === -1) return [500, "User not found"];

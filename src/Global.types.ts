@@ -167,7 +167,6 @@ export type UIError = {
 };
 
 export type ChangePasswordType = {
-  login: string;
   password: string;
   newPassword: string;
   newConfirmPassword: string;

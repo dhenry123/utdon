@@ -774,13 +774,12 @@ describe("Authentification", () => {
       auth.addUser(auth.makeUser("admin", "admin"));
 
       const changepassword: ChangePasswordType = {
-        login: "admin",
         password: "admin",
         newPassword: "newpassword",
         newConfirmPassword: "newpassword",
       };
       const oldbearer = auth.usersgroups.users[0].bearer;
-      const verify = auth.changePassword(changepassword);
+      const verify = auth.changePassword(changepassword, "admin");
 
       expect(verify[0]).toEqual(200);
       expect(auth.usersgroups.users[0].login).toEqual("admin");
@@ -802,13 +801,12 @@ describe("Authentification", () => {
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
-        login: "admin",
         password: "adminxxxx",
         newPassword: "newpassword",
         newConfirmPassword: "newpassword",
       };
       const oldbearer = auth.usersgroups.users[0].bearer;
-      const verify = auth.changePassword(changepassword);
+      const verify = auth.changePassword(changepassword, "admin");
       expect(verify[0]).toEqual(500);
       expect(auth.usersgroups.users[0].login).toEqual("admin");
       expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
@@ -826,13 +824,12 @@ describe("Authentification", () => {
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
-        login: "admin",
         password: "",
         newPassword: "newpassword",
         newConfirmPassword: "newpassword",
       };
       const oldbearer = auth.usersgroups.users[0].bearer;
-      const verify = auth.changePassword(changepassword);
+      const verify = auth.changePassword(changepassword, "admin");
       expect(verify[0]).toEqual(500);
       expect(auth.usersgroups.users[0].login).toEqual("admin");
       expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
@@ -850,13 +847,12 @@ describe("Authentification", () => {
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
-        login: "admin",
         password: "admin",
         newPassword: "",
         newConfirmPassword: "newpassword",
       };
       const oldbearer = auth.usersgroups.users[0].bearer;
-      const verify = auth.changePassword(changepassword);
+      const verify = auth.changePassword(changepassword, "admin");
       expect(verify[0]).toEqual(500);
       expect(auth.usersgroups.users[0].login).toEqual("admin");
       expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
@@ -874,13 +870,12 @@ describe("Authentification", () => {
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
-        login: "admin",
         password: "admin",
         newPassword: "newpassword",
         newConfirmPassword: "",
       };
       const oldbearer = auth.usersgroups.users[0].bearer;
-      const verify = auth.changePassword(changepassword);
+      const verify = auth.changePassword(changepassword, "admin");
       expect(verify[0]).toEqual(500);
       expect(auth.usersgroups.users[0].login).toEqual("admin");
       expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);
@@ -898,13 +893,12 @@ describe("Authentification", () => {
       const auth = new Authentification(userDatabase);
       auth.addUser(auth.makeUser("admin", "admin"));
       const changepassword: ChangePasswordType = {
-        login: "admin",
         password: "admin",
         newPassword: "newpassword",
         newConfirmPassword: "xxxxxx",
       };
       const oldbearer = auth.usersgroups.users[0].bearer;
-      const verify = auth.changePassword(changepassword);
+      const verify = auth.changePassword(changepassword, "admin");
       expect(verify[0]).toEqual(500);
       expect(auth.usersgroups.users[0].login).toEqual("admin");
       expect(auth.usersgroups.users[0].bearer).toEqual(oldbearer);

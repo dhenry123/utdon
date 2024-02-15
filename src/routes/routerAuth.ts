@@ -274,12 +274,19 @@ routerAuth.put(
   "/changepassword",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const changepassword = req.body as ChangePasswordType;
-      const verified = req.app.get("AUTH").changePassword(changepassword);
-      if (verified[0] === 200) {
-        res.status(204).send();
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        const changepassword = req.body as ChangePasswordType;
+        const verified = req.app
+          .get("AUTH")
+          .changePassword(changepassword, session.user.login);
+        if (verified[0] === 200) {
+          res.status(204).send();
+        } else {
+          res.status(500).json({ error: verified[1] });
+        }
       } else {
-        res.status(500).json({ error: verified[1] });
+        res.status(500).json({ error: "User is not logged with session" });
       }
     } catch (error: unknown) {
       next(error);

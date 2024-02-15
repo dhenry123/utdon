@@ -80,7 +80,6 @@ export const SCRAPTYPEOPTIONJSON = "Json";
 export const SCRAPTYPEOPTIONTEXT = "Text / HTML / XML";
 
 export const INITIALIZED_CHANGEPASSWORD: ChangePasswordType = {
-  login: "",
   password: "",
   newPassword: "",
   newConfirmPassword: "",
