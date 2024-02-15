@@ -333,11 +333,19 @@ export class Authentification {
     return false;
   };
 
+  /**
+   * change user bearer token, token is encrypted
+   * @param user
+   * @returns
+   */
   changeBearer = (user: string) => {
     try {
-      const uid = this.usersgroups.users.findIndex((u) => u.login === user);
-      if (uid !== -1) {
-        this.usersgroups.users[uid].bearer = this.generateBearerKey();
+      const idx = this.usersgroups.users.findIndex((u) => u.login === user);
+      if (idx !== -1) {
+        this.usersgroups.users[idx].bearer = Authentification.dataEncrypt(
+          this.generateBearerKey(),
+          process.env.USER_ENCRYPT_SECRET
+        );
         this.writeDB();
         return [200, "User bearer has been changed"];
       } else {
