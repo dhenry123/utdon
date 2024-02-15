@@ -31,6 +31,13 @@ components:
           type: string
         newConfirmPassword:
           type: string
+    Group:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
     NewUserType:
       type: object
       properties:
@@ -42,6 +49,10 @@ components:
           type: string
           description: password of the new user
           example: hunter2
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
     InfoIuType:
       type: object
       properties:
@@ -228,7 +239,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /action/lastcomparegitrealase/{controlUuid}/:
+  /action/lastcomparegitrelease/{controlUuid}/:
     get:
       summary: Get the github release
       description: Get the github release of the latest comparison (history) for one control uuid
@@ -299,9 +310,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    get:
+      summary: get user's login
+      description: Used by UI to show the user's login in the header
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: User's login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  login:
+                    type: string
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /users:
     get:
-      summary: get users list
+      summary: get users list - only admin
       description: Used by the User Management UI to get users list
       security:
         - ApiKeyAuth: []
@@ -325,7 +361,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: create user in the database
+      summary: create user in the database - only admin
       description: UI create user method
       security:
         - ApiKeyAuth: []
@@ -359,7 +395,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
-      summary: modify user in the database
+      summary: modify user in the database - only admin
       description: UI modify user method
       security:
         - ApiKeyAuth: []
@@ -385,9 +421,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /users/{login}:
+  /users/{uuid}:
     delete:
-      summary: delete user from the database
+      summary: delete user from the database - only admin
       description: UI delete user method
       security:
         - ApiKeyAuth: []
@@ -395,12 +431,12 @@ paths:
         - Authentication
       parameters:
         - in: path
-          name: login
+          name: uuid
           required: true
-          description: login of the user to delete
+          description: uuid of the user to delete
           schema:
             type: string
-            example: user
+            example: xxxxxxxxxxxxxxxxxx
       responses:
         "200":
           description: deleted
@@ -410,6 +446,8 @@ paths:
                 type: object
                 properties:
                   login:
+                    type: string
+                  uuid:
                     type: string
         "401":
           $ref: '#/components/responses/UnauthorizedError'
@@ -423,19 +461,34 @@ paths:
                 $ref: '#/components/schemas/Error'
   /isauthenticated:
     get:
-      summary: is user logged
+      summary: is the user logged in ?
       description: Used by UI to verify user is logged
       security:
         - ApiKeyAuth: []
       tags:
         - Authentication
       responses:
-        "200":
-          description: User is logged
+        "204":
+          description: User is logged - no content
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/Error'
+  /isadmin:
+    get:
+      summary: does the user have the administrator role ?
+      description: Used by UI to verify user is admin (session is needed)
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "204":
+          description: User is admin - no content
         "401":
           $ref: '#/components/responses/UnauthorizedError'
         "500":
@@ -531,24 +584,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /user:
+  /groups:
     get:
-      summary: get user's login
-      description: Used by UI to show the user's login in the header
+      summary: get user's groups in regards the role of the user
+      description: Used by UI to display user's groups
       security:
         - ApiKeyAuth: []
       tags:
         - Authentication
       responses:
         "200":
-          description: User's login
+          description: user groups
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  login:
-                    type: string
+                type: array
+                items:
+                  type: string
+                example:
+                  - admin
+                  - sysadminroom1
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /userGroups:
+    get:
+      summary: get the user's groups
+      description: Used by UI
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: user groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example:
+                  - admin
+                  - sysadminroom1
         "401":
           $ref: '#/components/responses/UnauthorizedError'
         "500":

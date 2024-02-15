@@ -33,7 +33,6 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "swagger-jsdoc": "^6.2.8",
     "@jest/globals": "^29.7.0",
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
