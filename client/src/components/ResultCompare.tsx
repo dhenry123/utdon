@@ -42,13 +42,15 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
 
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error) {
-      const servererror = error.data as ErrorServer;
+      const servererror = error.data
+        ? (JSON.parse(error.data as string) as ErrorServer)
+        : { error: "Unknown error" };
       dispatch(
         showServiceMessage({
           ...INITIALIZED_TOAST,
           severity: "error",
           sticky: true,
-          detail: intl.formatMessage({ id: JSON.parse(servererror.error) }),
+          detail: servererror.error,
         })
       );
       if (error.status === 401) return navigate("/login");
@@ -89,7 +91,8 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
           })
         );
       })
-      .catch((error) => {
+      .catch((error: FetchBaseQueryError) => {
+        console.log(error);
         dispatchServerError(error);
       });
   };
