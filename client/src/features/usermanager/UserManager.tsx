@@ -4,7 +4,7 @@
  */
 
 import { useIntl } from "react-intl";
-import { useAppDispatch, useAppSelector } from "../../app/hook";
+import { useAppDispatch } from "../../app/hook";
 import { useNavigate } from "react-router-dom";
 
 import "./UserManager.scss";
@@ -25,6 +25,7 @@ import { Block } from "../../components/Block";
 import {
   mytinydcUPDONApi,
   useGetGroupsQuery,
+  useGetUserLoginQuery,
   useGetUsersQuery,
 } from "../../api/mytinydcUPDONApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -62,7 +63,12 @@ export const UserManager = () => {
     skip: false,
   });
 
-  const userLogger = useAppSelector((state) => state.context.user);
+  const { data: userInfo, isSuccess: isSuccessUserInfo } = useGetUserLoginQuery(
+    null,
+    {
+      skip: false,
+    }
+  );
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
@@ -327,6 +333,7 @@ export const UserManager = () => {
           </div>
           {isSuccess &&
             isSuccessGroups &&
+            isSuccessUserInfo &&
             (users as UserDescriptionType[]).map((user) => {
               return (
                 <div key={user.uuid} className="flex-table row" role="rowgroup">
@@ -344,8 +351,7 @@ export const UserManager = () => {
                     {user.groups.join(",")}
                   </div>
                   <div className="flex-row " role="cell">
-                    {user.login !== "admin" &&
-                    user.login !== userLogger.login ? (
+                    {user.login !== "admin" && user.login !== userInfo.login ? (
                       <div className="buttonsgroup">
                         <ButtonGeneric
                           onClick={() => handleOnDelete(user)}
