@@ -26,6 +26,8 @@ export const Search = ({ searchString }: SearchProps) => {
         onChange={(value) => {
           dispatch(setSearch(value));
         }}
+        autoComplete="off"
+        className="inputsearch"
       />
       {searchString ? (
         <ButtonGeneric
