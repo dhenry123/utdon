@@ -28,6 +28,7 @@ export const Search = ({ searchString }: SearchProps) => {
         }}
         autoComplete="off"
         className="inputsearch"
+        autoFocus
       />
       {searchString ? (
         <ButtonGeneric
