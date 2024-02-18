@@ -35,7 +35,7 @@ const updateExternalStatus = (
 };
 
 /**
- * Call compare entrypoint for control uuid, control Uuid value could be "all"
+ * Call up the comparison method and can update the monitoring status: 'all' is accepted
  */
 routerActions.get(
   "/action/compare/:controlUuid/:setStatus",
@@ -174,13 +174,12 @@ routerActions.get(
 );
 
 /**
- * Call ci/cd for uuid provided
+ * Call up the url CI/CD for control uuid provided: 'all' is not accepted
  */
 routerActions.put(
   "/action/cicd/",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.body);
       if (req.body && req.body.uuid) {
         const session = req.session as SessionExt;
         const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);

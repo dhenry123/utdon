@@ -198,6 +198,8 @@ routerAuth.delete(
             action: "delete user",
             user: `${user.uuid} - ${user.login}`,
           });
+          // groups cleaning
+          req.app.get("AUTH").cleanGroups();
           res.status(200).json({ login: user.login, uuid: user.uuid });
         } else {
           res.status(404).json({ error: "User not found" });
@@ -342,11 +344,8 @@ routerAuth.put(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
-      if (
-        session.user &&
-        session.user.login // &&
-      ) {
-        const result = req.app.get("AUTH").changeBearer();
+      if (session.user && session.user.login) {
+        const result = req.app.get("AUTH").changeBearer(session.user.login);
         if (result[0] === 200) {
           res.status(204).json();
         } else {

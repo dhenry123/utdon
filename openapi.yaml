@@ -1,13 +1,17 @@
 openapi: 3.0.0
 info:
   title: Utdon API Documentation
-  version: 1.3.0
+  version: 1.4.0
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: Authorization
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid # cookie name
   responses:
     UnauthorizedError:
       description: Access token,user/password are missing, invalid, or session is not set
@@ -22,49 +26,6 @@ components:
         - POST
         - PUT
         - DELETE
-    ChangePasswordType:
-      type: object
-      properties:
-        password:
-          type: string
-        newPassword:
-          type: string
-        newConfirmPassword:
-          type: string
-    Group:
-      type: object
-      properties:
-        label:
-          type: string
-        value:
-          type: string
-    NewUserType:
-      type: object
-      properties:
-        login:
-          type: string
-          description: login of the new user
-          example: AzureDiamond
-        password:
-          type: string
-          description: password of the new user
-          example: hunter2
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/Group'
-    InfoIuType:
-      type: object
-      properties:
-        login:
-          type: string
-        bearer:
-          type: string
-    DeletedRecord:
-      type: object
-      properties:
-        uuid:
-          type: string
     UptoDateOrNotState:
       type: object
       properties:
@@ -128,7 +89,7 @@ components:
           type: string
           description: url of the cronJob monitoring
         httpMethodCronJobMonitoring:
-          $ref: '#/components/schemas/HTTPMethods'
+          $ref: "#/components/schemas/HTTPMethods"
           description: Http method to call url of the cronJob monitoring
         urlCronJobMonitoringAuth:
           type: string
@@ -137,7 +98,7 @@ components:
           type: string
           description: url of the CI/CD
         httpMethodCICD:
-          $ref: '#/components/schemas/HTTPMethods'
+          $ref: "#/components/schemas/HTTPMethods"
           description: Http method to call url of the CI/CD
         urlCICDAuth:
           type: string
@@ -148,19 +109,21 @@ components:
         compareResult:
           description: latest compare result
           oneOf:
-            - $ref: '#/components/schemas/UptoDateOrNotState'
+            - $ref: "#/components/schemas/UptoDateOrNotState"
             - nullable: true
 security:
   - ApiKeyAuth: []
+  - cookieAuth: []
 servers:
   - url: /api/v1
 paths:
   /action/compare/{controlUuid}/{setStatus}:
     get:
-      summary: Call compare method
-      description: Call compare method for one or all controls, and call url monitoring
+      summary: Call up the comparison method and can update the monitoring status
+      description: Call up the comparison method and can update the monitoring status
       security:
         - ApiKeyAuth: []
+        - cookieAuth: []
       tags:
         - Actions
       parameters:
@@ -173,7 +136,7 @@ paths:
         - in: path
           name: setStatus
           required: true
-          description: control uuid
+          description: 1 to update | 0 to not update => monitoring status
           schema:
             type: string
             enum:
@@ -187,25 +150,26 @@ paths:
               schema:
                 type: string
         "401":
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: "#/components/responses/UnauthorizedError"
         "404":
           description: control uuid not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
         "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /action/cicd/:
     put:
-      summary: Call CI/CD
-      description: Call url CI/CD for control uuid provided
+      summary: Call up the url CI/CD for control uuid provided
+      description: Call up the url CI/CD for control uuid provided
       security:
         - ApiKeyAuth: []
+        - cookieAuth: []
       tags:
         - Actions
       requestBody:
@@ -226,25 +190,26 @@ paths:
               schema:
                 type: string
         "401":
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: "#/components/responses/UnauthorizedError"
         "404":
           description: control uuid not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
         "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /action/lastcomparegitrelease/{controlUuid}/:
     get:
-      summary: Get the github release
-      description: Get the github release of the latest comparison (history) for one control uuid
+      summary: Get the latest github version registered on the control
+      description: Get the latest github version registered on the control
       security:
         - ApiKeyAuth: []
+        - cookieAuth: []
       tags:
         - Actions
       parameters:
@@ -262,388 +227,23 @@ paths:
               schema:
                 type: string
         "401":
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: "#/components/responses/UnauthorizedError"
         "404":
           description: control uuid not found or github release is empty
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
         "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-  /userlogin:
-    post:
-      summary: login to the system with UI
-      description: UI login method
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      requestBody:
-        description: login properties
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                login:
-                  type: string
-                password:
-                  type: string
-      responses:
-        "200":
-          description: Login OK
-          content:
-            application/text:
-              schema:
-                $ref: '#/components/schemas/InfoIuType'
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    get:
-      summary: get user's login
-      description: Used by UI to show the user's login in the header
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "200":
-          description: User's login
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  login:
-                    type: string
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /users:
-    get:
-      summary: get users list - only admin
-      description: Used by the User Management UI to get users list
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "200":
-          description: Users list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: create user in the database - only admin
-      description: UI create user method
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      requestBody:
-        description: login and password
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewUserType'
-      responses:
-        "200":
-          description: created user
-          content:
-            application/text:
-              schema:
-                type: object
-                properties:
-                  login:
-                    type: string
-        "400":
-          description: User already exists
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: modify user in the database - only admin
-      description: UI modify user method
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      requestBody:
-        description: login and password
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewUserType'
-      responses:
-        "204":
-          description: modified user
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "404":
-          description: User not found
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /users/{uuid}:
-    delete:
-      summary: delete user from the database - only admin
-      description: UI delete user method
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      parameters:
-        - in: path
-          name: uuid
-          required: true
-          description: uuid of the user to delete
-          schema:
-            type: string
-            example: xxxxxxxxxxxxxxxxxx
-      responses:
-        "200":
-          description: deleted
-          content:
-            application/text:
-              schema:
-                type: object
-                properties:
-                  login:
-                    type: string
-                  uuid:
-                    type: string
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "404":
-          description: User not found
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /isauthenticated:
-    get:
-      summary: is the user logged in ?
-      description: Used by UI to verify user is logged
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "204":
-          description: User is logged - no content
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /isadmin:
-    get:
-      summary: does the user have the administrator role ?
-      description: Used by UI to verify user is admin (session is needed)
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "204":
-          description: User is admin - no content
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /userlogout:
-    get:
-      summary: user logout method
-      description: Used by UI to logout user
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "204":
-          description: User is logged out
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /changepassword:
-    put:
-      summary: user change password
-      description: Used by UI to change user password
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      requestBody:
-        description: passwords list
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangePasswordType'
-      responses:
-        "204":
-          description: Password has been changed
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /bearer:
-    get:
-      summary: get user user auth Token
-      description: Used by UI to get user auth Token
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "200":
-          description: User auth Token
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  bearer:
-                    type: string
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: change user auth Token
-      description: Used by UI to get new user auth Token
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "204":
-          description: User auth Token has been changed
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /groups:
-    get:
-      summary: get user's groups in regards the role of the user
-      description: Used by UI to display user's groups
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "200":
-          description: user groups
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                example:
-                  - admin
-                  - sysadminroom1
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /userGroups:
-    get:
-      summary: get the user's groups
-      description: Used by UI
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Authentication
-      responses:
-        "200":
-          description: user groups
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                example:
-                  - admin
-                  - sysadminroom1
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /control/{uuid}:
     get:
-      summary: Get control values
-      description: Get all control data per uuid or all controls (all)
+      summary: To get all the parameters of a control
+      description: To get all the parameters of a control; uuid could be 'all' for all controls
       security:
         - ApiKeyAuth: []
       tags:
@@ -661,80 +261,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UptodateForm'
+                $ref: "#/components/schemas/UptodateForm"
         "401":
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: "#/components/responses/UnauthorizedError"
         "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      summary: Delete one control
-      description: Delete control per uuid
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Control
-      parameters:
-        - in: path
-          name: uuid
-          required: true
-          description: control uuid
-          schema:
-            type: string
-      responses:
-        "200":
-          description: control uuid as JSON
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DeletedRecord'
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "404":
-          description: control uuid not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /scrap/{url}:
-    get:
-      summary: Get provided url content
-      description: Used to retrieve url content from the production server, github API tags...
-      security:
-        - ApiKeyAuth: []
-      tags:
-        - Core
-      parameters:
-        - in: path
-          name: url
-          required: true
-          description: url to scrap http||https supported
-          schema:
-            type: string
-      responses:
-        "200":
-          description: content as text
-          content:
-            application/text:
-              schema:
-                type: string
-        "401":
-          $ref: '#/components/responses/UnauthorizedError'
-        "500":
-          description: Internal error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /version:
     get:
       summary: To get the application version
@@ -758,7 +293,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /healthz:
     get:
       summary: Is service Healthy ?
@@ -774,7 +309,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
   /metrics:
     get:
       summary: not implemented
@@ -785,13 +320,12 @@ paths:
         - Core
       responses:
         "401":
-          $ref: '#/components/responses/UnauthorizedError'
+          $ref: "#/components/responses/UnauthorizedError"
         "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
         "503":
           description: not implemented
-tags: []

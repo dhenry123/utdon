@@ -182,11 +182,9 @@ export const dbGetRecord = (
   if (uuid !== "all") {
     const control = db.filter((item) => item.uuid === uuid);
     if (control.length === 1) {
-      // do not throw error, just log
-      const recordDecrypted = decryptRecord(control[0], logger);
       // ok if admin or record groups includes in groups
-      if (isAdmin || isRecordInUserGroups(recordDecrypted, userGroups))
-        return recordDecrypted;
+      if (isAdmin || isRecordInUserGroups(control[0], userGroups))
+        return decryptRecord(control[0], logger);
       // user is not authorized to get this control
       return null;
     }
