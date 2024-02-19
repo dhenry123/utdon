@@ -148,7 +148,12 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
             ></FieldSetClickableUrl>
             {control.compareResult && control.compareResult.ts ? (
               <FieldSet legend={intl.formatMessage({ id: "Execution date" })}>
-                <>{getRelativeTime(control.compareResult.ts, intl)}</>
+                <>
+                  {getRelativeTime(
+                    result.ts ? result.ts : control.compareResult.ts,
+                    intl
+                  )}
+                </>
               </FieldSet>
             ) : (
               <></>
