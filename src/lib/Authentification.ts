@@ -107,18 +107,6 @@ export class Authentification {
     };
   };
 
-  // // test function
-  // store = (user: UserType): UsersType => {
-  //   if (user && user.login && user.password && user.uuid && user.bearer) {
-  //     this.initDatabaseUsers( {users:[user],groups:{admin:[user.uuid]}});
-  //     //reset user ???
-  //     this.usersgroups.users = { users: [user] };
-  //     return this.users;
-  //   } else {
-  //     throw new Error("User is not well defined");
-  //   }
-  // };
-
   initDatabaseUsers = (usersGroups?: UsersGroupsType) => {
     let usersGroupsToWrite = {
       users: [],

@@ -20,6 +20,13 @@ routerControl.post(
   "/control",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      //access only from the user interface, because adding a control requires going through several steps
+      if (req.app.get("AUTH").isAuthBearer(req)) {
+        res.status(403).json({
+          error: "This operation can only be performed via the user interface",
+        });
+        return;
+      }
       const mfields = [
         "name",
         "urlProduction",
