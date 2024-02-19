@@ -88,6 +88,7 @@ export type contextSliceType = {
   refetchuptodateForm: boolean;
   isAdmin: boolean;
   search: string;
+  isLoaderShip: boolean;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";

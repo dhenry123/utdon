@@ -21,6 +21,7 @@ const initialState: contextSliceType = {
   refetchuptodateForm: false,
   isAdmin: false,
   search: "",
+  isLoaderShip: false,
 };
 
 export const contextSlice = createSlice({
@@ -59,6 +60,9 @@ export const contextSlice = createSlice({
     setSearch(state, value) {
       state.search = value.payload;
     },
+    setIsLoaderShip(state, value) {
+      state.isLoaderShip = value.payload;
+    },
   },
 });
 
@@ -71,5 +75,6 @@ export const {
   setRefetchuptodateForm,
   setIsAdmin,
   setSearch,
+  setIsLoaderShip,
 } = contextSlice.actions;
 export default contextSlice.reducer;

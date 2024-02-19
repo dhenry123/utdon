@@ -31,7 +31,10 @@ import {
   INTIALIZED_CONTROL_TO_PAUSE,
 } from "../../../../src/Constants";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { setRefetchuptodateForm } from "../../app/contextSlice";
+import {
+  setIsLoaderShip,
+  setRefetchuptodateForm,
+} from "../../app/contextSlice";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -165,6 +168,7 @@ export const DisplayControls = () => {
 
   const handleOnCompare = async (control: UptodateForm) => {
     if (control.uuid) {
+      dispatch(setIsLoaderShip(true));
       await dispatch(
         mytinydcUPDONApi.endpoints.getCompare.initiate(control.uuid, {
           forceRefetch: true,
@@ -173,14 +177,19 @@ export const DisplayControls = () => {
         .unwrap()
         .then((response) => {
           if (response) {
-            refetch();
             setIsDialogVisible(true);
             setResultCompare(response);
             setcheckInProgress(control);
+            refetch();
           }
         })
         .catch((error: FetchBaseQueryError) => {
           dispatchServerError(error);
+        })
+        .finally(() => {
+          setTimeout(() => {
+            dispatch(setIsLoaderShip(false));
+          }, 500);
         });
     } else {
       dispatch(

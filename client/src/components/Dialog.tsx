@@ -15,6 +15,7 @@ interface DialogInterface {
   header?: string;
   footerClose?: boolean;
   className?: string;
+  sticky?: boolean;
 }
 
 export const Dialog = ({
@@ -25,6 +26,7 @@ export const Dialog = ({
   header = "",
   footerClose = false,
   className,
+  sticky = false,
 }: DialogInterface) => {
   const intl = useIntl();
 
@@ -33,7 +35,9 @@ export const Dialog = ({
       <div className="Dialog">
         <div className={"modal-common modal"}></div>
         <div
-          onClick={() => onHide()}
+          onClick={() => {
+            if (!sticky) onHide();
+          }}
           className={`modal-common modal-container ${
             className ? className : ""
           }`}
