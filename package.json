@@ -12,7 +12,6 @@
     "updateVersionMajor": "./updateVersion.sh major",
     "updateVersionMinor": "./updateVersion.sh minor",
     "updateVersionPatch": "./updateVersion.sh patch",
-    "genSwaggerYamlFile": "ts-node ./src/genSwaggerJson.ts && yq -p json -o yaml openapi.json > openapi.yaml && rm -f openapi.json",
     "test": "jest --testPathIgnorePatterns='devtest*'"
   },
   "repository": {
