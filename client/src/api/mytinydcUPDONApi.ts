@@ -16,7 +16,7 @@ export const mytinydcUPDONApi = createApi({
   // Query service name
   reducerPath: "api",
   // tag types
-  tagTypes: ["User", "Users"],
+  tagTypes: ["User", "Users", "Groups", "Controls"],
   // Url Base API
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
@@ -57,10 +57,11 @@ export const mytinydcUPDONApi = createApi({
         url: `/action/compare/${encodeURIComponent(uuid)}/0`,
       }),
     }),
-    getCheck: builder.query({
+    getControl: builder.query({
       query: (uuidOrAll: string) => ({
         url: `/control/${uuidOrAll}`,
       }),
+      providesTags: ["Controls"],
     }),
     deleteCheck: builder.mutation({
       query: (uuid: string) => ({
@@ -109,9 +110,12 @@ export const mytinydcUPDONApi = createApi({
       }),
       providesTags: ["Users"],
     }),
-    getUserInfo: builder.query({
+    // needed to keep context when use press F5
+    // login method return info needed but if user press F5 once connected
+    // login method is not recalled
+    getUserLogin: builder.query({
       query: () => ({
-        url: `/user/`,
+        url: `/userlogin/`,
       }),
       providesTags: ["User"],
     }),
@@ -121,7 +125,7 @@ export const mytinydcUPDONApi = createApi({
         url: `/users/`,
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Users", "Groups"],
     }),
     putUser: builder.mutation({
       query: (data: NewUserType) => ({
@@ -129,7 +133,7 @@ export const mytinydcUPDONApi = createApi({
         url: `/users/`,
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Users", "Groups"],
     }),
     deleteUser: builder.mutation({
       query: (login: string) => ({
@@ -139,12 +143,29 @@ export const mytinydcUPDONApi = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    getGroups: builder.query({
+      query: () => ({
+        url: `/groups/`,
+      }),
+      providesTags: ["Groups"],
+    }),
+    isAdmin: builder.query({
+      query: () => ({
+        url: `/isadmin/`,
+      }),
+    }),
+    getUserGroups: builder.query({
+      query: () => ({
+        url: `/userGroups/`,
+      }),
+    }),
   }),
 });
 
 export const {
   usePostUserLoginMutation,
-  useGetCheckQuery,
+  useGetControlQuery,
   useGetUsersQuery,
-  useGetUserInfoQuery,
+  useGetUserLoginQuery,
+  useGetGroupsQuery,
 } = mytinydcUPDONApi;

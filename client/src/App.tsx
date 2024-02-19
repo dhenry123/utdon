@@ -12,11 +12,16 @@ import ServiceMessage from "./components/ServiceMessage";
 import { RouterProvider } from "react-router-dom";
 import { Router } from "./app/Router";
 import { useEffect } from "react";
-import { setLanguage } from "./app/contextSlice";
+import { setIsLoaderShip, setLanguage } from "./app/contextSlice";
+import { Dialog } from "./components/Dialog";
+
+import "./app/css/loadership.scss";
 
 export const App = () => {
   const dispatch = useAppDispatch();
   const contextLanguage = useAppSelector((state) => state.context.language);
+
+  const isDialogVisible = useAppSelector((state) => state.context.isLoaderShip);
 
   useEffect(() => {
     // Browser language detection
@@ -37,6 +42,24 @@ export const App = () => {
         <RouterProvider router={Router()} />
         {/* Global Service Messenger */}
         <ServiceMessage />
+        <Dialog
+          className="loadership_Dialog"
+          visible={isDialogVisible}
+          onHide={() => dispatch(setIsLoaderShip(false))}
+          sticky={true}
+        >
+          <div className="loadership_ILQMG">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </Dialog>
       </IntlProvider>
     </div>
   );

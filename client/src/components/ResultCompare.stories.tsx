@@ -29,7 +29,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    check: STORYBOOK_UPTODATEFORM,
+    control: STORYBOOK_UPTODATEFORM,
     result: STORYBOOK_UPDATEORNOTSTATE,
   },
 };

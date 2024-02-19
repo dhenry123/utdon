@@ -34,16 +34,16 @@ const activeUptodateForm: UptodateForm = {
 };
 
 const Component = (args: ScrapProductionProps) => {
-  const [check, setCheck] = useState(args.activeUptodateForm);
+  const [control, setControl] = useState(args.activeUptodateForm);
   args = {
     ...args,
-    handleOnChange: (key: UptodateFormFields, value: string) => {
+    handleOnChange: (key: UptodateFormFields, value: string | string[]) => {
       // defined by stories
       if (key === "scrapTypeProduction") return;
-      setCheck({ ...check, [key]: value });
+      setControl({ ...control, [key]: value });
     },
   };
-  return <ScrapProduction {...args} activeUptodateForm={check} />;
+  return <ScrapProduction {...args} activeUptodateForm={control} />;
 };
 
 export const ScrapAsText: Story = {

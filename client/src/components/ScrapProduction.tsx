@@ -28,13 +28,20 @@ import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
 import { ImageUploader } from "./ImageUploader";
 import {
+  INITIALIZED_TOAST,
   SCRAPTYPEOPTIONJSON,
   SCRAPTYPEOPTIONTEXT,
 } from "../../../src/Constants";
+import { mytinydcUPDONApi, useGetGroupsQuery } from "../api/mytinydcUPDONApi";
+import { MultiSelect, Option } from "react-multi-select-component";
+import { buidMultiSelectGroups } from "../helpers/UiMiscHelper";
+import { useAppDispatch, useAppSelector } from "../app/hook";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { showServiceMessage } from "../app/serviceMessageSlice";
 
 export interface ScrapProductionProps {
   activeUptodateForm: UptodateForm;
-  handleOnChange: (key: UptodateFormFields, value: string) => void;
+  handleOnChange: (key: UptodateFormFields, value: string | string[]) => void;
   scrapUrl: (url: string) => Promise<string>;
   onDone: (changeDoneState: boolean) => void;
   displayError: (message: string) => void;
@@ -48,6 +55,7 @@ export const ScrapProduction = ({
   displayError,
 }: ScrapProductionProps) => {
   const intl = useIntl();
+  const dispatch = useAppDispatch();
 
   const [scrapContent, setScrapContent] = useState<string | null>("");
   useState<ScrapType>("json");
@@ -56,6 +64,18 @@ export const ScrapProduction = ({
     { value: "json", label: SCRAPTYPEOPTIONJSON },
     { value: "text", label: SCRAPTYPEOPTIONTEXT },
   ];
+
+  const isAdmin = useAppSelector((state) => state.context.isAdmin);
+
+  const {
+    data: groupsFromServer,
+    isError,
+    error,
+    isUninitialized,
+    refetch,
+  } = useGetGroupsQuery(null, {
+    skip: false,
+  });
 
   /**
    * server return ALWAYS string
@@ -108,6 +128,14 @@ export const ScrapProduction = ({
     handleOnChange("exprProduction", value);
   };
 
+  const handleOnChangeGroups = (value: Option[]) => {
+    const controlGroups: string[] = [];
+    for (const item of value) {
+      controlGroups.push(item.value);
+    }
+    handleOnChange("groups", controlGroups);
+  };
+
   useEffect(() => {
     setProductionVersion("");
     handleApplyProductionContentRegExp();
@@ -117,6 +145,29 @@ export const ScrapProduction = ({
   useEffect(() => {
     setScrapContent("");
   }, [activeUptodateForm.urlProduction]);
+
+  useEffect(() => {
+    if (!isUninitialized) refetch();
+    // only normal users set own groups
+    if (!isAdmin)
+      dispatch(mytinydcUPDONApi.endpoints.getUserGroups.initiate(null))
+        .unwrap()
+        .then((response) => {
+          if (response.groups) {
+            handleOnChange("groups", response.groups);
+          }
+        })
+        .catch((error: FetchBaseQueryError) => {
+          dispatch(
+            showServiceMessage({
+              ...INITIALIZED_TOAST,
+              severity: "error",
+              sticky: true,
+              detail: error.data ? error.data : "unknown error",
+            })
+          );
+        });
+  }, []);
 
   return (
     <div className={`ScrapProduction`}>
@@ -130,7 +181,7 @@ export const ScrapProduction = ({
         </FieldSet>
         <FieldSet
           className="name"
-          legend={intl.formatMessage({ id: "Give the check name" })}
+          legend={intl.formatMessage({ id: "Give the control name" })}
         >
           <InputGeneric
             value={activeUptodateForm.name}
@@ -149,7 +200,7 @@ export const ScrapProduction = ({
         </FieldSet>
         <FieldSet
           legend={intl.formatMessage({ id: "Get Content" })}
-          className="url"
+          className="getcontent"
         >
           <ButtonGeneric
             label={intl.formatMessage({ id: "Start" })}
@@ -157,6 +208,28 @@ export const ScrapProduction = ({
             icon="download"
             disabled={activeUptodateForm.urlProduction === ""}
           />
+        </FieldSet>
+        <FieldSet
+          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
+          className="groups"
+        >
+          {!isError ? (
+            <MultiSelect
+              options={
+                groupsFromServer ? buidMultiSelectGroups(groupsFromServer) : []
+              }
+              value={
+                activeUptodateForm.groups &&
+                activeUptodateForm.groups.length > 0
+                  ? buidMultiSelectGroups(activeUptodateForm.groups)
+                  : []
+              }
+              onChange={(values: Option[]) => handleOnChangeGroups(values)}
+              labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
+            />
+          ) : (
+            <div>{error.toString()}</div>
+          )}
         </FieldSet>
       </Block>
       <Block>
@@ -254,7 +327,8 @@ export const ScrapProduction = ({
               !productionVersion ||
               !activeUptodateForm.name ||
               !activeUptodateForm.urlProduction ||
-              !activeUptodateForm.exprProduction
+              !activeUptodateForm.exprProduction ||
+              activeUptodateForm.groups.length === 0
             }
           />
         </FieldSet>

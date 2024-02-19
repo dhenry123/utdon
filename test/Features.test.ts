@@ -111,6 +111,7 @@ describe("Features", () => {
       httpMethodCronJobMonitoring: "GET",
       isPause: true,
       compareResult: null,
+      groups: [],
     })
       .then((result) => {
         return result;

@@ -4,13 +4,16 @@
  */
 
 import { useNavigate } from "react-router-dom";
-import { mytinydcUPDONApi, useGetUserInfoQuery } from "../api/mytinydcUPDONApi";
+import {
+  mytinydcUPDONApi,
+  useGetUserLoginQuery,
+} from "../api/mytinydcUPDONApi";
 import { useIntl } from "react-intl";
 import ButtonGeneric from "./ButtonGeneric";
-import { useAppDispatch } from "../app/hook";
+import { useAppDispatch, useAppSelector } from "../app/hook";
 
 import "./Header.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog } from "./Dialog";
 import { ChangePassword } from "../features/changepassword/ChangePassword";
 import { CurlCommands } from "../features/curlcommands/CurlCommands";
@@ -18,8 +21,9 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import { setRefetchuptodateForm } from "../app/contextSlice";
+import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
+import { Search } from "./Search.tsx";
 
 export const Header = () => {
   const intl = useIntl();
@@ -31,13 +35,17 @@ export const Header = () => {
 
   const [dialogHeader, setDialogHeader] = useState("");
 
+  const isAdmin = useAppSelector((state) => state.context.isAdmin);
+
+  const searchString = useAppSelector((state) => state.context.search);
+
   /**
    * Used for server errors (api entrypoint call)
    * @param error
    * @returns
    */
   const dispatchServerError = (error: FetchBaseQueryError) => {
-    if (error) {
+    if (error && error.data) {
       const servererror = error.data as ErrorServer;
       if (servererror.error) {
         dispatch(
@@ -59,6 +67,9 @@ export const Header = () => {
         forceRefetch: true,
       })
     ).then(() => {
+      // cache behavior uneexpected !!!
+      // dispatch(mytinydcUPDONApi.util.resetApiState());
+      // dispatch(mytinydcUPDONApi.util.invalidateTags(["Controls"]));
       return navigate("/login");
     });
   };
@@ -95,7 +106,7 @@ export const Header = () => {
         );
         setIsDialogVisible(true);
       })
-      .catch((error) => {
+      .catch((error: FetchBaseQueryError) => {
         dispatchServerError(error);
       });
   };
@@ -112,9 +123,23 @@ export const Header = () => {
 
   const [dialogContent, setDialogContent] = useState(<></>);
 
-  const { data: userInfo, isSuccess } = useGetUserInfoQuery(null, {
+  const { data: userInfo, isSuccess } = useGetUserLoginQuery(null, {
     skip: false,
   });
+
+  useEffect(() => {
+    dispatch(
+      mytinydcUPDONApi.endpoints.isAdmin.initiate(null, { forceRefetch: true })
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(setIsAdmin(true));
+      })
+      .catch((error: FetchBaseQueryError) => {
+        dispatch(setIsAdmin(false));
+        if (error && error.status !== 401) dispatchServerError(error);
+      });
+  }, []);
 
   return (
     <div className="header">
@@ -166,13 +191,18 @@ export const Header = () => {
             onClick={displayDialogCurlCommands}
           />
         </div>
+        {location.pathname === "/" ? (
+          <Search searchString={searchString} />
+        ) : null}
         <div className="flexPushLeft logout">
           <div className="manager">
-            <ButtonGeneric
-              onClick={displayDialogUsersManager}
-              icon={"users"}
-              title={intl.formatMessage({ id: "Users manager" })}
-            />
+            {isAdmin ? (
+              <ButtonGeneric
+                onClick={displayDialogUsersManager}
+                icon={"users"}
+                title={intl.formatMessage({ id: "Users manager" })}
+              />
+            ) : null}
 
             <ButtonGeneric
               icon={"key"}

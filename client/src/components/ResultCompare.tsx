@@ -28,11 +28,11 @@ import { INITIALIZED_TOAST } from "../../../src/Constants";
 import { getRelativeTime } from "../helpers/DateHelper";
 
 interface ResultCompareProps {
-  check: UptodateForm;
+  control: UptodateForm;
   result: UptoDateOrNotState;
 }
 
-export const ResultCompare = ({ result, check }: ResultCompareProps) => {
+export const ResultCompare = ({ result, control }: ResultCompareProps) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
 
@@ -42,13 +42,15 @@ export const ResultCompare = ({ result, check }: ResultCompareProps) => {
 
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error) {
-      const servererror = error.data as ErrorServer;
+      const servererror = error.data
+        ? (JSON.parse(error.data as string) as ErrorServer)
+        : { error: "Unknown error" };
       dispatch(
         showServiceMessage({
           ...INITIALIZED_TOAST,
           severity: "error",
           sticky: true,
-          detail: intl.formatMessage({ id: JSON.parse(servererror.error) }),
+          detail: servererror.error,
         })
       );
       if (error.status === 401) return navigate("/login");
@@ -89,7 +91,8 @@ export const ResultCompare = ({ result, check }: ResultCompareProps) => {
           })
         );
       })
-      .catch((error) => {
+      .catch((error: FetchBaseQueryError) => {
+        console.log(error);
         dispatchServerError(error);
       });
   };
@@ -133,19 +136,24 @@ export const ResultCompare = ({ result, check }: ResultCompareProps) => {
         <>
           <div className="summary">
             <FieldSet legend={intl.formatMessage({ id: "Name" })}>
-              <div>{check.name}</div>
+              <div>{control.name}</div>
             </FieldSet>
             <FieldSetClickableUrl
               legend={intl.formatMessage({ id: "Production version url" })}
-              url={check.urlProduction}
+              url={control.urlProduction}
             />
             <FieldSetClickableUrl
               legend={intl.formatMessage({ id: "GitHub repository url" })}
-              url={check.urlGitHub}
+              url={control.urlGitHub}
             ></FieldSetClickableUrl>
-            {check.compareResult && check.compareResult.ts ? (
+            {control.compareResult && control.compareResult.ts ? (
               <FieldSet legend={intl.formatMessage({ id: "Execution date" })}>
-                <>{getRelativeTime(check.compareResult.ts, intl)}</>
+                <>
+                  {getRelativeTime(
+                    result.ts ? result.ts : control.compareResult.ts,
+                    intl
+                  )}
+                </>
               </FieldSet>
             ) : (
               <></>
@@ -212,18 +220,18 @@ export const ResultCompare = ({ result, check }: ResultCompareProps) => {
                   id: "Send status to monitoring service",
                 })}
                 onClick={() => {
-                  if (check.uuid) {
+                  if (control.uuid) {
                     handleSendStateExternalMonitoring(
-                      check.uuid,
+                      control.uuid,
                       result.state,
                       result.productionVersion,
                       result.githubLatestRelease
                     );
                   }
                 }}
-                disabled={!check.urlCronJobMonitoring || check.isPause}
+                disabled={!control.urlCronJobMonitoring || control.isPause}
                 title={
-                  !check.urlCronJobMonitoring || check.isPause
+                  !control.urlCronJobMonitoring || control.isPause
                     ? intl.formatMessage({
                         id: "Disabled because the monitoring service url is not defined or actions are disabled",
                       })
@@ -236,18 +244,18 @@ export const ResultCompare = ({ result, check }: ResultCompareProps) => {
                   id: "Start the action on the CI/CD chain",
                 })}
                 onClick={() => {
-                  if (check.uuid) {
+                  if (control.uuid) {
                     setIsConfirmDialogVisible(true);
                   }
                 }}
                 title={
-                  !check.urlCICD || check.isPause
+                  !control.urlCICD || control.isPause
                     ? intl.formatMessage({
                         id: "Disabled because the CI/CD service url is not defined or actions are disabled",
                       })
                     : ""
                 }
-                disabled={!check.urlCICD || check.isPause}
+                disabled={!control.urlCICD || control.isPause}
               />
             </div>
           </FieldSet>
@@ -261,7 +269,7 @@ export const ResultCompare = ({ result, check }: ResultCompareProps) => {
         }
         onConfirm={() => {
           setIsConfirmDialogVisible(false);
-          handleStartCiCd(check.uuid as string);
+          handleStartCiCd(control.uuid as string);
         }}
         onCancel={() => setIsConfirmDialogVisible(false)}
       />

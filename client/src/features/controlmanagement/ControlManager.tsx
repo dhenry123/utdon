@@ -106,6 +106,9 @@ export const ControlManager = () => {
         break;
       }
     }
+    if (activeUptodateForm.groups && activeUptodateForm.groups.length === 0) {
+      recordableState = false;
+    }
     setIsRecordable(recordableState);
   };
 
@@ -148,7 +151,7 @@ export const ControlManager = () => {
    */
   const handleOnChangeUptodateForm = (
     key: UptodateFormFields,
-    value: string
+    value: string | string[]
   ) => {
     dispatch(updateKeyUptodateFrom({ key: key, value: value }));
     // each time the model change to indicate user have to save
@@ -186,12 +189,12 @@ export const ControlManager = () => {
       dispatch(mytinydcUPDONApi.endpoints.postCheck.initiate(uptodateForm))
         .unwrap()
         .then((response) => {
-          const check = response?.check as UptodateForm;
+          const control = response?.control as UptodateForm;
           //update uuid
-          if (check.uuid) {
-            handleOnChangeUptodateForm("uuid", check.uuid);
+          if (control.uuid) {
+            handleOnChangeUptodateForm("uuid", control.uuid);
             setIsChangesOnModel(false);
-            resolv(check);
+            resolv(control);
           } else {
             const message = "the uuid is missing from the server response";
             dispatch(
@@ -246,7 +249,7 @@ export const ControlManager = () => {
       const uuid = location.pathname.replace(/\/ui\/editcontrol\//, "");
       if (uuid) {
         dispatch(
-          mytinydcUPDONApi.endpoints.getCheck.initiate(uuid, {
+          mytinydcUPDONApi.endpoints.getControl.initiate(uuid, {
             forceRefetch: true,
           })
         )

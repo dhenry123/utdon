@@ -1,3 +1,4 @@
+import { Option } from "react-multi-select-component";
 /**
  * generic method to copy div content to clipboard
  * @param divRef
@@ -22,4 +23,12 @@ export const copyToClipboard = (divRef: React.MutableRefObject<null>) => {
       reject(new Error("divRef must be provided"));
     }
   });
+};
+
+export const buidMultiSelectGroups = (groups: string[]): Option[] => {
+  const options: Option[] = [];
+  for (const group of groups) {
+    options.push({ label: group, value: group });
+  }
+  return options;
 };

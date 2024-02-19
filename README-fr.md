@@ -37,6 +37,7 @@ Les versions "Release Candidats" seront définies comme suit : "[\d+]\.[\d+]\.[\
   - http://[Addresse IP]:[port]/
   - login/mot de passe par défaut: admin/admin
 - Vous changez le mot de passe.
+- [Creation des utilisateurs & groupes](./doc/GROUPS.md)
 - [Création du premier "contrôle" (qui peut être votre nouveau service UTDON... pour vérifier que tout fonctionne)](./doc/CONTROL.md)
 - Vous exécuter la comparaison.
 - Chaque contrôle indique son dernier état de "comparaison".
@@ -102,9 +103,7 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 
 - Authentification Github pour supprimer la barrière "rate-limit".
 - Dupliquer un contrôle.
-- Filtres pour l'affichage.
-- Classement des contrôles par groupes.
-- Plusieurs "Auth Token" par contrôle pour éviter de fournir le jeton d'authentification de l'admin.
+- Ajout d'un token "readonly" par utilisateur pour utilisation à partir d'une chaîne CI/CD
 - Stockage S3.
 - Entrypoint API metrics.
 - Authentification LDAP.
@@ -114,6 +113,10 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 - image de la page de connexion: générée par l'AI <https://www.artguru.ai/fr/>
 
 - Radioactive button : <https://zurb.com/playground/radioactive-buttons>
+
+- Multiselect component https://github.com/hc-oss/react-multi-select-component?tab=readme-ov-file
+
+- LoaderShip: https://www.loadership.com/
 
 - Logo: <https://www.instagram.com/henry_redbeard/>
 

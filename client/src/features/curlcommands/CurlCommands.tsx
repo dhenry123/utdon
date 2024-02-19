@@ -70,7 +70,7 @@ export const CurlCommands = ({
               id: "API entry point for the github version of the latest comparison",
             })}
             userAuthBearer={auth}
-            apiEntrypoint={`/api/v1/action/lastcomparegitrealase/${uptodateForm.uuid}`}
+            apiEntrypoint={`/api/v1/action/lastcomparegitrelease/${uptodateForm.uuid}`}
             method={"GET"}
           />
           <FieldSetApiEntrypoint
@@ -78,8 +78,9 @@ export const CurlCommands = ({
               id: "API entry point for calling the CI/CD chain for this control",
             })}
             userAuthBearer={auth}
-            apiEntrypoint={`/api/v1/action/cicd/${uptodateForm.uuid}`}
-            method={"GET"}
+            apiEntrypoint={`/api/v1/action/cicd/`}
+            body={JSON.stringify({ uuid: uptodateForm.uuid })}
+            method={"PUT"}
           />
           <FieldSetApiEntrypoint
             commandTitle={intl.formatMessage({

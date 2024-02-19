@@ -31,6 +31,7 @@ export type UptodateForm = {
   urlCICDAuth: string;
   isPause: boolean;
   compareResult: UptoDateOrNotState | null;
+  groups: GroupMembersType;
 };
 
 export type UptodateFormFields =
@@ -48,7 +49,8 @@ export type UptodateFormFields =
   | "urlCICD"
   | "httpMethodCICD"
   | "urlCICDAuth"
-  | "isPause";
+  | "isPause"
+  | "groups";
 
 export type ApiResponseType = {
   data?: JSON;
@@ -58,6 +60,8 @@ export type ApiResponseType = {
 export type InfoIuType = {
   login: string;
   bearer: string;
+  uuid: string;
+  groups: string[];
 };
 
 export type ActionStatusType = {
@@ -74,7 +78,6 @@ export type ActionCiCdType = {
 export type contextSliceType = {
   // French is default language
   language: { locale: string; lang: JSONLang };
-  user: InfoIuType;
   application: {
     name: string;
     applicationtitle: string;
@@ -83,6 +86,9 @@ export type contextSliceType = {
   };
   uptodateForm: UptodateForm;
   refetchuptodateForm: boolean;
+  isAdmin: boolean;
+  search: string;
+  isLoaderShip: boolean;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";
@@ -162,7 +168,6 @@ export type UIError = {
 };
 
 export type ChangePasswordType = {
-  login: string;
   password: string;
   newPassword: string;
   newConfirmPassword: string;
@@ -171,9 +176,31 @@ export type ChangePasswordType = {
 export type NewUserType = {
   login: string;
   password: string;
+  groups: string[];
+  uuid?: string;
 };
 
 export type ControlToPause = {
   uuid: string;
   state: boolean;
+};
+
+export type GroupMembersType = string[];
+
+/**
+ * {"group name" : [ members...] }
+ */
+export type GroupsType = {
+  [key: string]: GroupMembersType;
+};
+
+export type UsersGroupsType = {
+  users: UserType[];
+  groups: GroupsType;
+};
+
+export type UserDescriptionType = {
+  login: string;
+  uuid: string;
+  groups: string[];
 };

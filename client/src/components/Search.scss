@@ -1,0 +1,28 @@
+@import "../app/css/root.scss";
+$searchbuttonsize: 2rem;
+.Search {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.2rem;
+
+  border: 1px solid #8c6cb1;
+  border-radius: 6px;
+  padding: 0 0.2rem;
+  .inputgeneric {
+    border: none;
+  }
+  .inputgeneric:focus {
+    outline: none;
+  }
+  .ButtonGeneric {
+    width: $searchbuttonsize;
+    height: $searchbuttonsize;
+    align-self: center;
+    background-color: transparent;
+    i {
+      font-size: 1rem;
+      color: #f2598b;
+    }
+  }
+}

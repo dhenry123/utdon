@@ -25,7 +25,7 @@ export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   urlProduction: "",
 };
 
-export const APPLICATION_VERSION = "1.3.0";
+export const APPLICATION_VERSION = "1.4.0";
 
 // routes which dont need authentication to be served
 // firsts are UI routes
@@ -80,7 +80,6 @@ export const SCRAPTYPEOPTIONJSON = "Json";
 export const SCRAPTYPEOPTIONTEXT = "Text / HTML / XML";
 
 export const INITIALIZED_CHANGEPASSWORD: ChangePasswordType = {
-  login: "",
   password: "",
   newPassword: "",
   newConfirmPassword: "",
@@ -89,6 +88,7 @@ export const INITIALIZED_CHANGEPASSWORD: ChangePasswordType = {
 export const INITIALIZED_NEWUSER: NewUserType = {
   login: "",
   password: "",
+  groups: [],
 };
 
 export const INITIALIZED_UPTODATEFORM: UptodateForm = {
@@ -108,6 +108,7 @@ export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   uuid: "",
   isPause: false,
   compareResult: null,
+  groups: [],
 };
 
 export const HTTP_METHOD_ENUM: SelectOptionType[] = [

@@ -24,6 +24,7 @@ import {
   ADMINPASSWORDDEFAULT,
   ADMINUSERLOGINDEFAULT,
   API_ENTRY_POINTS_NO_NEED_AUTHENTICATION,
+  APPLICATION_VERSION,
   JSON_POST_MAX_SIZE,
   OPENAPIFILEYAML,
   SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB,
@@ -33,6 +34,7 @@ import routerControl from "./routes/routerControls";
 import routerActions from "./routes/routerActions";
 import routerCore from "./routes/routerCore";
 import routerAuth from "./routes/routerAuth";
+import { patchV1_3_0To1_4_0 as patchDbTo1_4_0 } from "./lib/PatchVersion";
 
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";
@@ -55,6 +57,9 @@ if (!process.env.USER_ENCRYPT_SECRET || !process.env.DATABASE_ENCRYPT_SECRET) {
   );
   process.exit(1);
 }
+
+const app = express();
+
 // Database
 let dbfile = dbConnect(getDbInitJsonFileName());
 if (!dbfile) {
@@ -70,27 +75,41 @@ dbCreate(dbfile).catch((error: Error) => {
   }
 });
 dbGetData(dbfile)
-  .then((res) => {
-    app.set("DB", res);
+  .then(async (res) => {
+    // Update data for version
+    if (APPLICATION_VERSION === "1.4.0") {
+      const newDbContent = await patchDbTo1_4_0(res);
+      await dbCommit(dbfile || "", newDbContent)
+        .then(() => {
+          app.set("DB", newDbContent);
+        })
+        .catch((error) => {
+          throw error;
+        });
+    } else {
+      app.set("DB", res);
+    }
   })
   .catch((error) => {
     logger.error(error);
     process.exit(1);
   });
 
-// Checking user database
-const userDbPathDev = `${__dirname}/../data/user.json`;
-const userDbPath = `${__dirname}/data/user.json`;
+// Checking users/groups databases - need to be renamed
+const usersDbPathDev = `${__dirname}/../data/user.json`;
+const usersDbPath = `${__dirname}/data/user.json`;
+
 const auth = new Authentification(
-  process.env.environment === "development" ? userDbPathDev : userDbPath
+  process.env.environment === "development" ? usersDbPathDev : usersDbPath
 );
 const data = auth.loadUsersFromDatabase();
 if (data.users && data.users.length === 0) {
   logger.info({ action: "Creating user database, with admin/admin" });
-  auth.store(auth.makeUser(ADMINUSERLOGINDEFAULT, ADMINPASSWORDDEFAULT));
+  const newUser = auth.makeUser(ADMINUSERLOGINDEFAULT, ADMINPASSWORDDEFAULT);
+  auth.addUser(newUser);
+  // first user is admin
+  auth.addGroupMember("admin", newUser.uuid);
 }
-
-const app = express();
 
 // shared objects
 app.set("LOGGER", logger);
@@ -115,7 +134,7 @@ app.use(express.json({ limit: JSON_POST_MAX_SIZE }));
 const sessionOpts = {
   secret: crypto.randomBytes(16).toString("hex"),
   resave: false,
-  saveUninitialized: true, // create non initialized session
+  saveUninitialized: false,
 };
 const serverSession = session(sessionOpts);
 app.use(serverSession);
@@ -233,9 +252,9 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 const httpServer = http.createServer(app);
 httpServer.listen(app.get("PORT"), app.get("IPADDRESS"), function () {
   logger.info(
-    `[Httpserver] listening at http://${app.get("IPADDRESS")}:${app.get(
-      "PORT"
-    )}`
+    `[Httpserver - ${
+      process.env.environment !== "development" ? "production" : "development"
+    }] listening at http://${app.get("IPADDRESS")}:${app.get("PORT")}`
   );
 });
 

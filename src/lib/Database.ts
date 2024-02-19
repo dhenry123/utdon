@@ -83,27 +83,27 @@ export const dbGetData = (file: string): Promise<UptodateForm[]> => {
 /**
  * This method must be called in try catch block
  * @param db
- * @param check
+ * @param control
  * @returns
  */
 export const dbInsert = (
   db: UptodateForm[],
-  check: UptodateForm
+  control: UptodateForm
 ): Promise<string> => {
   return new Promise((resolv, reject) => {
-    if (check.uuid) {
+    if (control.uuid) {
       reject(new Error("Impossible to add object with an uuid"));
     }
     const uuid = uuidv4();
     db.push({
-      ...check,
+      ...control,
       uuid: uuid,
       urlCICDAuth: Authentification.dataEncrypt(
-        check.urlCICDAuth,
+        control.urlCICDAuth,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
       urlCronJobMonitoringAuth: Authentification.dataEncrypt(
-        check.urlCronJobMonitoringAuth,
+        control.urlCronJobMonitoringAuth,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
     });
@@ -158,22 +158,46 @@ const decryptDb = (records: UptodateForm[], logger: Logger) => {
   return decryptedDb;
 };
 
+export const isRecordInUserGroups = (
+  record: UptodateForm,
+  userGroups: string[]
+): boolean => {
+  // could be remove "|| []" - for compatibility between 1.3 & 1.4 release
+  // with 1.3 data groups attribut was not defined
+  const groupsControl = record.groups || [];
+  for (const groupControl of groupsControl) {
+    if (userGroups.includes(groupControl)) return true;
+  }
+  return false;
+};
+
 export const dbGetRecord = (
   db: UptodateForm[],
   uuid: string,
+  userGroups: string[],
+  isAdmin: boolean,
   logger: Logger
 ): UptodateForm[] | UptodateForm | null => {
   if (!uuid) return null;
   if (uuid !== "all") {
     const control = db.filter((item) => item.uuid === uuid);
-
     if (control.length === 1) {
-      // do not throw error, just log
-      const recordDecrypted = decryptRecord(control[0], logger);
-      return recordDecrypted;
+      // ok if admin or record groups includes in groups
+      if (isAdmin || isRecordInUserGroups(control[0], userGroups))
+        return decryptRecord(control[0], logger);
+      // user is not authorized to get this control
+      return null;
     }
   } else {
-    return decryptDb(db, logger);
+    // All controls are asked
+    const controlsToReturn: UptodateForm[] = [];
+    const dbDecrypted = decryptDb(db, logger);
+    // is control has group which matchs with userGroups
+    for (const control of dbDecrypted) {
+      if (isAdmin || isRecordInUserGroups(control, userGroups))
+        controlsToReturn.push(control);
+    }
+    return controlsToReturn;
   }
   return null;
 };

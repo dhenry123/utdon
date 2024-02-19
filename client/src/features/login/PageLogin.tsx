@@ -8,7 +8,6 @@ import "./PageLogin.scss";
 import { useIntl } from "react-intl";
 import { usePostUserLoginMutation } from "../../api/mytinydcUPDONApi";
 import { clearToast, showServiceMessage } from "../../app/serviceMessageSlice";
-import { setUser } from "../../app/contextSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hook";
 import { useNavigate } from "react-router-dom";
 import { LoginBlock } from "../../components/LoginBlock";
@@ -34,9 +33,9 @@ export const PageLogin = () => {
   const handleOnLogin = async (jsonloginpassword: PostAuthent) => {
     return await userLogin(jsonloginpassword)
       .unwrap()
-      .then(async (response) => {
-        // set token to settings
-        dispatch(setUser(response));
+      .then(async () => {
+        // user info will be set by header. Header is calle even user press F5
+        // if already connected, info will be redispatch on global state
         // reset Toast
         await dispatch(clearToast());
         return navigate("/");

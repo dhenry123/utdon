@@ -81,8 +81,10 @@ export const FieldSetApiEntrypoint = ({
       <div className="curlcommand">
         <div className="command" ref={divRef}>
           {`curl -s ${kParameter ? "-k" : ""} ${
-            userAuthBearer ? `-H "Authorization: ${userAuthBearer}"` : ""
-          } ${body ? `-d "${body}"` : ""} ${url}`}
+            method && method !== "GET" ? `-X ${method}` : ""
+          } ${userAuthBearer ? `-H "Authorization: ${userAuthBearer}"` : ""} ${
+            body ? `-H "Content-Type: application/json" --data '${body}'` : ""
+          } ${url}`}
         </div>
         <ButtonGeneric
           className="copyToClipboard"

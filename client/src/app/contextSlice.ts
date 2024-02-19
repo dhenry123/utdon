@@ -11,7 +11,6 @@ import { contextSliceType } from "../../../src/Global.types";
 const initialState: contextSliceType = {
   // French is default language
   language: { locale: "fr", lang: languageFr },
-  user: { login: "", bearer: "" },
   application: {
     name: "UTdOn",
     applicationtitle: "UtDon",
@@ -20,15 +19,15 @@ const initialState: contextSliceType = {
   },
   uptodateForm: INITIALIZED_UPTODATEFORM,
   refetchuptodateForm: false,
+  isAdmin: false,
+  search: "",
+  isLoaderShip: false,
 };
 
 export const contextSlice = createSlice({
   name: "context",
   initialState,
   reducers: {
-    setUser: (state, value) => {
-      state.user = value.payload;
-    },
     setLanguage: (state, value) => {
       if (value.payload === "fr") {
         state.language.locale = value.payload;
@@ -55,16 +54,27 @@ export const contextSlice = createSlice({
     setRefetchuptodateForm(state, value) {
       state.refetchuptodateForm = value.payload;
     },
+    setIsAdmin(state, value) {
+      state.isAdmin = value.payload || false;
+    },
+    setSearch(state, value) {
+      state.search = value.payload;
+    },
+    setIsLoaderShip(state, value) {
+      state.isLoaderShip = value.payload;
+    },
   },
 });
 
 // Exportable actions
 export const {
   setLanguage,
-  setUser,
   updateKeyUptodateFrom,
   resetUpdateForm,
   setUpdateForm,
   setRefetchuptodateForm,
+  setIsAdmin,
+  setSearch,
+  setIsLoaderShip,
 } = contextSlice.actions;
 export default contextSlice.reducer;

@@ -7,7 +7,10 @@ import { useIntl } from "react-intl";
 import { useAppDispatch, useAppSelector } from "../../app/hook";
 
 import "./DisplayControls.scss";
-import { mytinydcUPDONApi, useGetCheckQuery } from "../../api/mytinydcUPDONApi";
+import {
+  mytinydcUPDONApi,
+  useGetControlQuery,
+} from "../../api/mytinydcUPDONApi";
 import {
   ControlToPause,
   ErrorServer,
@@ -28,7 +31,10 @@ import {
   INTIALIZED_CONTROL_TO_PAUSE,
 } from "../../../../src/Constants";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { setRefetchuptodateForm } from "../../app/contextSlice";
+import {
+  setIsLoaderShip,
+  setRefetchuptodateForm,
+} from "../../app/contextSlice";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -58,13 +64,15 @@ export const DisplayControls = () => {
 
   const [userAuthBearer, setuserAuthBearer] = useState("");
 
+  const searchString = useAppSelector((state) => state.context.search);
+
   const {
     data,
     isSuccess,
     isError,
     refetch,
     error: ErrorOnFetch,
-  } = useGetCheckQuery("all", {
+  } = useGetControlQuery("all", {
     skip: false,
   });
 
@@ -158,24 +166,30 @@ export const DisplayControls = () => {
       });
   };
 
-  const handleOnCompare = async (check: UptodateForm) => {
-    if (check.uuid) {
+  const handleOnCompare = async (control: UptodateForm) => {
+    if (control.uuid) {
+      dispatch(setIsLoaderShip(true));
       await dispatch(
-        mytinydcUPDONApi.endpoints.getCompare.initiate(check.uuid, {
+        mytinydcUPDONApi.endpoints.getCompare.initiate(control.uuid, {
           forceRefetch: true,
         })
       )
         .unwrap()
         .then((response) => {
           if (response) {
-            refetch();
             setIsDialogVisible(true);
             setResultCompare(response);
-            setcheckInProgress(check);
+            setcheckInProgress(control);
+            refetch();
           }
         })
         .catch((error: FetchBaseQueryError) => {
           dispatchServerError(error);
+        })
+        .finally(() => {
+          setTimeout(() => {
+            dispatch(setIsLoaderShip(false));
+          }, 500);
         });
     } else {
       dispatch(
@@ -238,6 +252,11 @@ export const DisplayControls = () => {
           {/* <div className="filters">Filter on :</div> */}
           <div className="list">
             {data.map((item: UptodateForm) => {
+              if (
+                searchString &&
+                !item.name.match(new RegExp(searchString, "i"))
+              )
+                return null;
               return (
                 <Control
                   handleOnDelete={handleOnDelete}
@@ -263,7 +282,7 @@ export const DisplayControls = () => {
       >
         <ResultCompare
           result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          check={checkInProgress}
+          control={checkInProgress}
         />
       </Dialog>
       <ConfirmDialog
