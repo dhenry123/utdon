@@ -197,6 +197,13 @@ export const ScrapProduction = ({
             value={activeUptodateForm.urlProduction}
             onChange={(value: string) => handleOnChange("urlProduction", value)}
           />
+          <InputGeneric
+            className=""
+            // value={activeUptodateForm.header}
+            value={""}
+            placeholder="Authentification header (option)"
+            onChange={(value: string) => handleOnChange("urlProduction", value)}
+          />
         </FieldSet>
         <FieldSet
           legend={intl.formatMessage({ id: "Get Content" })}
