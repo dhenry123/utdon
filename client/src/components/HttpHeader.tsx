@@ -22,13 +22,12 @@ export const HttpHeader = ({
   const intl = useIntl();
 
   return (
-    <div className={`HttpHeader`}>
-      <FieldSet
-        legend={intl.formatMessage({ id: "HTTP Header" })}
-        className="headershttp"
-        toolTipContent={`${intl.formatMessage({
-          id: "(Optional) HTTP Header, use when authentication with token is needed",
-        })}
+    <FieldSet
+      legend={intl.formatMessage({ id: "HTTP Header" })}
+      className="HttpHeader"
+      toolTipContent={`${intl.formatMessage({
+        id: "(Optional) HTTP Header, use when authentication with token is needed",
+      })}
               ${intl.formatMessage({ id: "eg" })}:
               - ${intl.formatMessage({
                 id: "Attribut: Authorization ; value: Bearer myauthtoken",
@@ -38,26 +37,25 @@ export const HttpHeader = ({
               })}
 
               `}
-      >
-        <InputGeneric
-          className="headerhttpkey"
-          value={headerkey}
-          placeholder={intl.formatMessage({ id: "HTTP header attribut" })}
-          title={intl.formatMessage({ id: "HTTP header attribut" })}
-          onChange={(value: string) => handleOnChange("headerkey", value)}
-        />
-        <InputGeneric
-          className="headerhttpvalue"
-          placeholder={intl.formatMessage({
-            id: "HTTP header attribute value",
-          })}
-          title={intl.formatMessage({
-            id: "HTTP header attribute value",
-          })}
-          value={headervalue}
-          onChange={(value: string) => handleOnChange("headervalue", value)}
-        />
-      </FieldSet>
-    </div>
+    >
+      <InputGeneric
+        className="headerhttpkey"
+        value={headerkey}
+        placeholder={intl.formatMessage({ id: "HTTP header attribut" })}
+        title={intl.formatMessage({ id: "HTTP header attribut" })}
+        onChange={(value: string) => handleOnChange("headerkey", value)}
+      />
+      <InputGeneric
+        className="headerhttpvalue"
+        placeholder={intl.formatMessage({
+          id: "HTTP header attribute value",
+        })}
+        title={intl.formatMessage({
+          id: "HTTP header attribute value",
+        })}
+        value={headervalue}
+        onChange={(value: string) => handleOnChange("headervalue", value)}
+      />
+    </FieldSet>
   );
 };

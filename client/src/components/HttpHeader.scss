@@ -10,10 +10,10 @@
       font-size: 0.7rem;
     }
     .headerhttpkey {
-      width: 8rem;
+      width: 8rem !important;
     }
     .headerhttpvalue {
-      width: 22rem;
+      flex-grow: 1;
     }
   }
 }
