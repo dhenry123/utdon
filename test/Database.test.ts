@@ -28,6 +28,8 @@ interface LastErrorTransportOptions {
 const control: UptodateForm = {
   name: "xxxxxx",
   urlProduction: "https://xxxxxxxx",
+  headerkey: "",
+  headervalue: "",
   scrapTypeProduction: "json",
   exprProduction: "join('.',*)",
   urlGitHub: "https://xxxxxxxxx",

@@ -19,6 +19,8 @@ export type UptodateForm = {
   name: string;
   logo?: string;
   urlProduction: string;
+  headerkey: string;
+  headervalue: string;
   scrapTypeProduction: ScrapType;
   exprProduction: string;
   urlGitHub: string;
@@ -50,7 +52,9 @@ export type UptodateFormFields =
   | "httpMethodCICD"
   | "urlCICDAuth"
   | "isPause"
-  | "groups";
+  | "groups"
+  | "headerkey"
+  | "headervalue";
 
 export type ApiResponseType = {
   data?: JSON;

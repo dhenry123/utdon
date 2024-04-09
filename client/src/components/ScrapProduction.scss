@@ -20,6 +20,17 @@
       justify-content: center;
       width: 25%;
     }
+    .headershttp {
+      .content {
+        display: flex;
+        flex-direction: row;
+        column-gap: 1rem;
+        .inputgeneric::placeholder {
+          color: #a03737;
+          font-weight: bold;
+        }
+      }
+    }
     .name {
       width: 25%;
       .inputgeneric {

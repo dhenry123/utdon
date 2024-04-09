@@ -106,6 +106,14 @@ export const dbInsert = (
         control.urlCronJobMonitoringAuth,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
+      headerkey: Authentification.dataEncrypt(
+        control.headerkey,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
+      headervalue: Authentification.dataEncrypt(
+        control.headervalue,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
     });
     resolv(uuid);
   });
@@ -128,15 +136,25 @@ export const dbCommit = (file: string, db: UptodateForm[]): Promise<null> => {
 const decryptRecord = (record: UptodateForm, logger: Logger): UptodateForm => {
   let urlCICDAuth = record.urlCICDAuth;
   let urlCronJobMonitoringAuth = record.urlCronJobMonitoringAuth;
+  let headerkey = record.headerkey;
+  let headervalue = record.headervalue;
   try {
-    (urlCICDAuth = Authentification.dataDecrypt(
+    urlCICDAuth = Authentification.dataDecrypt(
       record.urlCICDAuth,
       process.env.DATABASE_ENCRYPT_SECRET
-    )),
-      (urlCronJobMonitoringAuth = Authentification.dataDecrypt(
-        record.urlCronJobMonitoringAuth,
-        process.env.DATABASE_ENCRYPT_SECRET
-      ));
+    );
+    urlCronJobMonitoringAuth = Authentification.dataDecrypt(
+      record.urlCronJobMonitoringAuth,
+      process.env.DATABASE_ENCRYPT_SECRET
+    );
+    headerkey = Authentification.dataDecrypt(
+      record.headerkey,
+      process.env.DATABASE_ENCRYPT_SECRET
+    );
+    headervalue = Authentification.dataDecrypt(
+      record.headervalue,
+      process.env.DATABASE_ENCRYPT_SECRET
+    );
   } catch (error) {
     logger.error(
       `Database::decryptRecord-Impossible to decrypt record ${record.uuid}`
@@ -147,6 +165,8 @@ const decryptRecord = (record: UptodateForm, logger: Logger): UptodateForm => {
     ...record,
     urlCICDAuth: urlCICDAuth,
     urlCronJobMonitoringAuth: urlCronJobMonitoringAuth,
+    headerkey: headerkey,
+    headervalue: headervalue,
   };
 };
 
@@ -239,6 +259,14 @@ export const dbUpdateRecord = (
       ),
       urlCronJobMonitoringAuth: Authentification.dataEncrypt(
         data.urlCronJobMonitoringAuth,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
+      headerkey: Authentification.dataEncrypt(
+        data.headerkey,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
+      headervalue: Authentification.dataEncrypt(
+        data.headervalue,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
     };

@@ -1,0 +1,26 @@
+@import "../app/css/root.scss";
+.IconWithTooltip {
+  .tooltip {
+    position: absolute;
+    z-index: 9999; /* Set a high z-index value */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    .tooltiptitle {
+      border-bottom: 1px solid #ccc;
+      margin: 0.5rem;
+      align-self: center;
+    }
+    .tooltipbody {
+      margin: 1rem;
+    }
+  }
+  i {
+    font-size: 1.2rem;
+    color: rgb(91, 159, 185);
+  }
+}

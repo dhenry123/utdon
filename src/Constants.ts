@@ -93,6 +93,8 @@ export const INITIALIZED_NEWUSER: NewUserType = {
 
 export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   urlProduction: "",
+  headerkey: "",
+  headervalue: "",
   scrapTypeProduction: "json",
   exprProduction: "join('.',*)",
   urlGitHub: "",
