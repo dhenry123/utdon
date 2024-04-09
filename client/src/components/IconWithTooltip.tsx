@@ -9,7 +9,7 @@ import "./IconWithTooltip.scss";
 import { useState } from "react";
 interface IconWithTooltipProps {
   icon: string;
-  tooltipContent: React.ReactNode;
+  tooltipContent: string;
 }
 
 export const IconWithTooltip = ({
@@ -46,7 +46,12 @@ export const IconWithTooltip = ({
           <div className="tooltiptitle">
             {intl.formatMessage({ id: "Help" })}
           </div>
-          <div className="tooltipbody">{tooltipContent}</div>
+          <div className="tooltipbody">
+            {tooltipContent &&
+              tooltipContent.split("\n").map((line) => {
+                return <div>{line}</div>;
+              })}
+          </div>
         </div>
       )}
     </div>

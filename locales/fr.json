@@ -148,5 +148,12 @@
   "Edit user": "Modifier cet utilisateur",
   "Authorized for group(s)": "Autorisé pour le(s) groupe(s)",
   "Search": "Rechercher",
-  "Reset": "Réinitialiser"
+  "Reset": "Réinitialiser",
+  "HTTP header attribut": "Attribut entête HTTP",
+  "HTTP header attribute value": "Valeur de l'attribut d'entête HTTP",
+  "HTTP Header": "Entête HTTP",
+  "eg": "ex",
+  "Attribut: Authorization ; value: Bearer myauthtoken": "Attribut: Authorization ; valeur: Bearer myauthtoken",
+  "Attribut. X-Auth ; value. myauthtoken": "Attribut: X-Auth ; valeur: myauthtoken",
+  "(Optional) HTTP Header, use when authentication with token is needed": "(Facultatif) En-tête HTTP à utiliser lorsque l'authentification par jeton est requise."
 }

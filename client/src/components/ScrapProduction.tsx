@@ -38,6 +38,7 @@ import { buidMultiSelectGroups } from "../helpers/UiMiscHelper";
 import { useAppDispatch, useAppSelector } from "../app/hook";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { showServiceMessage } from "../app/serviceMessageSlice";
+import { HttpHeader } from "./HttpHeader";
 
 export interface ScrapProductionProps {
   activeUptodateForm: UptodateForm;
@@ -205,32 +206,11 @@ export const ScrapProduction = ({
             value={activeUptodateForm.urlProduction}
             onChange={(value: string) => handleOnChange("urlProduction", value)}
           />
-          <FieldSet
-            legend={intl.formatMessage({
-              id: "HTTP Header",
-            })}
-            className="headershttp"
-            toolTipContent={
-              "Optional HTTP Header (When authentication is needed)"
-            }
-          >
-            <InputGeneric
-              className="headerhttpkey"
-              value={activeUptodateForm.headerkey}
-              placeholder={intl.formatMessage({
-                id: "Http header key",
-              })}
-              onChange={(value: string) => handleOnChange("headerkey", value)}
-            />
-            <InputGeneric
-              className="headerhttpvalue"
-              placeholder={intl.formatMessage({
-                id: "Http header value",
-              })}
-              value={activeUptodateForm.headervalue}
-              onChange={(value: string) => handleOnChange("headervalue", value)}
-            />
-          </FieldSet>
+          <HttpHeader
+            handleOnChange={handleOnChange}
+            headerkey={activeUptodateForm.headerkey}
+            headervalue={activeUptodateForm.headervalue}
+          />
         </FieldSet>
         <FieldSet
           legend={intl.formatMessage({ id: "Get Content" })}
