@@ -19,6 +19,8 @@ export const STORYBOOK_UPDATEORNOTSTATE: UptoDateOrNotState = {
 
 export const STORYBOOK_UPTODATEFORM: UptodateForm = {
   urlProduction: "https://test.com",
+  headerkey: "",
+  headervalue: "",
   scrapTypeProduction: "text",
   exprProduction: "version: (v[\\d.]+)",
   urlGitHub: "https://github.com/",

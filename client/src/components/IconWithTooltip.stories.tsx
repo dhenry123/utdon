@@ -42,7 +42,10 @@ type Story = StoryObj<typeof meta>;
 //   return <IconWithTooltip {...args} onChange={onChange} />;
 // };
 export const Primary: Story = {
-  args: {},
+  args: {
+    icon: "help",
+    tooltipContent: "test",
+  },
   // if you need to get a specific render see SelectArs component...
   // render: (args) => Component(args),
 };
