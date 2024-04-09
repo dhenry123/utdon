@@ -162,12 +162,19 @@ export const ControlManager = () => {
   /**
    * All scrap contents are text
    */
-  const handleOnScrapUrl = async (url: string): Promise<string> => {
+  const handleOnScrapUrl = async (
+    url: string,
+    headerkey?: string,
+    headervalue?: string
+  ): Promise<string> => {
     return await new Promise((resolv, reject) => {
       dispatch(
-        mytinydcUPDONApi.endpoints.getScrapUrl.initiate(url, {
-          forceRefetch: true,
-        })
+        mytinydcUPDONApi.endpoints.getScrapUrl.initiate(
+          { url: url, headerkey: headerkey, headervalue: headervalue },
+          {
+            forceRefetch: true,
+          }
+        )
       )
         .unwrap()
         .then((response: string) => {

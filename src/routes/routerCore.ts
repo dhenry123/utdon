@@ -15,7 +15,11 @@ routerCore.get(
   "/scrap/:url",
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.params.url !== undefined) {
-      await scrapUrl(req.params.url, "GET")
+      await scrapUrl(
+        req.params.url,
+        "GET",
+        req.headers.productionhttpheader as string
+      )
         .then((data: string) => {
           // Warn Reduxtoolkit expect text so data will always be type = string
           res.status(200).send(data);

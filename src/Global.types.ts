@@ -3,6 +3,10 @@
  * @license AGPL3
  */
 
+export type productionHttpHeaderType = {
+  productionhttpheader: string;
+};
+
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 export type JSONLang = Record<string, string>;
