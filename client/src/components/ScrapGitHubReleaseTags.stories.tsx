@@ -115,7 +115,7 @@ export const Primary: Story = {
     scrapUrl: (url: string) => {
       console.log(url);
       return new Promise((resolv) => {
-        resolv(releaseTagNameSample);
+        resolv(JSON.stringify(releaseTagNameSample));
       });
     },
     onDone: (stepId) => console.log(stepId),
