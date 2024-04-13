@@ -89,7 +89,9 @@ Ne jamais exposer UTDON directement sur internet (utilisez un VPN si nécessaire
 Le contenu des deux bases de données est chiffré partiellement :
 
 - user.json: Le mot de passe de l'administrateur (non réversible) et le jeton d'authentification (réversible)
-- database.json: Les chaînes d'authentification pour les "urls" de monitoring et de la chaine CI/CD (réversibles).
+- database.json:
+  - Les chaînes d'authentification pour les "urls" de monitoring et de la chaine CI/CD (réversibles).
+  - HTTP header associé au processus de "production scrap".
 
 ### Si vous avez perdu le mot de passe admin
 

@@ -70,7 +70,7 @@ describe("Features", () => {
         expect(false).toBeTruthy();
       })
       .catch((error) => {
-        expect(error.toString()).toMatch(/An error has occured: 405/);
+        expect(error.toString()).toMatch(/Error: An error has occured: 404/);
       });
     expect(content).not.toEqual("");
   });
@@ -96,6 +96,8 @@ describe("Features", () => {
     const name = "Demo Immich";
     const content = await getUpToDateOrNotState({
       urlProduction: "https://demo.immich.app/api/server-info/version",
+      headerkey: "",
+      headervalue: "",
       scrapTypeProduction: "json",
       exprProduction: "{prefix: 'v',test:join('.',*)}|join('',*)",
       urlGitHub: "https://github.com/immich-app/immich",

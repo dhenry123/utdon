@@ -89,7 +89,9 @@ Never expose UTDON directly to the Internet (use a VPN if necessary). UTDON is a
 The contents of both databases are partially encrypted:
 
 - user.json: Administrator password (non-reversible) and authentication token (reversible)
-- database.json: Authentication strings for monitoring urls and CI/CD chain (reversible).
+- database.json:
+  - Authentication strings for monitoring urls and CI/CD chain (reversible).
+  - HTTP header associated with the production scrap process
 
 ### If you've lost the admin password
 

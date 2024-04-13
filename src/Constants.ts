@@ -25,7 +25,7 @@ export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   urlProduction: "",
 };
 
-export const APPLICATION_VERSION = "1.4.0";
+export const APPLICATION_VERSION: string = "1.5.0";
 
 // routes which dont need authentication to be served
 // firsts are UI routes
@@ -93,6 +93,8 @@ export const INITIALIZED_NEWUSER: NewUserType = {
 
 export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   urlProduction: "",
+  headerkey: "",
+  headervalue: "",
   scrapTypeProduction: "json",
   exprProduction: "join('.',*)",
   urlGitHub: "",

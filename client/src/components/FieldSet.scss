@@ -3,7 +3,12 @@
   // important to use ellipsis
   min-width: 0;
   legend {
+    display: flex;
+    flex-direction: row;
     font-weight: bold;
+    .IconWithTooltip {
+      margin: 0 0.5rem;
+    }
   }
   .content {
     max-width: 100%;

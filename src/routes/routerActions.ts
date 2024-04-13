@@ -23,7 +23,7 @@ const updateExternalStatus = (
     scrapUrl(
       `${control.urlCronJobMonitoring}/${state}`,
       control.httpMethodCronJobMonitoring,
-      control.urlCronJobMonitoringAuth
+      `Authorization:${control.urlCronJobMonitoringAuth}`
     )
       .then((response) => {
         resolv(response.toString());
@@ -194,7 +194,7 @@ routerActions.put(
           await scrapUrl(
             record.urlCICD,
             record.httpMethodCICD,
-            record.urlCICDAuth
+            `Authorization:${record.urlCICDAuth}`
           )
             .then((response) => {
               req.app.get("LOGGER").info({
@@ -243,7 +243,7 @@ routerActions.put(
           scrapUrl(
             `${record.urlCronJobMonitoring}/${payload}`,
             record.httpMethodCronJobMonitoring,
-            record.urlCronJobMonitoringAuth
+            `Authorization:${record.urlCronJobMonitoringAuth}`
           )
             .then((response) => {
               const finalResponse = {

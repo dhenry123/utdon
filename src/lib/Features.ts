@@ -10,7 +10,7 @@ import { HTTPMethods, UptoDateOrNotState, UptodateForm } from "../Global.types";
 export const scrapUrl = async (
   url: string,
   method: HTTPMethods = "GET",
-  auth?: string
+  customHttpHeader?: string
 ): Promise<string> => {
   let authHeader: RequestInit = { method: method };
 
@@ -18,10 +18,13 @@ export const scrapUrl = async (
   // const agent = new https.Agent({
   //   rejectUnauthorized: false, // This option disables certificate validation
   // });
-  if (auth) {
-    const header = new Headers();
-    header.append("Authorization", auth);
-    authHeader = { ...authHeader, headers: header };
+  const header = new Headers();
+  if (customHttpHeader) {
+    const split = customHttpHeader.split(":");
+    if (split[1]) {
+      header.append(split[0], split[1]);
+      authHeader = { ...authHeader, headers: header };
+    }
   }
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   const content = await fetch(`${url}`, { ...authHeader }).then(

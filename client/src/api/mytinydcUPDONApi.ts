@@ -11,6 +11,7 @@ import {
   NewUserType,
   UptodateForm,
 } from "../../../src/Global.types";
+import { buildHeader } from "../helpers/rtk";
 
 export const mytinydcUPDONApi = createApi({
   // Query service name
@@ -39,11 +40,23 @@ export const mytinydcUPDONApi = createApi({
       }),
     }),
     getScrapUrl: builder.query({
-      query: (url: string) => ({
-        url: `/scrap/${encodeURIComponent(url)}`,
-        // scrap result is always text
-        responseHandler: (response) => response.text(),
-      }),
+      query: (data: {
+        url: string;
+        headerkey?: string;
+        headervalue?: string;
+      }) =>
+        data.headerkey && data.headervalue
+          ? {
+              url: `/scrap/${encodeURIComponent(data.url)}`,
+              headers: buildHeader(`${data.headerkey}:${data.headervalue}`),
+              // scrap result is always text
+              responseHandler: (response) => response.text(),
+            }
+          : {
+              url: `/scrap/${encodeURIComponent(data.url)}`,
+              // scrap result is always text
+              responseHandler: (response) => response.text(),
+            },
     }),
     postCheck: builder.mutation({
       query: (checkData: UptodateForm) => ({

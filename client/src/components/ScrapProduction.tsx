@@ -38,11 +38,16 @@ import { buidMultiSelectGroups } from "../helpers/UiMiscHelper";
 import { useAppDispatch, useAppSelector } from "../app/hook";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { showServiceMessage } from "../app/serviceMessageSlice";
+import { HttpHeader } from "./HttpHeader";
 
 export interface ScrapProductionProps {
   activeUptodateForm: UptodateForm;
   handleOnChange: (key: UptodateFormFields, value: string | string[]) => void;
-  scrapUrl: (url: string) => Promise<string>;
+  scrapUrl: (
+    url: string,
+    headerkey: string,
+    headervalue: string
+  ) => Promise<string>;
   onDone: (changeDoneState: boolean) => void;
   displayError: (message: string) => void;
 }
@@ -81,7 +86,11 @@ export const ScrapProduction = ({
    * server return ALWAYS string
    */
   const handleGetProductionContent = async () => {
-    await scrapUrl(activeUptodateForm.urlProduction)
+    await scrapUrl(
+      activeUptodateForm.urlProduction,
+      activeUptodateForm.headerkey,
+      activeUptodateForm.headervalue
+    )
       .then((content: string) => {
         setScrapContent(content || "");
       })
@@ -196,6 +205,11 @@ export const ScrapProduction = ({
             className=""
             value={activeUptodateForm.urlProduction}
             onChange={(value: string) => handleOnChange("urlProduction", value)}
+          />
+          <HttpHeader
+            handleOnChange={handleOnChange}
+            headerkey={activeUptodateForm.headerkey}
+            headervalue={activeUptodateForm.headervalue}
           />
         </FieldSet>
         <FieldSet

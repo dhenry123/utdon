@@ -24,7 +24,6 @@ import {
   ADMINPASSWORDDEFAULT,
   ADMINUSERLOGINDEFAULT,
   API_ENTRY_POINTS_NO_NEED_AUTHENTICATION,
-  APPLICATION_VERSION,
   JSON_POST_MAX_SIZE,
   OPENAPIFILEYAML,
   SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB,
@@ -76,19 +75,14 @@ dbCreate(dbfile).catch((error: Error) => {
 });
 dbGetData(dbfile)
   .then(async (res) => {
-    // Update data for version
-    if (APPLICATION_VERSION === "1.4.0") {
-      const newDbContent = await patchDbTo1_4_0(res);
-      await dbCommit(dbfile || "", newDbContent)
-        .then(() => {
-          app.set("DB", newDbContent);
-        })
-        .catch((error) => {
-          throw error;
-        });
-    } else {
-      app.set("DB", res);
-    }
+    const newDbContent = await patchDbTo1_4_0(res);
+    await dbCommit(dbfile || "", newDbContent)
+      .then(() => {
+        app.set("DB", newDbContent);
+      })
+      .catch((error) => {
+        throw error;
+      });
   })
   .catch((error) => {
     logger.error(error);
