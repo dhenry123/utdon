@@ -4,7 +4,8 @@ import { Dialog } from "./Dialog";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
+import { fn } from "@storybook/test";
 
 const meta = {
   title: "Ui/Dialog",
@@ -29,5 +30,6 @@ export const Primary: Story = {
     visible: true,
     header: "Header Dialog",
     closeButton: true,
+    onHide: fn()
   },
 };

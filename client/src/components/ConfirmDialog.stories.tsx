@@ -4,7 +4,7 @@ import { ConfirmDialog } from "./ConfirmDialog";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 
 const meta = {
   title: "Ui/ConfirmDialog",

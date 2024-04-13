@@ -4,10 +4,11 @@ import { ScrapProduction, ScrapProductionProps } from "./ScrapProduction";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 import { UptodateForm, UptodateFormFields } from "../../../src/Global.types";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
 import { useState } from "react";
+import { fn } from "@storybook/test";
 
 const meta = {
   title: "Forms/ScrapProduction",
@@ -18,6 +19,11 @@ const meta = {
     reactRouter: reactRouterParameters({
       location: { path: "/" },
     }),
+  },
+  args: {
+    onDone: fn(),
+    handleOnChange: fn(),
+    displayError: fn(),
   },
   tags: ["autodocs"],
   argTypes: {},
@@ -61,8 +67,6 @@ export const ScrapAsText: Story = {
       `);
       });
     },
-
-    onDone: () => {},
   },
   render: (args) => Component(args),
 };
@@ -75,12 +79,10 @@ export const ScrapAsJSON: Story = {
         resolv(
           JSON.stringify({
             version: "3.0.1",
-          })
+          }),
         );
       });
     },
-
-    onDone: () => {},
   },
   render: (args) => Component(args),
 };

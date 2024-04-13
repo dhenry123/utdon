@@ -4,7 +4,8 @@ import { ChangePassword } from "./ChangePassword";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
+import { fn } from "@storybook/test";
 
 const meta = {
   title: "Features/ChangePassword",
@@ -16,6 +17,9 @@ const meta = {
       location: { path: "/" },
     }),
   },
+  args: {
+    onHide: fn(),
+  },
   tags: ["autodocs"],
   argTypes: {},
 } satisfies Meta<typeof ChangePassword>;
@@ -23,6 +27,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
-  args: {},
-};
+export const Primary: Story = {};

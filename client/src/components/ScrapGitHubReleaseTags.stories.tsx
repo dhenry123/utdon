@@ -7,28 +7,12 @@ import {
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 import { useAppDispatch } from "../app/hook";
 import { updateKeyUptodateFrom } from "../app/contextSlice";
 import { UptodateForm, UptodateFormFields } from "../../../src/Global.types";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
-
-const meta = {
-  title: "Forms/ScrapGitHubReleaseTags",
-  component: ScrapGitHubReleaseTags,
-  decorators: [withRouter],
-  parameters: {
-    layout: "fullscreen",
-    reactRouter: reactRouterParameters({
-      location: { path: "/" },
-    }),
-  },
-  tags: ["autodocs"],
-  argTypes: {},
-} satisfies Meta<typeof ScrapGitHubReleaseTags>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { fn } from "@storybook/test";
 
 const releaseTagNameSample = [
   {
@@ -109,7 +93,18 @@ const Component = (args: ScrapGitHubReleaseTagsProps) => {
   };
   return <ScrapGitHubReleaseTags {...args} />;
 };
-export const Primary: Story = {
+
+
+const meta = {
+  title: "Forms/ScrapGitHubReleaseTags",
+  component: ScrapGitHubReleaseTags,
+  decorators: [withRouter],
+  parameters: {
+    layout: "fullscreen",
+    reactRouter: reactRouterParameters({
+      location: { path: "/" },
+    }),
+  },
   args: {
     activeUptodateForm: activeUptodateForm,
     scrapUrl: (url: string) => {
@@ -118,7 +113,16 @@ export const Primary: Story = {
         resolv(JSON.stringify(releaseTagNameSample));
       });
     },
-    onDone: (stepId) => console.log(stepId),
+    onDone: fn(),
+    handleOnChange: fn(),
+    displayError: fn(),
   },
   render: (args) => Component(args),
-};
+  tags: ["autodocs"],
+  argTypes: {},
+} satisfies Meta<typeof ScrapGitHubReleaseTags>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {};

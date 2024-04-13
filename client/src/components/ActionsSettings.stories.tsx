@@ -4,8 +4,9 @@ import { ActionsSettings } from "./ActionsSettings";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 import { STORYBOOK_UPTODATEFORM } from "../../../src/Constants-dev";
+import { fn } from "@storybook/test";
 
 const meta = {
   title: "Forms/ActionsSettings",
@@ -27,6 +28,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     activeUptodateForm: { ...STORYBOOK_UPTODATEFORM },
-    handleOnChange: () => {},
+    handleOnChange: fn(),
+    onDone: fn(),
   },
 };

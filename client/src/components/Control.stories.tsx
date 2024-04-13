@@ -4,7 +4,7 @@ import { Control } from "./Control";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 import { STORYBOOK_UPTODATEFORM } from "../../../src/Constants-dev";
 
 const meta = {
