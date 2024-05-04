@@ -4,7 +4,7 @@ import { Summary } from "./Summary";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
 import { UptoDateOrNotState, UptodateForm } from "../../../src/Global.types";
 

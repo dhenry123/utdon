@@ -4,7 +4,7 @@ import { CheckBox } from "./CheckBox";
 import {
   reactRouterParameters,
   withRouter,
-} from "storybook-addon-react-router-v6";
+} from "storybook-addon-remix-react-router";
 
 const meta = {
   title: "Components/Input/CheckBox",
