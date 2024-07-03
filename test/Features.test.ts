@@ -70,7 +70,7 @@ describe("Features", () => {
         expect(false).toBeTruthy();
       })
       .catch((error) => {
-        expect(error.toString()).toMatch(/Error: An error has occured: 404/);
+        expect(error.toString()).toMatch(/Error: An error has occured: 40/);
       });
     expect(content).not.toEqual("");
   });

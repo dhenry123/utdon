@@ -96,7 +96,11 @@ export const getUpToDateOrNotState = async (
   return await new Promise(async (resolv, reject) => {
     try {
       // Getting production version
-      const productionVersion = await scrapUrl(record.urlProduction, "GET")
+      const productionVersion = await scrapUrl(
+        record.urlProduction,
+        "GET",
+        record.headerkey ? `${record.headerkey}:${record.headervalue}` : ""
+      )
         .then(async (output) => {
           let version = "";
           if (record.scrapTypeProduction === "json") {

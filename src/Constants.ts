@@ -25,7 +25,7 @@ export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   urlProduction: "",
 };
 
-export const APPLICATION_VERSION: string = "1.5.0";
+export const APPLICATION_VERSION = "1.6.0";
 
 // routes which dont need authentication to be served
 // firsts are UI routes

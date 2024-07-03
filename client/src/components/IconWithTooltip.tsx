@@ -48,8 +48,8 @@ export const IconWithTooltip = ({
           </div>
           <div className="tooltipbody">
             {tooltipContent &&
-              tooltipContent.split("\n").map((line) => {
-                return <div>{line}</div>;
+              tooltipContent.split("\n").map((line, idx) => {
+                return <div key={`tooltipbody_${idx}`}>{line}</div>;
               })}
           </div>
         </div>
