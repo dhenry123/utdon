@@ -66,7 +66,6 @@ routerActions.get(
         }
         for (const item of finalRecords) {
           // get state
-          //console.log(item);
           await getUpToDateOrNotState(item)
             .then(async (compareResult) => {
               // Update dbRecord

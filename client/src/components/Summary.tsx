@@ -111,7 +111,7 @@ export const Summary = ({
           <div className="label">{uptodateForm.exprProduction}</div>
         </FieldSet>
         <FieldSetClickableUrl
-          legend={intl.formatMessage({ id: "GitHub repository url" })}
+          legend={intl.formatMessage({ id: "Git repository url" })}
           url={uptodateForm.urlGitHub}
           className="label"
         />

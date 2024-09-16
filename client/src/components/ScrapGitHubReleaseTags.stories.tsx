@@ -87,13 +87,12 @@ const Component = (args: ScrapGitHubReleaseTagsProps) => {
   const dispatch = useAppDispatch();
   args = {
     ...args,
-    handleOnChange: (key: UptodateFormFields, value: string) => {
+    handleOnChange: (key: UptodateFormFields, value: string | string[]) => {
       dispatch(updateKeyUptodateFrom({ key: key, value: value }));
     },
   };
   return <ScrapGitHubReleaseTags {...args} />;
 };
-
 
 const meta = {
   title: "Forms/ScrapGitHubReleaseTags",

@@ -207,6 +207,8 @@ export const ScrapProduction = ({
             onChange={(value: string) => handleOnChange("urlProduction", value)}
           />
           <HttpHeader
+            headerkeyField="headerkey"
+            headervalueField="headervalue"
             handleOnChange={handleOnChange}
             headerkey={activeUptodateForm.headerkey}
             headervalue={activeUptodateForm.headervalue}

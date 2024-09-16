@@ -14,6 +14,7 @@ import {
 } from "../lib/Database";
 import { recordsOrder } from "../lib/Features";
 import { SessionExt } from "../ServerTypes";
+import { getTypeGitRepo } from "../lib/helperGitRepository";
 const routerControl = express.Router();
 
 routerControl.post(
@@ -53,6 +54,7 @@ routerControl.post(
       } else {
         if (req.body.uuid) {
           // uuid update
+          req.body.typeRepo = getTypeGitRepo(req.body.urlGitHub);
           const rupd = dbUpdateRecord(req.app.get("DB"), req.body);
           if (rupd) {
             dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));

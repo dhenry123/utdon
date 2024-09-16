@@ -10,6 +10,7 @@ import InputGeneric from "./InputGeneric";
 import { useEffect, useState } from "react";
 import SelectGeneric from "./SelectGeneric";
 import {
+  GiteaReleaseTagModel,
   GithubReleaseTagModel,
   UIError,
   UptodateForm,
@@ -17,16 +18,23 @@ import {
 } from "../../../src/Global.types";
 import {
   filterAndReplace,
-  getGithubTagsurl,
-} from "../../../src/lib/helperGithub";
+  getGitUrlTagReleases,
+  getTagFromGitRepoResponse,
+  getTypeGitRepo,
+} from "../../../src/lib/helperGitRepository";
 import { regExprGithubSamples } from "../helpers/ExprSamples";
 import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
+import { HttpHeader } from "./HttpHeader";
 
 export interface ScrapGitHubReleaseTagsProps {
   activeUptodateForm: UptodateForm;
-  handleOnChange: (key: UptodateFormFields, value: string) => void;
-  scrapUrl: (url: string) => Promise<unknown>;
+  handleOnChange: (key: UptodateFormFields, value: string | string[]) => void;
+  scrapUrl: (
+    url: string,
+    headerkey: string,
+    headervalue: string
+  ) => Promise<unknown>;
   displayError: (message: string) => void;
   onDone: (changeDoneState: boolean) => void;
 }
@@ -51,32 +59,30 @@ export const ScrapGitHubReleaseTags = ({
   const [excludedFromTags, setExcludedFromTags] = useState<string[]>([]);
 
   const handleGetReleaseTags = async () => {
-    if (activeUptodateForm.urlGitHub.match(/^https:\/\/github.com/)) {
-      // reset all lists
-      setTagsListMatchExpr([]);
-      setExcludedFromTags([]);
-      setDisableFilterGithubRegExpSelect(true);
-      await scrapUrl(getGithubTagsurl(activeUptodateForm.urlGitHub)).then(
-        (content) => {
-          if (content) {
-            const castData = (
-              JSON.parse(content as string) as GithubReleaseTagModel[]
-            ).map((item) => item.name);
-            if (castData.length > 0) {
-              setTagsList(castData);
-              // add all to
-              setTagsListMatchExpr(castData);
-              setDisableFilterGithubRegExpSelect(false);
-              return;
-            }
-          }
+    setTagsListMatchExpr([]);
+    setExcludedFromTags([]);
+    setDisableFilterGithubRegExpSelect(true);
+    const typeRepo = getTypeGitRepo(activeUptodateForm.urlGitHub);
+    await scrapUrl(
+      getGitUrlTagReleases(activeUptodateForm.urlGitHub, typeRepo),
+      activeUptodateForm.headerkeyGit,
+      activeUptodateForm.headervalueGit
+    ).then((content) => {
+      if (content) {
+        const castData: unknown[] = (
+          JSON.parse(content as string) as
+            | GithubReleaseTagModel[]
+            | GiteaReleaseTagModel[]
+        ).map((item) => getTagFromGitRepoResponse(typeRepo, item));
+        if (castData.length > 0) {
+          setTagsList(castData as string[]);
+          // add all to
+          setTagsListMatchExpr(castData as string[]);
+          setDisableFilterGithubRegExpSelect(false);
+          return;
         }
-      );
-    } else {
-      displayError(
-        intl.formatMessage({ id: "Currently only Github is supported" })
-      );
-    }
+      }
+    });
   };
 
   /**
@@ -120,7 +126,9 @@ export const ScrapGitHubReleaseTags = ({
     <div className={`ScrapGitHubReleaseTags`}>
       <Block>
         <FieldSet
-          legend={intl.formatMessage({ id: "Project repository GitHub" })}
+          legend={intl.formatMessage({
+            id: "Project repository GitHub - Gitea",
+          })}
           className="urlGithub"
         >
           <InputGeneric
@@ -132,11 +140,18 @@ export const ScrapGitHubReleaseTags = ({
               setTagsList([]);
             }}
             placeholder={`${intl.formatMessage({
-              id: "Currently only Github is supported",
-            })}: https://github.com/xxxxxx/yyyyyyyy`}
+              id: "Currently only Github and Gitea are supported",
+            })}: https://github.com/xxxxxx/yyyyyyyy or your gitea url`}
             title={intl.formatMessage({
-              id: "Currently only Github is supported",
+              id: "Currently only Github and Gitea are supported",
             })}
+          />
+          <HttpHeader
+            handleOnChange={handleOnChange}
+            headerkeyField="headerkeyGit"
+            headervalueField="headervalueGit"
+            headerkey={activeUptodateForm.headerkeyGit}
+            headervalue={activeUptodateForm.headervalueGit}
           />
         </FieldSet>
         <ButtonGeneric

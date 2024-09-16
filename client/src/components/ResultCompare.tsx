@@ -143,7 +143,7 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
               url={control.urlProduction}
             />
             <FieldSetClickableUrl
-              legend={intl.formatMessage({ id: "GitHub repository url" })}
+              legend={intl.formatMessage({ id: "Git repository url" })}
               url={control.urlGitHub}
             ></FieldSetClickableUrl>
             {control.compareResult && control.compareResult.ts ? (

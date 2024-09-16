@@ -95,6 +95,8 @@ export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   urlProduction: "",
   headerkey: "",
   headervalue: "",
+  headerkeyGit: "",
+  headervalueGit: "",
   scrapTypeProduction: "json",
   exprProduction: "join('.',*)",
   urlGitHub: "",
@@ -111,6 +113,7 @@ export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   isPause: false,
   compareResult: null,
   groups: [],
+  typeRepo: "github",
 };
 
 export const HTTP_METHOD_ENUM: SelectOptionType[] = [

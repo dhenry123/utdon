@@ -13,9 +13,13 @@ interface HttpHeaderProps {
   handleOnChange: (key: UptodateFormFields, value: string | string[]) => void;
   headerkey: string;
   headervalue: string;
+  headerkeyField: UptodateFormFields;
+  headervalueField: UptodateFormFields;
 }
 export const HttpHeader = ({
   handleOnChange,
+  headerkeyField,
+  headervalueField,
   headerkey,
   headervalue,
 }: HttpHeaderProps) => {
@@ -43,7 +47,7 @@ export const HttpHeader = ({
         value={headerkey}
         placeholder={intl.formatMessage({ id: "HTTP header attribut" })}
         title={intl.formatMessage({ id: "HTTP header attribut" })}
-        onChange={(value: string) => handleOnChange("headerkey", value)}
+        onChange={(value: string) => handleOnChange(headerkeyField, value)}
       />
       <InputGeneric
         className="headerhttpvalue"
@@ -54,7 +58,7 @@ export const HttpHeader = ({
           id: "HTTP header attribute value",
         })}
         value={headervalue}
-        onChange={(value: string) => handleOnChange("headervalue", value)}
+        onChange={(value: string) => handleOnChange(headervalueField, value)}
       />
     </FieldSet>
   );

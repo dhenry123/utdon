@@ -113,7 +113,7 @@ export const Control = ({
         url={data.urlProduction}
       />
       <FieldSetClickableUrl
-        legend={intl.formatMessage({ id: "GitHub repository url" })}
+        legend={intl.formatMessage({ id: "Git repository url" })}
         url={data.urlGitHub}
       />
 

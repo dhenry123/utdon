@@ -170,7 +170,11 @@ export const ControlManager = () => {
     return await new Promise((resolv, reject) => {
       dispatch(
         mytinydcUPDONApi.endpoints.getScrapUrl.initiate(
-          { url: url, headerkey: headerkey, headervalue: headervalue },
+          {
+            url: url,
+            headerkey: headerkey,
+            headervalue: headervalue,
+          },
           {
             forceRefetch: true,
           }

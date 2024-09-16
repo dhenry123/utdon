@@ -3,7 +3,7 @@
  * @license AGPL3
  */
 
-import { getLatestRelease } from "./helperGithub";
+import { getLatestRelease, getTypeGitRepo } from "./helperGitRepository";
 import { filterJson, filterText } from "./helperProdVersionReader";
 import { HTTPMethods, UptoDateOrNotState, UptodateForm } from "../Global.types";
 
@@ -13,7 +13,6 @@ export const scrapUrl = async (
   customHttpHeader?: string
 ): Promise<string> => {
   let authHeader: RequestInit = { method: method };
-
   // // NodeJS 21 @todo impossible to implement and dont want to add nodes-fetch
   // const agent = new https.Agent({
   //   rejectUnauthorized: false, // This option disables certificate validation
@@ -123,7 +122,11 @@ export const getUpToDateOrNotState = async (
       // Getting Github version
       const githubVersion = await getLatestRelease(
         record.urlGitHub,
-        record.exprGithub
+        getTypeGitRepo(record.urlGitHub),
+        record.exprGithub,
+        record.headerkeyGit
+          ? `${record.headerkeyGit}:${record.headervalueGit}`
+          : ""
       )
         .then((latest) => {
           return latest;

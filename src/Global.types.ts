@@ -3,8 +3,8 @@
  * @license AGPL3
  */
 
-export type productionHttpHeaderType = {
-  productionhttpheader: string;
+export type scrapUrlHeaderType = {
+  scrapUrlHeader: string;
 };
 
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
@@ -16,6 +16,13 @@ export type GithubReleaseTagModel = {
   [key: string]: unknown;
 };
 
+export type GiteaReleaseTagModel = {
+  tag_name: string;
+  [key: string]: unknown;
+};
+
+export type TypeGitRepo = "gitea" | "github";
+
 export type ScrapType = "json" | "text";
 
 export type UptodateForm = {
@@ -25,9 +32,12 @@ export type UptodateForm = {
   urlProduction: string;
   headerkey: string;
   headervalue: string;
+  headerkeyGit: string;
+  headervalueGit: string;
   scrapTypeProduction: ScrapType;
   exprProduction: string;
   urlGitHub: string;
+  typeRepo: string;
   exprGithub: string;
   urlCronJobMonitoring: string;
   httpMethodCronJobMonitoring: HTTPMethods;
@@ -58,7 +68,9 @@ export type UptodateFormFields =
   | "isPause"
   | "groups"
   | "headerkey"
-  | "headervalue";
+  | "headervalue"
+  | "headerkeyGit"
+  | "headervalueGit";
 
 export type ApiResponseType = {
   data?: JSON;

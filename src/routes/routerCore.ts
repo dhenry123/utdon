@@ -18,7 +18,7 @@ routerCore.get(
       await scrapUrl(
         req.params.url,
         "GET",
-        req.headers.productionhttpheader as string
+        req.headers.scrapurlheader as string
       )
         .then((data: string) => {
           // Warn Reduxtoolkit expect text so data will always be type = string

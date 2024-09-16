@@ -114,6 +114,14 @@ export const dbInsert = (
         control.headervalue,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
+      headerkeyGit: Authentification.dataEncrypt(
+        control.headerkeyGit,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
+      headervalueGit: Authentification.dataEncrypt(
+        control.headervalueGit,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
     });
     resolv(uuid);
   });
@@ -138,6 +146,8 @@ const decryptRecord = (record: UptodateForm, logger: Logger): UptodateForm => {
   let urlCronJobMonitoringAuth = record.urlCronJobMonitoringAuth;
   let headerkey = record.headerkey;
   let headervalue = record.headervalue;
+  let headerkeyGit = record.headerkeyGit;
+  let headervalueGit = record.headervalueGit;
   try {
     urlCICDAuth = Authentification.dataDecrypt(
       record.urlCICDAuth,
@@ -155,6 +165,14 @@ const decryptRecord = (record: UptodateForm, logger: Logger): UptodateForm => {
       record.headervalue,
       process.env.DATABASE_ENCRYPT_SECRET
     );
+    headerkeyGit = Authentification.dataDecrypt(
+      record.headerkeyGit,
+      process.env.DATABASE_ENCRYPT_SECRET
+    );
+    headervalueGit = Authentification.dataDecrypt(
+      record.headervalueGit,
+      process.env.DATABASE_ENCRYPT_SECRET
+    );
   } catch (error) {
     logger.error(
       `Database::decryptRecord-Impossible to decrypt record ${record.uuid}`
@@ -167,6 +185,8 @@ const decryptRecord = (record: UptodateForm, logger: Logger): UptodateForm => {
     urlCronJobMonitoringAuth: urlCronJobMonitoringAuth,
     headerkey: headerkey,
     headervalue: headervalue,
+    headerkeyGit: headerkeyGit,
+    headervalueGit: headervalueGit,
   };
 };
 
@@ -267,6 +287,14 @@ export const dbUpdateRecord = (
       ),
       headervalue: Authentification.dataEncrypt(
         data.headervalue,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
+      headerkeyGit: Authentification.dataEncrypt(
+        data.headerkeyGit,
+        process.env.DATABASE_ENCRYPT_SECRET
+      ),
+      headervalueGit: Authentification.dataEncrypt(
+        data.headervalueGit,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
     };

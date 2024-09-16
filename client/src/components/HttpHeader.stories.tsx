@@ -46,6 +46,8 @@ export const Primary: Story = {
     handleOnChange: () => {},
     headerkey: "",
     headervalue: "",
+    headerkeyField: "exprGithub",
+    headervalueField: "exprGithub",
   },
   // if you need to get a specific render see SelectArs component...
   // render: (args) => Component(args),
