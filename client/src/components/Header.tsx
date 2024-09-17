@@ -141,6 +141,10 @@ export const Header = () => {
       });
   }, []);
 
+  const handleOnToggleTheme = () => {
+    console.log("change theme");
+  };
+
   return (
     <div className="header">
       <div className="buttonsgroup">
@@ -210,6 +214,13 @@ export const Header = () => {
               onClick={displayDialogChangePassword}
             />
           </div>
+          <ButtonGeneric
+            icon={"ti ti-brightness-down"}
+            title={intl.formatMessage({ id: "Dark theme" })}
+            onClick={handleOnToggleTheme}
+            //label={isSuccess ? userInfo.login && userInfo.login : "..."}
+            className="buttontoggletheme"
+          />
           <ButtonGeneric
             icon={"ti ti-logout"}
             title={`${intl.formatMessage({ id: "Logout" })}: ${
