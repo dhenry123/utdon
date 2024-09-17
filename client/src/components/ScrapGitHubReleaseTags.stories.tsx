@@ -8,11 +8,10 @@ import {
   reactRouterParameters,
   withRouter,
 } from "storybook-addon-remix-react-router";
-import { useAppDispatch } from "../app/hook";
-import { updateKeyUptodateFrom } from "../app/contextSlice";
 import { UptodateForm, UptodateFormFields } from "../../../src/Global.types";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
 import { fn } from "@storybook/test";
+import { useState } from "react";
 
 const releaseTagNameSample = [
   {
@@ -84,14 +83,14 @@ const activeUptodateForm: UptodateForm = {
 };
 
 const Component = (args: ScrapGitHubReleaseTagsProps) => {
-  const dispatch = useAppDispatch();
+  const [control, setControl] = useState(args.activeUptodateForm);
   args = {
     ...args,
     handleOnChange: (key: UptodateFormFields, value: string | string[]) => {
-      dispatch(updateKeyUptodateFrom({ key: key, value: value }));
+      setControl({ ...control, [key]: value });
     },
   };
-  return <ScrapGitHubReleaseTags {...args} />;
+  return <ScrapGitHubReleaseTags {...args} activeUptodateForm={control} />;
 };
 
 const meta = {
