@@ -19,4 +19,4 @@ NOCACHE="--no-cache"
 PLATFORM="--platform=linux/arm64,linux/amd64"
 TAG=$(jq '.version' package.json | sed -E 's/^"|"$//g')
 PROGRESS="--progress plain"
-sudo docker buildx build --push $PROGRESS $NOCACHE $PLATFORM -t ghcr.io/$USERNAME/utdon:$TAG -f Dockerfile .
+sudo docker buildx build --load $PROGRESS $NOCACHE $PLATFORM -t ghcr.io/$USERNAME/utdon:$TAG -f Dockerfile .
