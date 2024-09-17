@@ -27,10 +27,13 @@
     height: $app-logo-height;
     background-color: transparent;
     position: absolute;
-    border: 1px dashed #ccc;
+    border: $border-dashed;
     top: 0;
     left: 0;
     z-index: 1;
+    @media (prefers-color-scheme: dark) {
+      border: $border-dashed-dark;
+    }
     .upload-button {
       cursor: pointer;
 
@@ -45,9 +48,12 @@
       text-overflow: ellipsis;
     }
     .upload-button:hover {
-      background-color: white;
+      background-color: $background-color;
       font-weight: bold;
       opacity: 0.6;
+      @media (prefers-color-scheme: dark) {
+        background-color: $background-color-dark;
+      }
     }
   }
 }

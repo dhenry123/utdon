@@ -40,5 +40,5 @@
   cursor: pointer;
 }
 .ButtonGeneric:focus {
-  border-color: red;
+  border-color: $button-generic-border-color-focus;
 }

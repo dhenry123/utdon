@@ -2,11 +2,6 @@
 
 $usermanagerbuttonsize: 2rem;
 .UserManager {
-  $color-border: #303030;
-  @media (prefers-color-scheme: dark) {
-    $color-border: #e0e0e0;
-  }
-
   .title {
     display: flex;
     flex-direction: row;
@@ -51,7 +46,10 @@ $usermanagerbuttonsize: 2rem;
     width: 100%;
     button {
       background-color: transparent !important;
-      color: white !important;
+      color: $color-text-secondary !important;
+    }
+    @media (prefers-color-scheme: dark) {
+      color: $color-text-primary-dark !important;
     }
   }
   .flex-table {
@@ -66,17 +64,21 @@ $usermanagerbuttonsize: 2rem;
     &.row {
       min-height: 3rem;
       &:hover {
-        background: #dbdbdb;
+        background: $userManager-row-hover-background;
         border-radius: 6px;
+        @media (prefers-color-scheme: dark) {
+          color: $color-text-primary;
+          background: $userManager-row-hover-background-dark;
+        }
         button {
           background-color: transparent !important;
-          color: rgb(114, 114, 114) !important;
+          color: $color-text-secondary !important;
+          @media (prefers-color-scheme: dark) {
+            color: $color-text-primary-dark !important;
+          }
           &:hover {
             color: $color-warning !important;
           }
-        }
-        @media (prefers-color-scheme: dark) {
-          color: $color-text-primary;
         }
       }
       .groups {

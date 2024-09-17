@@ -21,7 +21,7 @@
     z-index: 11;
     .modal-content {
       position: relative;
-      background-color: white;
+      background-color: $background-color;
       border-radius: $border-radius-default;
       margin: auto;
       padding: $padding-default;
@@ -35,8 +35,8 @@
       overflow-y: auto;
 
       @media (prefers-color-scheme: dark) {
-        background-color: $background-dark;
-        color: $text-dark;
+        background-color: $background-color-dark;
+        color: $color-text-primary-dark;
       }
 
       .modal-header {
@@ -48,8 +48,8 @@
         align-items: start;
         min-width: 30vw;
         @media (prefers-color-scheme: dark) {
-          background-color: $background-dark;
-          color: $text-dark;
+          background-color: $background-color-dark;
+          color: $color-text-primary-dark;
         }
         h2 {
           text-transform: none;

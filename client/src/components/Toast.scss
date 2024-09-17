@@ -16,12 +16,17 @@
     font-size: 14px;
     width: 100%;
     padding: 0;
-    background-color: #ffffff;
+    background-color: $background-color;
     border-radius: 7px;
     display: flex;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: $toast-box-shadow;
     overflow: hidden;
     justify-content: space-between;
+    @media (prefers-color-scheme: dark) {
+      background-color: $background-color-dark;
+      box-shadow: $toast-box-shadow-dark;
+    }
+
     p {
       margin: 0.3rem 0 0.3rem 0;
     }
@@ -64,14 +69,17 @@
     .container-2 {
       overflow: auto;
       .summary {
-        color: #101020;
+        color: $color-text-primary;
         font-weight: 600;
         font-size: 0.9rem;
+        @media (prefers-color-scheme: dark) {
+          color: $color-text-primary-dark;
+        }
       }
       .detail {
         font-size: 0.7rem;
         font-weight: 400;
-        color: #656565;
+        color: $toatst-color-detail;
         padding: $padding-default;
         overflow: auto;
       }
@@ -84,7 +92,7 @@
       align-self: flex-start;
       background-color: transparent;
       font-size: 1.5rem;
-      color: #656565;
+      color: $toatst-color-button;
       line-height: 0;
       border: none;
       cursor: pointer;

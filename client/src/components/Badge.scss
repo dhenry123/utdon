@@ -8,8 +8,8 @@
   height: 2rem;
   width: max-content;
   .label {
-    background-color: grey;
-    color: white;
+    background-color: $badge-background-color;
+    color: $color-text-secondary;
     padding: $padding-badge;
     text-transform: lowercase;
     height: inherit;
@@ -18,6 +18,9 @@
       $badge-component-border-radius;
     display: flex;
     align-items: center;
+    @media (prefers-color-scheme: dark) {
+      color: $color-text-secondary-dark;
+    }
   }
   .value {
     padding: $padding-badge;
@@ -27,18 +30,27 @@
     height: inherit;
     width: max-content;
     display: flex;
-align-items: center;
+    align-items: center;
     &.uptodate {
       background-color: $badge-color-success;
-      color: white;
+      color: $color-text-secondary;
+      @media (prefers-color-scheme: dark) {
+        color: $color-text-secondary-dark;
+      }
     }
     &.toupdate {
       background-color: $badge-color-error;
-      color: white;
+      color: $color-text-secondary;
+      @media (prefers-color-scheme: dark) {
+        color: $color-text-secondary-dark;
+      }
     }
     &.uptodatewithwarn {
       background-color: $badge-color-warning;
-      color: white;
+      color: $color-text-secondary;
+      @media (prefers-color-scheme: dark) {
+        color: $color-text-secondary-dark;
+      }
     }
   }
 }

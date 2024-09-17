@@ -3,17 +3,24 @@
   .tooltip {
     position: absolute;
     z-index: 9999; /* Set a high z-index value */
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: $background-color;
+    border: $border-default;
     padding: 5px;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: $boxshadow-default;
     display: flex;
     flex-direction: column;
+    @media (prefers-color-scheme: dark) {
+      background-color: $background-color-dark;
+      border: $border-default-dark;
+    }
     .tooltiptitle {
-      border-bottom: 1px solid #ccc;
+      border-bottom: $border-default;
       margin: 0.5rem;
       align-self: center;
+      @media (prefers-color-scheme: dark) {
+        border-bottom: $border-default-dark;
+      }
     }
     .tooltipbody {
       margin: 1rem;
@@ -22,6 +29,6 @@
   }
   i {
     font-size: 1.2rem;
-    color: rgb(91, 159, 185);
+    color: $color-info;
   }
 }

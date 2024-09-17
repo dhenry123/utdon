@@ -3,7 +3,7 @@
 .header {
   padding-top: 0.3rem;
   width: 100%;
-  background-color: #ffffff;
+  background-color: $background-color;
   z-index: 10;
   display: flex;
   flex-direction: row;
@@ -12,7 +12,7 @@
   top: 0;
   left: 0;
   @media (prefers-color-scheme: dark) {
-    background-color: $background-dark;
+    background-color: $background-color-dark;
   }
   .flexPushLeft {
     margin-left: auto;
@@ -26,7 +26,7 @@
       font-size: 1.2rem;
 
       @media (prefers-color-scheme: dark) {
-        color: $text-dark;
+        color: $color-text-primary-dark;
       }
     }
   }

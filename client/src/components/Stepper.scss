@@ -18,10 +18,11 @@
       min-height: 3rem;
       width: 0.5rem;
       border-radius: 4px 4px 100% 100%;
-      background-color: #e7dfdf;
-      box-shadow: 4px 4px 8px #d6d5d5;
+      background-color: $stepper-background-color;
+      box-shadow: $stepper-box-shadow;
       @media (prefers-color-scheme: dark) {
-          box-shadow: $boxshadow-default-dark;
+        background-color: $stepper-background-color-dark;
+        box-shadow: $stepper-box-shadow-dark;
       }
       &.done {
         background-color: $color-success;
@@ -36,7 +37,7 @@
       background-color: $color-text-secondary;
       box-shadow: $boxshadow-default;
       @media (prefers-color-scheme: dark) {
-          box-shadow: $boxshadow-default-dark;
+        box-shadow: $boxshadow-default-dark;
       }
       i {
         margin: auto;
@@ -44,14 +45,21 @@
       }
       &.done {
         background-color: $color-success;
-        color: white;
+        color: $color-text-secondary;
+        @media (prefers-color-scheme: dark) {
+          color: $color-text-secondary-dark;
+        }
       }
       &.undone {
         color: $color-text-primary;
       }
       &.active {
-        color: white;
         background-color: $color-error;
+        color: $color-text-secondary;
+        @media (prefers-color-scheme: dark) {
+          color: $color-text-secondary-dark;
+          background-color: $color-error-dark;
+        }
       }
     }
     label {
