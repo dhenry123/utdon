@@ -155,6 +155,7 @@ export const ScrapGitHubReleaseTags = ({
           />
         </FieldSet>
         <ButtonGeneric
+          className="getcontent"
           label={intl.formatMessage({ id: "Get release tag names list" })}
           onClick={handleGetReleaseTags}
         />
@@ -247,7 +248,10 @@ export const ScrapGitHubReleaseTags = ({
                 })}`}
           </div>
         </FieldSet>
-        <FieldSet legend={intl.formatMessage({ id: "Next step" })}>
+        <FieldSet
+          className="nextstep"
+          legend={intl.formatMessage({ id: "Next step" })}
+        >
           <ButtonGeneric
             className="success"
             onClick={() => onDone(true)}

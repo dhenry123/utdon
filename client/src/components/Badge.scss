@@ -14,8 +14,7 @@
     text-transform: lowercase;
     height: inherit;
     width: max-content;
-    border-radius: $badge-component-border-radius 0 0
-      $badge-component-border-radius;
+    border-radius: $border-radius-badge 0 0 $border-radius-badge;
     display: flex;
     align-items: center;
     @media (prefers-color-scheme: dark) {
@@ -24,8 +23,7 @@
   }
   .value {
     padding: $padding-badge;
-    border-radius: 0 $badge-component-border-radius
-      $badge-component-border-radius 0;
+    border-radius: 0 $border-radius-badge $border-radius-badge 0;
     font-weight: bold;
     height: inherit;
     width: max-content;

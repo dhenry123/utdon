@@ -7,7 +7,7 @@ $searchbuttonsize: 2rem;
   column-gap: 0.2rem;
 
   border: $border-search;
-  border-radius: 6px;
+  border-radius: $border-radius-default;
   padding: 0 0.2rem;
   @media (prefers-color-scheme: dark) {
     border: $border-search-dark;

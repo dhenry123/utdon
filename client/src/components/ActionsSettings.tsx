@@ -106,7 +106,10 @@ export const ActionsSettings = ({
             placeholder={`xxxxxxx`}
           />
         </FieldSet>
-        <FieldSet legend={intl.formatMessage({ id: "Next step" })}>
+        <FieldSet
+          className="nextstep"
+          legend={intl.formatMessage({ id: "Next step" })}
+        >
           <ButtonGeneric
             className="success"
             onClick={() => onDone(true)}

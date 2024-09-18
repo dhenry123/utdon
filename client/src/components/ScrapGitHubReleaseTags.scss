@@ -8,6 +8,9 @@
   width: 100%;
   .Block {
     align-items: center;
+    .FieldSet {
+      align-self: flex-start;
+    }
     &.inactive {
       display: none;
     }
@@ -45,12 +48,32 @@
       .scrapContent {
         border: $border-default;
         border-radius: $border-radius-default;
-        width: 100%;
+        width: 99%;
         height: $form-scrap-content-height;
         padding: $padding-default;
         overflow-x: hidden;
         overflow-y: auto;
+        @media (prefers-color-scheme: dark) {
+          color: $color-text-primary-dark;
+          border: $border-default-dark;
+        }
       }
+    }
+    .nextstep {
+      display: flex;
+      flex-direction: row;
+      width: max-content;
+      align-items: center;
+      .content {
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+      }
+    }
+    .getcontent {
+      margin: 0 8px;
+      width: 10rem;
+      word-wrap: break-word;
     }
   }
 }

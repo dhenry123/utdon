@@ -17,14 +17,14 @@
     width: 100%;
     padding: 0;
     background-color: $background-color;
-    border-radius: 7px;
+    border-radius: $border-radius-toast;
     display: flex;
-    box-shadow: $toast-box-shadow;
+    box-shadow: $boxshadow-default;
     overflow: hidden;
     justify-content: space-between;
     @media (prefers-color-scheme: dark) {
       background-color: $background-color-dark;
-      box-shadow: $toast-box-shadow-dark;
+      box-shadow: $boxshadow-default-dark;
     }
 
     p {

@@ -109,6 +109,7 @@ export type contextSliceType = {
   isAdmin: boolean;
   search: string;
   isLoaderShip: boolean;
+  theme: string;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";

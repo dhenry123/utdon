@@ -9,6 +9,9 @@
   .Block {
     flex-wrap: wrap;
     align-items: stretch;
+    .FieldSet {
+      align-self: flex-start;
+    }
     &.filter {
       flex-direction: row;
     }
@@ -34,14 +37,37 @@
         width: 90%;
       }
     }
-    .getcontent {
+    .getcontent,
+    .nextstep {
       display: flex;
       flex-direction: row;
       width: max-content;
-      align-items: flex-start;
+      align-items: center;
+      .content {
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+      }
     }
     .groups {
       min-width: 15rem;
+      .dropdown-container {
+        border: $border-default;
+        color: $color-text-primary;
+        @media (prefers-color-scheme: dark) {
+          border: $border-default-dark;
+          background-color: $background-color-dark;
+          color: $color-text-primary-dark;
+        }
+        .dropdown-content * {
+          color: $color-text-primary;
+          @media (prefers-color-scheme: dark) {
+            background-color: $background-color-dark;
+            color: $color-text-primary-dark;
+            border: none;
+          }
+        }
+      }
     }
     .content {
       width: 100%;
@@ -56,6 +82,7 @@
 
         @media (prefers-color-scheme: dark) {
           color: $color-text-primary-dark;
+          border: $border-default-dark;
         }
       }
     }

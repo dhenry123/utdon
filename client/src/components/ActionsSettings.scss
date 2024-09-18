@@ -13,5 +13,14 @@
         width: 90%;
       }
     }
+    .nextstep {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .content {
+        width: 100%;
+        align-items: center;
+      }
+    }
   }
 }

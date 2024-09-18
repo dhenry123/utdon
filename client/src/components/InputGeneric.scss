@@ -6,6 +6,9 @@
   appearance: none;
   border-radius: $border-radius-default;
   border: $border-default;
+  @media (prefers-color-scheme: dark) {
+    border: $border-default-dark;
+  }
   &:focus {
     outline: $input-outline-default;
   }

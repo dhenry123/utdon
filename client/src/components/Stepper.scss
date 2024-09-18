@@ -7,7 +7,7 @@
   row-gap: $rowgap-default;
   padding: $padding-default;
   .step {
-    max-width: 10vw;
+    max-width: 4vw;
     align-self: center;
     justify-self: center;
     display: flex;
@@ -17,19 +17,20 @@
       align-self: center;
       min-height: 3rem;
       width: 0.5rem;
-      border-radius: 4px 4px 100% 100%;
+      border-radius: $border-radius-default $border-radius-default
+        $border-radius-round $border-radius-round;
       background-color: $stepper-background-color;
-      box-shadow: $stepper-box-shadow;
+      box-shadow: $boxshadow-default;
       @media (prefers-color-scheme: dark) {
         background-color: $stepper-background-color-dark;
-        box-shadow: $stepper-box-shadow-dark;
+        box-shadow: $boxshadow-default-dark;
       }
       &.done {
         background-color: $color-success;
       }
     }
     .button {
-      border-radius: 100%;
+      border-radius: $border-radius-round;
       border: 0;
       width: 3rem;
       height: 3rem;

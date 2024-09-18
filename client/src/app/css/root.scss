@@ -24,6 +24,7 @@ $palette-theme-origin-color-22: #d6d5d5;
 $palette-theme-origin-color-23: #dbdbdb;
 $palette-theme-origin-color-24: #00000014;
 $palette-theme-origin-color-25: #f8f8f8;
+$palette-theme-origin-color-26: #424242;
 
 $color-text-primary: $palette-theme-origin-color-5;
 $color-text-primary-dark: $palette-theme-origin-color-6;
@@ -65,10 +66,15 @@ $rowgap-default: 1rem;
 $columngap-default: 1rem;
 
 // borders
-$border-radius-default: 2px;
-$border-radius-button: 2px;
+$border-radius-default: 4px;
+$border-radius-button: 4px;
+$border-radius-control: 10px;
+$border-radius-badge: 4px;
+$border-radius-round: 100%;
+$border-radius-toast: 8px;
+
 $border-color: $palette-theme-origin-color-20;
-$border-color-dark: $palette-theme-origin-color-20;
+$border-color-dark: $palette-theme-origin-color-26;
 $border-color-search: $palette-theme-origin-color-2;
 $border-color-search-dark: $palette-theme-origin-color-2;
 $border-default: 1px solid $border-color;
@@ -79,12 +85,11 @@ $border-search: 1px solid $border-color-search;
 $border-search-dark: 1px solid $border-color-search-dark;
 
 // Badges
-$badge-component-border-radius: 4px;
 $badge-background-color: $palette-theme-origin-color-18;
 
-// shadows
+// box-shadow
 $boxshadow-default: 4px 4px 10px 2px $color-primary-box-shadow;
-$boxshadow-default-dark: 4px 4px 10px 2px $color-primary-box-shadow-dark;
+$boxshadow-default-dark: none;
 
 // inputs
 $input-outline-default: 1px solid $color-primary-focus;
@@ -92,7 +97,6 @@ $input-outline-default: 1px solid $color-primary-focus;
 // Toast
 $toast-border-size: 6px;
 $toast-border-type: solid;
-$toast-border-radius: 6px;
 $toast-color-info: $color-info;
 $toast-color-border-info: $toast-border-size $toast-border-type
   $toast-color-info;
@@ -135,12 +139,8 @@ $button-generic-border-color-focus: $palette-theme-origin-color-16;
 //stepper
 $stepper-background-color: $palette-theme-origin-color-21;
 $stepper-background-color-dark: $palette-theme-origin-color-21;
-$stepper-box-shadow: 4px 4px 8px $palette-theme-origin-color-22;
-$stepper-box-shadow-dark: 4px 4px 8px $boxshadow-default-dark;
 
 //toast
-$toast-box-shadow: 0 15px 30px $palette-theme-origin-color-24;
-$toast-box-shadow-dark: 0 15px 30px $palette-theme-origin-color-24;
 
 //UserManager
 $userManager-row-hover-background: $palette-theme-origin-color-23;
@@ -154,19 +154,10 @@ $sumury-keyframes-greenPulse-color-1: $palette-theme-origin-color-2;
 $sumury-keyframes-greenPulse-color-2: $palette-theme-origin-color-3;
 $sumury-keyframes-greenPulse-color-3: $palette-theme-origin-color-4;
 
-.logo {
-  cursor: pointer;
-  width: 180px;
-  height: 50px;
-  align-self: flex-start;
-  background-image: url("/assets/MytinyDC_logo-brand-full.png");
-  background-repeat: no-repeat;
+//logo
 
-  @media (prefers-color-scheme: dark) {
-    background-image: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
-    background-size: 180px 50px;
-  }
-}
+$logo-background-image: url("/assets/MytinyDC_logo-brand-full.png");
+$logo-background-image-dark: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -213,6 +204,9 @@ body {
   width: 100%;
   height: 100%;
   @media (prefers-color-scheme: dark) {
+    background-color: $background-color-dark;
+  }
+  &.dark {
     background-color: $background-color-dark;
   }
 }

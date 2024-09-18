@@ -13,7 +13,7 @@ $usermanagerbuttonsize: 2rem;
       padding-top: 0;
     }
     .ButtonGeneric {
-      border-radius: 100%;
+      border-radius: $border-radius-round;
       width: $usermanagerbuttonsize;
       height: $usermanagerbuttonsize;
       i {
@@ -65,7 +65,7 @@ $usermanagerbuttonsize: 2rem;
       min-height: 3rem;
       &:hover {
         background: $userManager-row-hover-background;
-        border-radius: 6px;
+        border-radius: $border-radius-default;
         @media (prefers-color-scheme: dark) {
           color: $color-text-primary;
           background: $userManager-row-hover-background-dark;

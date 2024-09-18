@@ -2,7 +2,7 @@
 .Control {
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
+  border-radius: $border-radius-control;
   padding: 1rem;
   width: 20vw;
   .identity {
@@ -73,7 +73,7 @@
       width: 95%;
       margin-top: auto;
       .ButtonGeneric {
-        border-radius: 100%;
+        border-radius: $border-radius-round;
       }
     }
   }

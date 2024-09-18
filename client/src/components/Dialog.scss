@@ -67,7 +67,7 @@
           background-color: $dialog-header-button-background-color;
           color: $dialog-header-button-color;
           border: none;
-          border-radius: 100%;
+          border-radius: $border-radius-round;
           .ti {
             font-size: 0.7rem;
           }

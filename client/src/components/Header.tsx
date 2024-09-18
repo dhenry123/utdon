@@ -21,7 +21,11 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
+import {
+  setIsAdmin,
+  setRefetchuptodateForm,
+  setTheme,
+} from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
 import { Search } from "./Search.tsx";
 
@@ -38,7 +42,7 @@ export const Header = () => {
   const isAdmin = useAppSelector((state) => state.context.isAdmin);
 
   const searchString = useAppSelector((state) => state.context.search);
-
+  const theme = useAppSelector((state) => state.context.theme);
   /**
    * Used for server errors (api entrypoint call)
    * @param error
@@ -142,7 +146,8 @@ export const Header = () => {
   }, []);
 
   const handleOnToggleTheme = () => {
-    console.log("change theme");
+    console.log(`current: ${theme}`);
+    dispatch(setTheme(theme ? "" : "dark"));
   };
 
   return (
