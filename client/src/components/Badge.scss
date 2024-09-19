@@ -9,7 +9,7 @@
   width: max-content;
   .label {
     background-color: $badge-background-color;
-    color: $color-text-secondary;
+    color: $badge-label-color;
     padding: $padding-badge;
     text-transform: lowercase;
     height: inherit;
@@ -18,7 +18,7 @@
     display: flex;
     align-items: center;
     @media (prefers-color-scheme: dark) {
-      color: $color-text-secondary-dark;
+      color: $badge-label-color-dark;
     }
   }
   .value {
@@ -30,24 +30,24 @@
     display: flex;
     align-items: center;
     &.uptodate {
-      background-color: $badge-color-success;
-      color: $color-text-secondary;
+      background-color: $badge-background-color-success;
+      color: $badge-color-success;
       @media (prefers-color-scheme: dark) {
-        color: $color-text-secondary-dark;
+        color: $badge-color-success-dark;
       }
     }
     &.toupdate {
-      background-color: $badge-color-error;
-      color: $color-text-secondary;
+      background-color: $badge-background-color-error;
+      color: $badge-color-error;
       @media (prefers-color-scheme: dark) {
-        color: $color-text-secondary-dark;
+        color: $badge-color-error-dark;
       }
     }
     &.uptodatewithwarn {
-      background-color: $badge-color-warning;
-      color: $color-text-secondary;
+      background-color: $badge-background-color-warning;
+      color: $badge-color-warning;
       @media (prefers-color-scheme: dark) {
-        color: $color-text-secondary-dark;
+        color: $badge-color-warning-dark;
       }
     }
   }
