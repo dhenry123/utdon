@@ -33,10 +33,12 @@
       animation-duration: 0.4s;
       max-height: 94vh;
       overflow-y: auto;
+      border: $border-default;
 
       @media (prefers-color-scheme: dark) {
         background-color: $background-color-dark;
         color: $color-text-primary-dark;
+        border: $border-default-dark;
       }
 
       .modal-header {

@@ -21,11 +21,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import {
-  setIsAdmin,
-  setRefetchuptodateForm,
-  setTheme,
-} from "../app/contextSlice";
+import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
 import { Search } from "./Search.tsx";
 
@@ -42,12 +38,13 @@ export const Header = () => {
   const isAdmin = useAppSelector((state) => state.context.isAdmin);
 
   const searchString = useAppSelector((state) => state.context.search);
-  const theme = useAppSelector((state) => state.context.theme);
+
   /**
    * Used for server errors (api entrypoint call)
    * @param error
    * @returns
    */
+
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error && error.data) {
       const servererror = error.data as ErrorServer;
@@ -71,9 +68,6 @@ export const Header = () => {
         forceRefetch: true,
       })
     ).then(() => {
-      // cache behavior uneexpected !!!
-      // dispatch(mytinydcUPDONApi.util.resetApiState());
-      // dispatch(mytinydcUPDONApi.util.invalidateTags(["Controls"]));
       return navigate("/login");
     });
   };
@@ -145,11 +139,6 @@ export const Header = () => {
       });
   }, []);
 
-  const handleOnToggleTheme = () => {
-    console.log(`current: ${theme}`);
-    dispatch(setTheme(theme ? "" : "dark"));
-  };
-
   return (
     <div className="header">
       <div className="buttonsgroup">
@@ -219,13 +208,6 @@ export const Header = () => {
               onClick={displayDialogChangePassword}
             />
           </div>
-          <ButtonGeneric
-            icon={"ti ti-brightness-down"}
-            title={intl.formatMessage({ id: "Dark theme" })}
-            onClick={handleOnToggleTheme}
-            //label={isSuccess ? userInfo.login && userInfo.login : "..."}
-            className="buttontoggletheme"
-          />
           <ButtonGeneric
             icon={"ti ti-logout"}
             title={`${intl.formatMessage({ id: "Logout" })}: ${

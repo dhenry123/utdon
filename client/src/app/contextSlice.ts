@@ -14,7 +14,7 @@ const initialState: contextSliceType = {
   application: {
     name: "UTdOn",
     applicationtitle: "UtDon",
-    copyrightts: "December 2023",
+    copyright: "December 2023",
     licence: "AGPL-3.0",
   },
   uptodateForm: INITIALIZED_UPTODATEFORM,
@@ -22,7 +22,6 @@ const initialState: contextSliceType = {
   isAdmin: false,
   search: "",
   isLoaderShip: false,
-  theme: "",
 };
 
 export const contextSlice = createSlice({
@@ -64,9 +63,6 @@ export const contextSlice = createSlice({
     setIsLoaderShip(state, value) {
       state.isLoaderShip = value.payload;
     },
-    setTheme(state, value) {
-      state.theme = value.payload;
-    },
   },
 });
 
@@ -80,6 +76,5 @@ export const {
   setIsAdmin,
   setSearch,
   setIsLoaderShip,
-  setTheme,
 } = contextSlice.actions;
 export default contextSlice.reducer;

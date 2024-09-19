@@ -4,7 +4,7 @@ $palette-theme-origin-color-2: #8c6cb1;
 $palette-theme-origin-color-3: #f8a6c1;
 $palette-theme-origin-color-4: #f2598b;
 $palette-theme-origin-color-5: #0d1117;
-$palette-theme-origin-color-6: #ebebeb;
+$palette-theme-origin-color-6: #cfcfcf;
 $palette-theme-origin-color-7: #5096c5;
 $palette-theme-origin-color-8: #e7e4e4;
 $palette-theme-origin-color-9: #515151;
@@ -174,11 +174,6 @@ $logo-background-image-dark: url("/assets/MytinyDC_logo-brand-full-darkmode.png"
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-    color: $color-text-primary-dark;
-    background-color: $background-color-dark;
-  }
 }
 
 html,
@@ -187,6 +182,9 @@ body,
   width: 100vw;
   height: 100vh;
   background-color: $background-color;
+  @media (prefers-color-scheme: dark) {
+    background-color: $background-color-dark;
+  }
 }
 body {
   margin: 0;
@@ -204,24 +202,20 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  @media (prefers-color-scheme: dark) {
-    background-color: $background-color-dark;
-  }
-  &.dark {
-    background-color: $background-color-dark;
-  }
 }
 
 legend,
 h1,
-h2 {
+h2,
+h3 {
   color: $color-text-primary;
 }
 
 @media (prefers-color-scheme: dark) {
   legend,
   h1,
-  h2 {
+  h2,
+  h3 {
     color: $color-text-primary-dark;
   }
 }
