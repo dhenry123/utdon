@@ -308,6 +308,8 @@ export const ScrapProduction = ({
                   }))}
           </div>
         </FieldSet>
+      </Block>
+      <Block className={"filter"}>
         <FieldSet
           legend={intl.formatMessage({ id: "Authorized for group(s)" })}
           className="groups"
@@ -330,14 +332,12 @@ export const ScrapProduction = ({
             <div>{error.toString()}</div>
           )}
         </FieldSet>
-        <FieldSet
-          className="nextstep"
-          legend={intl.formatMessage({ id: "Next step" })}
-        >
+        <div className="nextstep">
           <ButtonGeneric
+            icon="arrow-right"
             className="success"
             onClick={() => onDone(true)}
-            label={intl.formatMessage({ id: "Next" })}
+            label={`${intl.formatMessage({ id: "Next step" })}`}
             disabled={
               !productionVersion ||
               !activeUptodateForm.name ||
@@ -346,7 +346,7 @@ export const ScrapProduction = ({
               activeUptodateForm.groups.length === 0
             }
           />
-        </FieldSet>
+        </div>
       </Block>
     </div>
   );

@@ -42,6 +42,12 @@
     }
     .urlGithub {
       flex-grow: 1;
+      .inputgeneric {
+        width: 60%;
+      }
+      .HttpHeader {
+        width: 80%;
+      }
     }
     .content {
       width: 100%;
@@ -63,11 +69,12 @@
       display: flex;
       flex-direction: row;
       width: max-content;
-      align-items: center;
-      .content {
-        display: flex;
-        flex-direction: row;
-        justify-items: center;
+      align-self: center;
+      flex-grow: 1;
+      justify-content: right;
+      .ButtonGeneric {
+        width: max-content;
+        margin: 0 8px;
       }
     }
     .getcontent {

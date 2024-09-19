@@ -42,7 +42,7 @@ const InputGeneric = ({
 
   return (
     <input
-      className={`inputgeneric ${className}`}
+      className={`inputgeneric ${className ? className : ""}`}
       type={type}
       value={value}
       // return e => target.value

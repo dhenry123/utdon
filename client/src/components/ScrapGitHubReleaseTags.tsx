@@ -155,6 +155,7 @@ export const ScrapGitHubReleaseTags = ({
           />
         </FieldSet>
         <ButtonGeneric
+          icon="download"
           className="getcontent"
           label={intl.formatMessage({ id: "Get release tag names list" })}
           onClick={handleGetReleaseTags}
@@ -249,17 +250,15 @@ export const ScrapGitHubReleaseTags = ({
                 })}`}
           </div>
         </FieldSet>
-        <FieldSet
-          className="nextstep"
-          legend={intl.formatMessage({ id: "Next step" })}
-        >
+        <div className="nextstep">
           <ButtonGeneric
+            icon="arrow-right"
             className="success"
             onClick={() => onDone(true)}
-            label={intl.formatMessage({ id: "Next" })}
+            label={`${intl.formatMessage({ id: "Next step" })}`}
             disabled={!lastRelease || !activeUptodateForm.exprGithub}
           />
-        </FieldSet>
+        </div>
       </Block>
     </div>
   );

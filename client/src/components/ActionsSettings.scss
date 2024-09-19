@@ -16,10 +16,13 @@
     .nextstep {
       display: flex;
       flex-direction: row;
-      align-items: center;
-      .content {
-        width: 100%;
-        align-items: center;
+      width: max-content;
+      align-self: center;
+      flex-grow: 1;
+      justify-content: right;
+      .ButtonGeneric {
+        width: max-content;
+        margin: 0 8px;
       }
     }
   }
