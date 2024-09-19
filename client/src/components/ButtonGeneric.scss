@@ -18,7 +18,7 @@
   }
   &.disabled,
   &:disabled > .label {
-    background-color: $color-warning !important;
+    background-color: $background-color-warning !important;
     color: $color-text-secondary !important;
     &:hover {
       cursor: not-allowed;
@@ -32,7 +32,7 @@
     color: $color-text-secondary;
   }
   &.warning {
-    background-color: $color-warning;
+    background-color: $background-color-warning;
     color: $color-text-secondary;
   }
 }

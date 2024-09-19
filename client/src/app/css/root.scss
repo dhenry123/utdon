@@ -42,7 +42,7 @@ $color-success: $palette-theme-origin-color-10;
 $color-error: $palette-theme-origin-color-11;
 $color-error-dark: $palette-theme-origin-color-11;
 
-$color-warning: $palette-theme-origin-color-12;
+$background-color-warning: $palette-theme-origin-color-12;
 $color-info: $palette-theme-origin-color-13;
 $color-placeholder: $palette-theme-origin-color-14;
 
@@ -116,7 +116,7 @@ $toast-color-border-success: $toast-border-size $toast-border-type
 $toast-color-error: $color-error;
 $toast-color-border-error: $toast-border-size $toast-border-type
   $toast-color-error;
-$toast-color-warn: $color-warning;
+$toast-color-warn: $palette-theme-origin-color-12;
 $toast-color-border-warn: $toast-border-size $toast-border-type
   $toast-color-warn;
 $toatst-color-detail: $palette-theme-origin-color-1;
