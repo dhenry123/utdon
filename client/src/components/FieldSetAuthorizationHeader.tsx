@@ -50,13 +50,11 @@ export const FieldSetAuthorizationHeader = ({
 
   return (
     <FieldSet
-      legend={intl.formatMessage({
-        id: "Authorization header",
-      })}
+      legend={intl.formatMessage({ id: "HTTP authorization header" })}
       className={`FieldSetAuthorizationHeader`}
     >
       <div className="authBearer">
-        <div ref={divRef}>{authBearer}</div>
+        <div ref={divRef}>{`Authorization: ${authBearer}`}</div>
         <ButtonGeneric
           className="copyToClipboard"
           onClick={handleOnCopyToClipboard}

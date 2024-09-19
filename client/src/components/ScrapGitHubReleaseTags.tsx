@@ -158,6 +158,7 @@ export const ScrapGitHubReleaseTags = ({
           className="getcontent"
           label={intl.formatMessage({ id: "Get release tag names list" })}
           onClick={handleGetReleaseTags}
+          disabled={activeUptodateForm.urlGitHub === ""}
         />
       </Block>
       <Block>

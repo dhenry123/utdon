@@ -156,5 +156,6 @@
   "Attribut: Authorization ; value: Bearer myauthtoken": "Attribut: Authorization ; valeur: Bearer myauthtoken",
   "Attribut. X-Auth ; value. myauthtoken": "Attribut: X-Auth ; valeur: myauthtoken",
   "(Optional) HTTP Header, use when authentication with token is needed": "(Facultatif) En-tête HTTP à utiliser lorsque l'authentification par jeton est requise.",
-  "Dark theme": "Thème sombre"
+  "Dark theme": "Thème sombre",
+  "HTTP authorization header": "En-tête HTTP d'autorisation"
 }

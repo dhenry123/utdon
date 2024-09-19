@@ -8,7 +8,7 @@
   width: 100%;
   .Block {
     flex-wrap: wrap;
-    align-items: stretch;
+    align-items: center;
     .FieldSet {
       align-self: flex-start;
     }
@@ -37,7 +37,12 @@
         width: 90%;
       }
     }
-    .getcontent,
+    .getcontent {
+      margin: 0 8px;
+      width: 10rem;
+      word-wrap: break-word;
+    }
+
     .nextstep {
       display: flex;
       flex-direction: row;

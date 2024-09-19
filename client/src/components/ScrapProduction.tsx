@@ -214,39 +214,13 @@ export const ScrapProduction = ({
             headervalue={activeUptodateForm.headervalue}
           />
         </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Get Content" })}
+        <ButtonGeneric
           className="getcontent"
-        >
-          <ButtonGeneric
-            label={intl.formatMessage({ id: "Start" })}
-            onClick={handleGetProductionContent}
-            icon="download"
-            disabled={activeUptodateForm.urlProduction === ""}
-          />
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
-          className="groups"
-        >
-          {!isError ? (
-            <MultiSelect
-              options={
-                groupsFromServer ? buidMultiSelectGroups(groupsFromServer) : []
-              }
-              value={
-                activeUptodateForm.groups &&
-                activeUptodateForm.groups.length > 0
-                  ? buidMultiSelectGroups(activeUptodateForm.groups)
-                  : []
-              }
-              onChange={(values: Option[]) => handleOnChangeGroups(values)}
-              labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
-            />
-          ) : (
-            <div>{error.toString()}</div>
-          )}
-        </FieldSet>
+          label={intl.formatMessage({ id: "Get Content" })}
+          onClick={handleGetProductionContent}
+          icon="download"
+          disabled={activeUptodateForm.urlProduction === ""}
+        />
       </Block>
       <Block>
         <FieldSet
@@ -333,6 +307,28 @@ export const ScrapProduction = ({
                     id: "Content to analyse is empty",
                   }))}
           </div>
+        </FieldSet>
+        <FieldSet
+          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
+          className="groups"
+        >
+          {!isError ? (
+            <MultiSelect
+              options={
+                groupsFromServer ? buidMultiSelectGroups(groupsFromServer) : []
+              }
+              value={
+                activeUptodateForm.groups &&
+                activeUptodateForm.groups.length > 0
+                  ? buidMultiSelectGroups(activeUptodateForm.groups)
+                  : []
+              }
+              onChange={(values: Option[]) => handleOnChangeGroups(values)}
+              labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
+            />
+          ) : (
+            <div>{error.toString()}</div>
+          )}
         </FieldSet>
         <FieldSet
           className="nextstep"
