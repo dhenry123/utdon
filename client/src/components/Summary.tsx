@@ -78,70 +78,86 @@ export const Summary = ({
     <div className={`Summary`}>
       <Block className="details">
         <h2>{intl.formatMessage({ id: "Summary" })}</h2>
-        <FieldSet legend={intl.formatMessage({ id: "Name" })}>
-          <div className="label">{uptodateForm.name}</div>
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
-        >
-          <div className="label">
-            {uptodateForm &&
-              uptodateForm.groups &&
-              uptodateForm.groups.join(",")}
-          </div>
-        </FieldSet>
-        {uptodateForm.uuid ? (
-          <>
-            <FieldSet legend={intl.formatMessage({ id: "Control Uuid" })}>
-              <div className="label">{uptodateForm.uuid}</div>
-            </FieldSet>
-          </>
-        ) : (
-          <div></div>
-        )}
-        <FieldSetClickableUrl
-          legend={intl.formatMessage({ id: "Production version url" })}
-          url={uptodateForm.urlProduction}
-          className="label"
-        />
-        <FieldSet legend={intl.formatMessage({ id: "Type of content" })}>
-          <div className="label">{uptodateForm.scrapTypeProduction}</div>
-        </FieldSet>
-        <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
-          <div className="label">{uptodateForm.exprProduction}</div>
-        </FieldSet>
-        <FieldSetClickableUrl
-          legend={intl.formatMessage({ id: "Git repository url" })}
-          url={uptodateForm.urlGitHub}
-          className="label"
-        />
-        <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
-          <div className="label">{uptodateForm.exprGithub}</div>
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Url of the notification service" })}
-        >
-          <div className="label">{uptodateForm.urlCronJobMonitoring}</div>
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({
-            id: "HEADER pour Authentification API",
-          })}
-        >
-          <div className="label">{uptodateForm.urlCronJobMonitoringAuth}</div>
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Url of the CI/CD API entrypoint" })}
-        >
-          <div className="label">{uptodateForm.urlCICD}</div>
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({
-            id: "HEADER pour Authentification API",
-          })}
-        >
-          <div className="label">{uptodateForm.urlCICDAuth}</div>
-        </FieldSet>
+        <Block className="identity">
+          <h3>{intl.formatMessage({ id: "Identity" })}</h3>
+          <FieldSet legend={intl.formatMessage({ id: "Name" })}>
+            <div className="label">{uptodateForm.name}</div>
+          </FieldSet>
+          <FieldSet
+            legend={intl.formatMessage({ id: "Authorized for group(s)" })}
+          >
+            <div className="label">
+              {uptodateForm &&
+                uptodateForm.groups &&
+                uptodateForm.groups.join(",")}
+            </div>
+          </FieldSet>
+          {uptodateForm.uuid ? (
+            <>
+              <FieldSet legend={intl.formatMessage({ id: "Control Uuid" })}>
+                <div className="label">{uptodateForm.uuid}</div>
+              </FieldSet>
+            </>
+          ) : (
+            <div></div>
+          )}
+        </Block>
+        <Block className="production">
+          <h3>{intl.formatMessage({ id: "Production informations" })}</h3>
+          <FieldSetClickableUrl
+            legend={intl.formatMessage({ id: "Production version url" })}
+            url={uptodateForm.urlProduction}
+            className="label"
+          />
+          <FieldSet legend={intl.formatMessage({ id: "Type of content" })}>
+            <div className="label">{uptodateForm.scrapTypeProduction}</div>
+          </FieldSet>
+          <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
+            <div className="label">{uptodateForm.exprProduction}</div>
+          </FieldSet>
+        </Block>
+        <Block className="">
+          <h3>{intl.formatMessage({ id: "Git repository informations" })}</h3>
+          <FieldSetClickableUrl
+            legend={intl.formatMessage({ id: "Git repository url" })}
+            url={uptodateForm.urlGitHub}
+            className="label"
+          />
+          <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
+            <div className="label">{uptodateForm.exprGithub}</div>
+          </FieldSet>
+        </Block>
+        <Block className="">
+          <h3>{intl.formatMessage({ id: "Actions informations" })}</h3>
+          <FieldSet
+            legend={intl.formatMessage({
+              id: "Url of the notification service",
+            })}
+          >
+            <div className="label">{uptodateForm.urlCronJobMonitoring}</div>
+          </FieldSet>
+          <FieldSet
+            legend={intl.formatMessage({
+              id: "HEADER pour Authentification API",
+            })}
+          >
+            <div className="label">{uptodateForm.urlCronJobMonitoringAuth}</div>
+          </FieldSet>
+          <FieldSet
+            legend={intl.formatMessage({
+              id: "Url of the CI/CD API entrypoint",
+            })}
+          >
+            <div className="label">{uptodateForm.urlCICD}</div>
+          </FieldSet>
+          <FieldSet
+            legend={intl.formatMessage({
+              id: "HEADER pour Authentification API",
+            })}
+          >
+            <div className="label">{uptodateForm.urlCICDAuth}</div>
+          </FieldSet>
+        </Block>
       </Block>
       <Block className="save">
         <ButtonGeneric

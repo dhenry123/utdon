@@ -7,6 +7,13 @@
   padding: $padding-default;
   width: 100%;
   .Block {
+    .Block {
+      display: flex;
+      flex-direction: column;
+      h3 {
+        width: 100%;
+      }
+    }
     &.details {
       flex-wrap: wrap;
       h2 {

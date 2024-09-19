@@ -193,7 +193,7 @@ export const Control = ({
           />
         </div>
         <CheckBox
-          label={intl.formatMessage({ id: "Disable this control for actions" })}
+          label={intl.formatMessage({ id: "Disable actions for this control" })}
           onChange={(event) => {
             handleOnPause(event, data.uuid);
           }}

@@ -90,6 +90,8 @@ $badge-background-color: $palette-theme-origin-color-18;
 // box-shadow
 $boxshadow-default: 4px 4px 10px 2px $color-primary-box-shadow;
 $boxshadow-default-dark: none;
+$boxshadow-toast: 3px 1px 3px 1px $color-primary-box-shadow;
+$boxshadow-toast-dark: none;
 
 // inputs
 $input-outline-default: 1px solid $color-primary-focus;
@@ -116,7 +118,6 @@ $toatst-color-button: $palette-theme-origin-color-1;
 $dialog-color-background: $palette-theme-origin-color-5;
 $dialog-opacity: 0.5;
 $dialog-background-color: $palette-theme-origin-color-6;
-$dialog-header-background-color: $palette-theme-origin-color-6;
 $dialog-header-color: $palette-theme-origin-color-18;
 $dialog-header-button-background-color: $color-text-secondary;
 $dialog-header-button-color: $color-text-primary;

@@ -98,7 +98,7 @@
   "The new password and its confirmation do not match": "Le nouveau mot de passe et sa confirmation ne correspondent pas",
   "Renew your API authentication token": "Renouveler votre jeton d'authentification API",
   "Currently only Github and Gitea are supported": "Actuellement seuls Github et Gitea sont supportés",
-  "Disable this control for actions": "Désactiver ce contrôle pour les actions",
+  "Disable actions for this control": "Désactiver les actions pour ce contrôle",
   "General curl commands": "Commandes curl générales",
   "Are you sure you want to change the authentication token? You'll need to update all tools calling this API.": "Êtes-vous sûr de vouloir changer le token d'authentification ? Vous devrez mettre à jour tous les outils appelant cette API.",
   "Your authentication token has been changed": "Votre jeton d'authentification a été modifié",
@@ -157,5 +157,9 @@
   "Attribut. X-Auth ; value. myauthtoken": "Attribut: X-Auth ; valeur: myauthtoken",
   "(Optional) HTTP Header, use when authentication with token is needed": "(Facultatif) En-tête HTTP à utiliser lorsque l'authentification par jeton est requise.",
   "Dark theme": "Thème sombre",
-  "HTTP authorization header": "En-tête HTTP d'autorisation"
+  "HTTP authorization header": "En-tête HTTP d'autorisation",
+  "Identity": "Identité",
+  "Production informations": "Informations sur la  production",
+  "Git repository informations": "Information sur le dépôt Git",
+  "Actions informations": "Informations sur les actions"
 }

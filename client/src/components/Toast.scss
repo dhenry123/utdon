@@ -19,12 +19,12 @@
     background-color: $background-color;
     border-radius: $border-radius-toast;
     display: flex;
-    box-shadow: $boxshadow-default;
+    box-shadow: $boxshadow-toast;
     overflow: hidden;
     justify-content: space-between;
     @media (prefers-color-scheme: dark) {
       background-color: $background-color-dark;
-      box-shadow: $boxshadow-default-dark;
+      box-shadow: $boxshadow-toast-dark;
     }
 
     p {
