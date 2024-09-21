@@ -14,22 +14,17 @@
   }
   .table-container {
     display: block;
-    margin: 0.5em;
-    width: 90%;
+    // margin: 0.5em;
+    width: 95%;
 
     .flex-table {
       display: grid;
-      grid-template-columns: 3rem 10rem 18rem 10rem 18rem 18rem 10rem 18rem;
+      grid-template-columns: 3rem 10% 18% 10% 18% 18% 14% 14%;
       grid-template-rows: 100% auto;
       transition: 0.5s;
       &:first-of-type .flex-row {
         background: $table-header;
         color: $font-color-header;
-      }
-      &:hover {
-        background: #a8a8a8;
-        transition: 500ms;
-        border-radius: 6px;
       }
     }
 
@@ -40,12 +35,17 @@
       padding: 0.5em 0.5em;
       height: 3.5rem;
       align-items: center;
+      background: $background-color-controls-table;
+      margin: 2px 0;
+      border-radius: $border-radius-default;
       img {
         width: 2rem;
         height: 2rem;
         filter: grayscale(100%);
       }
       .ControlGroupButtons {
+        margin-top: 4px;
+        row-gap: 0.5rem;
         .groupButtons {
           justify-content: left;
         }

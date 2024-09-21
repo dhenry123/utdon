@@ -95,6 +95,8 @@ export type ActionCiCdType = {
   uuid: string;
 };
 
+export type DisplayControlsType = "table" | "cards";
+
 export type contextSliceType = {
   // French is default language
   language: { locale: string; lang: JSONLang };
@@ -108,7 +110,7 @@ export type contextSliceType = {
   refetchuptodateForm: boolean;
   isAdmin: boolean;
   search: string;
-  displayControlsAsList: boolean;
+  displayControlsType: DisplayControlsType;
   isLoaderShip: boolean;
 };
 

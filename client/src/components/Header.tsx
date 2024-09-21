@@ -44,7 +44,7 @@ export const Header = () => {
   const searchString = useAppSelector((state) => state.context.search);
 
   const displayControlsAsList = useAppSelector(
-    (state) => state.context.displayControlsAsList
+    (state) => state.context.displayControlsType
   );
 
   /**
@@ -97,7 +97,11 @@ export const Header = () => {
   };
 
   const toggleListTable = () => {
-    dispatch(setDisplayControlsAsList(!displayControlsAsList));
+    dispatch(
+      setDisplayControlsAsList(
+        displayControlsAsList === "cards" ? "table" : "cards"
+      )
+    );
   };
 
   const displayDialogCurlCommands = () => {
@@ -221,9 +225,14 @@ export const Header = () => {
             />
           </div>
           <ButtonGeneric
-            icon={`${displayControlsAsList ? "article" : "border-all"}`}
+            icon={`${
+              displayControlsAsList === "cards" ? "article" : "border-all"
+            }`}
             title={intl.formatMessage({
-              id: displayControlsAsList ? "Display table" : "Display cards",
+              id:
+                displayControlsAsList === "cards"
+                  ? "Display in table format"
+                  : "Display in card format",
             })}
             onClick={toggleListTable}
           />

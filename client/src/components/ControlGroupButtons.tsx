@@ -56,7 +56,7 @@ export const ControlGroupButtons = ({
         />
       </div>
       <CheckBox
-        label={intl.formatMessage({ id: "Disable actions for this control" })}
+        label={intl.formatMessage({ id: "Disable actions" })}
         onChange={(event) => {
           handleOnPause(event, data.uuid);
         }}

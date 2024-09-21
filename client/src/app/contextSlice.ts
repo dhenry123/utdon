@@ -6,7 +6,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import languageFr from "../../../locales/fr.json";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
-import { contextSliceType } from "../../../src/Global.types";
+import {
+  contextSliceType,
+  DisplayControlsType,
+} from "../../../src/Global.types";
 
 const initialState: contextSliceType = {
   // French is default language
@@ -22,7 +25,9 @@ const initialState: contextSliceType = {
   isAdmin: false,
   search: "",
   isLoaderShip: false,
-  displayControlsAsList: true,
+  displayControlsType: localStorage.getItem(
+    "displayControlsAsList"
+  ) as DisplayControlsType,
 };
 
 export const contextSlice = createSlice({
@@ -65,7 +70,8 @@ export const contextSlice = createSlice({
       state.isLoaderShip = value.payload;
     },
     setDisplayControlsAsList(state, value) {
-      state.displayControlsAsList = value.payload;
+      localStorage.setItem("displayControlsAsList", value.payload);
+      state.displayControlsType = value.payload;
     },
   },
 });

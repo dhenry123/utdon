@@ -26,6 +26,7 @@ $palette-theme-origin-color-24: #00000014;
 $palette-theme-origin-color-25: #fffafa;
 $palette-theme-origin-color-26: #424242;
 $palette-theme-origin-color-27: #ebebeb;
+$palette-theme-origin-color-28: #f7f5f5;
 
 $color-text-primary: $palette-theme-origin-color-5;
 $color-text-primary-dark: $palette-theme-origin-color-6;
@@ -42,7 +43,6 @@ $color-success: $palette-theme-origin-color-10;
 $color-error: $palette-theme-origin-color-11;
 $color-error-dark: $palette-theme-origin-color-11;
 
-$background-color-warning: $palette-theme-origin-color-12;
 $color-info: $palette-theme-origin-color-13;
 $color-placeholder: $palette-theme-origin-color-14;
 
@@ -51,6 +51,8 @@ $button-generic-color: $color-text-primary;
 
 $background-color: $palette-theme-origin-color-25;
 $background-color-dark: $palette-theme-origin-color-5;
+$background-color-warning: $palette-theme-origin-color-12;
+$background-color-controls-table: $palette-theme-origin-color-28;
 
 // padding - margin
 $padding-default: 0.5rem 0.5rem;

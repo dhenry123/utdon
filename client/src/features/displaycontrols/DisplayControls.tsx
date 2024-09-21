@@ -70,7 +70,7 @@ export const DisplayControls = () => {
 
   const searchString = useAppSelector((state) => state.context.search);
   const displayControlsAsList = useAppSelector(
-    (state) => state.context.displayControlsAsList
+    (state) => state.context.displayControlsType
   );
 
   const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
@@ -269,7 +269,7 @@ export const DisplayControls = () => {
     <div className={`DisplayControls`}>
       {isSuccess ? (
         <>
-          {displayControlsAsList ? (
+          {displayControlsAsList === "cards" ? (
             <div className="list">
               {data.map((item: UptodateForm) => {
                 if (
