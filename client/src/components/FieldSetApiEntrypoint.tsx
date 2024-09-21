@@ -94,7 +94,7 @@ export const FieldSetApiEntrypoint = ({
         />
       </div>
       {/* if this server use https protocol with self-signed certificate, curl needs -k */}
-      {window.location.protocol === "http:" ? (
+      {window.location.protocol === "https:" ? (
         <CheckBox
           onChange={(event) => {
             // problem with re-renderer
