@@ -6,7 +6,7 @@
 import { useIntl } from "react-intl";
 import { UptoDateOrNotState, UptodateForm } from "../../../src/Global.types";
 import { ConfirmDialog } from "./ConfirmDialog";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
 import { FieldSetClickableUrl } from "./FieldSetClickableUrl";
@@ -69,7 +69,7 @@ export const Control = ({
           >
             <div>{data.name}</div>
           </FieldSet>
-          <FieldSet className="uuid" legend={"uuid"}>
+          <FieldSet className="uuid" legend={"Uuid"}>
             <div>{data.uuid}</div>
           </FieldSet>
         </div>

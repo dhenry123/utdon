@@ -165,5 +165,6 @@
   "The https connection to the 'Utdon' server uses a self-signed certificate": "La connexion https vers le serveur 'Utdon' utilise un certificat auto-signé",
   "Toggle list.table": "Basculer Liste/tableau",
   "Production url": "Url de production",
-  "Git url": "Url Git"
+  "Git url": "Url Git",
+  "State": "Etat"
 }

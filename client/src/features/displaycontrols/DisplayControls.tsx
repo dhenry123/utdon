@@ -15,7 +15,6 @@ import {
   ControlToPause,
   ErrorServer,
   UptodateForm,
-  UptoDateOrNotState,
 } from "../../../../src/Global.types";
 import { Control } from "../../components/Control";
 import { showServiceMessage } from "../../app/serviceMessageSlice";
@@ -37,7 +36,6 @@ import {
   setRefetchuptodateForm,
 } from "../../app/contextSlice";
 import { Badge } from "../../components/Badge";
-import { CheckBox } from "../../components/CheckBox";
 import { ControlGroupButtons } from "../../components/ControlGroupButtons";
 import { CurlCommands } from "../curlcommands/CurlCommands";
 import { getRelativeTime } from "../../helpers/DateHelper";
@@ -299,14 +297,12 @@ export const DisplayControls = () => {
           ) : (
             <div className="table-container">
               <div className={`flex-table flex-header `} role="rowgroup">
-                <div className="flex-row first" role="columnheader">
-                  Logo
-                </div>
+                <div className="flex-row first" role="columnheader"></div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Name" })}
                 </div>
                 <div className="flex-row" role="columnheader">
-                  {intl.formatMessage({ id: "uuid" })}
+                  {intl.formatMessage({ id: "Uuid" })}
                 </div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Groups" })}
@@ -318,7 +314,7 @@ export const DisplayControls = () => {
                   {intl.formatMessage({ id: "Git url" })}
                 </div>
                 <div className="flex-row" role="columnheader">
-                  {intl.formatMessage({ id: "Latest comparison" })}
+                  {intl.formatMessage({ id: "State" })}
                 </div>
                 <div className="flex-row" role="columnheader"></div>
               </div>
