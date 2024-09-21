@@ -167,5 +167,6 @@
   "Git url": "Url Git",
   "State": "Etat",
   "Display in card format": "Afficher sous forme de cartes",
-  "Display in table format": "Afficher sous forme de tableau"
+  "Display in table format": "Afficher sous forme de tableau",
+  "Duplicate": "Dupliquer"
 }

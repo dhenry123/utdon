@@ -28,6 +28,7 @@ interface ControlProps {
   confirmDeleteIsVisible: boolean;
   setIsDialogCompareVisible: (value: boolean) => void;
   setResultCompare: (control: UptoDateOrNotState) => void;
+  handleOnDuplicate: (control: UptodateForm) => void;
 }
 export const Control = ({
   data,
@@ -40,6 +41,7 @@ export const Control = ({
   confirmDeleteIsVisible,
   setIsDialogCompareVisible,
   setResultCompare,
+  handleOnDuplicate,
 }: ControlProps) => {
   const intl = useIntl();
 
@@ -79,7 +81,7 @@ export const Control = ({
           className="groups"
           legend={intl.formatMessage({ id: "Groups" })}
         >
-          <div>{data.groups && data.groups.join(",")}</div>
+          <div>{data.groups && data.groups.join(" ")}</div>
         </FieldSet>
       ) : (
         <></>
@@ -148,6 +150,7 @@ export const Control = ({
         handleOnCurlCommands={handleOnCurlCommands}
         handleOnCompare={handleOnCompare}
         handleOnPause={handleOnPause}
+        handleOnDuplicate={handleOnDuplicate}
       />
       <ConfirmDialog
         visible={confirmDeleteIsVisible}

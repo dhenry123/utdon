@@ -17,6 +17,7 @@ interface ControlGroupButtonsProps {
   handleOnCurlCommands: (value: string) => void;
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
+  handleOnDuplicate: (control: UptodateForm) => void;
 }
 
 export const ControlGroupButtons = ({
@@ -26,6 +27,7 @@ export const ControlGroupButtons = ({
   handleOnCurlCommands,
   handleOnCompare,
   handleOnPause,
+  handleOnDuplicate,
 }: ControlGroupButtonsProps) => {
   const intl = useIntl();
 
@@ -36,6 +38,11 @@ export const ControlGroupButtons = ({
           title={intl.formatMessage({ id: "Edit" })}
           onClick={() => handleOnEdit(data.uuid)}
           icon="pencil"
+        />
+        <ButtonGeneric
+          title={intl.formatMessage({ id: "Duplicate" })}
+          onClick={() => handleOnDuplicate(data)}
+          icon="copy"
         />
         <ButtonGeneric
           className="warning"

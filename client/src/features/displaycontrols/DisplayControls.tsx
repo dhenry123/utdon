@@ -39,6 +39,7 @@ import { Badge } from "../../components/Badge";
 import { ControlGroupButtons } from "../../components/ControlGroupButtons";
 import { CurlCommands } from "../curlcommands/CurlCommands";
 import { getRelativeTime } from "../../helpers/DateHelper";
+import { UrlOpener } from "../../components/UrlOpener";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -265,6 +266,10 @@ export const DisplayControls = () => {
     return navigate(`/ui/editcontrol/${uuid}`);
   };
 
+  const handleOnDuplicate = (control: UptodateForm) => {
+    console.log("Control to duplicate", control);
+  };
+
   return (
     <div className={`DisplayControls`}>
       {isSuccess ? (
@@ -290,6 +295,7 @@ export const DisplayControls = () => {
                     confirmDeleteIsVisible={confirmDeleteIsVisible}
                     setIsDialogCompareVisible={setIsDialogCompareVisible}
                     setResultCompare={setResultCompare}
+                    handleOnDuplicate={handleOnDuplicate}
                   />
                 );
               })}
@@ -341,22 +347,28 @@ export const DisplayControls = () => {
                         <></>
                       )}
                     </div>
-                    <div className={`flex-row`} role="cell">
+                    <div className={`flex-row name`} role="cell">
                       {item.name}
                     </div>
                     <div className={`flex-row`} role="cell">
                       {item.uuid}
                     </div>
-                    <div className={`flex-row`} role="cell">
-                      {item.groups}
+                    <div
+                      className={`flex-row`}
+                      role="cell"
+                      title={`${intl.formatMessage({
+                        id: "Groups",
+                      })}: ${item.groups.join(" ")}`}
+                    >
+                      <div className="groups">{item.groups.join(" ")}</div>
                     </div>
-                    <div className={`flex-row`} role="cell">
-                      {item.urlProduction}
+                    <div className={`flex-row `} role="cell">
+                      <UrlOpener url={item.urlProduction} />
                     </div>
-                    <div className={`flex-row`} role="cell">
-                      {item.urlGitHub}
+                    <div className={`flex-row urlGitHub`} role="cell">
+                      <UrlOpener url={item.urlGitHub} />
                     </div>
-                    <div className={`flex-row`} role="cell">
+                    <div className={`flex-row state`} role="cell">
                       {item.compareResult && item.compareResult.ts ? (
                         <Badge
                           isSuccess={item.compareResult.state}
@@ -383,6 +395,7 @@ export const DisplayControls = () => {
                         handleOnCurlCommands={handleOnCurlCommands}
                         handleOnCompare={handleOnCompare}
                         handleOnPause={handleOnPause}
+                        handleOnDuplicate={handleOnDuplicate}
                       />
                     </div>
                   </div>
@@ -429,9 +442,14 @@ export const DisplayControls = () => {
           result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
           control={
             data &&
-            (data as UptodateForm[]).filter(
-              (item) => item.name === resultCompare.name
-            )[0]
+            (data as UptodateForm[]).filter((item) => {
+              //compat 1.60. -> 1.7.0 because of duplication implementation
+              if (resultCompare.uuid) {
+                return item.uuid === resultCompare.uuid;
+              } else {
+                return item.name === resultCompare.name;
+              }
+            })[0]
           }
         />
       </Dialog>

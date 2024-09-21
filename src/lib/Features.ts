@@ -49,6 +49,7 @@ export const scrapUrl = async (
  */
 export const compareVersion = (
   name: string,
+  uuid: string,
   sourceCodeVersion: string,
   productionVersion: string,
   urlGitHub: string,
@@ -74,6 +75,7 @@ export const compareVersion = (
   }
   return {
     name: name,
+    uuid: uuid,
     githubLatestRelease: sourceCodeVersion,
     productionVersion: productionVersion,
     state: uptodateState,
@@ -138,6 +140,7 @@ export const getUpToDateOrNotState = async (
       resolv(
         compareVersion(
           record.name,
+          record.uuid,
           githubVersion || "",
           productionVersion || "",
           record.urlGitHub || "",

@@ -9,7 +9,7 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: "NewComponent/HttpHeader",
+  title: "UI/HttpHeader",
   component: HttpHeader,
   decorators: [withRouter],
   parameters: {

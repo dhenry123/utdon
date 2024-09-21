@@ -1,17 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react";
 // import { useArgs } from "@storybook/preview-api";
 
-import { ControlGroupButtons } from "./ControlGroupButtons";
+import { UrlOpener } from "./UrlOpener";
 import {
   reactRouterParameters,
   withRouter,
 } from "storybook-addon-remix-react-router";
-import { STORYBOOK_UPTODATEFORM } from "../../../src/Constants-dev";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: "UI/ControlGroupButtons",
-  component: ControlGroupButtons,
+  title: "Components/Navigation/UrlOpener",
+  component: UrlOpener,
   decorators: [withRouter],
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
@@ -24,7 +23,7 @@ const meta = {
   tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {},
-} satisfies Meta<typeof ControlGroupButtons>;
+} satisfies Meta<typeof UrlOpener>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -40,18 +39,10 @@ type Story = StoryObj<typeof meta>;
 //     // Update the arg in Storybook
 //     setArgs({ value });
 //   };
-//   return <ControlGroupButtons {...args} onChange={onChange} />;
+//   return <UrlOpener {...args} onChange={onChange} />;
 // };
 export const Primary: Story = {
-  args: {
-    data: { ...STORYBOOK_UPTODATEFORM },
-    handleOnEdit: () => {},
-    setConfirmDeleteIsVisible: () => {},
-    handleOnCurlCommands: () => {},
-    handleOnCompare: () => {},
-    handleOnPause: () => {},
-    handleOnDuplicate: () => {},
-  },
+  args: { url: "https://github.com/immich-app/immich" },
   // if you need to get a specific render see SelectArs component...
   // render: (args) => Component(args),
 };

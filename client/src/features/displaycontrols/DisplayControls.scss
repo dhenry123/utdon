@@ -50,6 +50,24 @@
           justify-content: left;
         }
       }
+      .urlProduction,
+      .urlGitHub {
+        max-width: 4rem;
+      }
+      .groups {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 95%;
+      }
+      &.state {
+        cursor: pointer;
+      }
+      &.name {
+        font-weight: bold;
+        text-transform: capitalize;
+      }
     }
 
     .rowspan {
