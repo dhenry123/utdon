@@ -1,0 +1,27 @@
+@import "../app/css/root.scss";
+.ControlGroupButtons {
+  display: flex;
+  flex-direction: column;
+  row-gap: $rowgap-default;
+  .groupButtons {
+    display: flex;
+    flex-direction: row;
+    column-gap: $columngap-default;
+    justify-content: center;
+    flex-grow: 1;
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      column-gap: 1rem;
+      row-gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0.7rem;
+      width: 95%;
+      margin-top: auto;
+      .ButtonGeneric {
+        border-radius: $border-radius-round;
+      }
+    }
+  }
+}

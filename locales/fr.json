@@ -99,6 +99,7 @@
   "Renew your API authentication token": "Renouveler votre jeton d'authentification API",
   "Currently only Github and Gitea are supported": "Actuellement seuls Github et Gitea sont supportés",
   "Disable actions for this control": "Désactiver les actions pour ce contrôle",
+  "Disable actions": "Désactiver les actions",
   "General curl commands": "Commandes curl générales",
   "Are you sure you want to change the authentication token? You'll need to update all tools calling this API.": "Êtes-vous sûr de vouloir changer le token d'authentification ? Vous devrez mettre à jour tous les outils appelant cette API.",
   "Your authentication token has been changed": "Votre jeton d'authentification a été modifié",
@@ -161,5 +162,8 @@
   "Production informations": "Informations sur la  production",
   "Git repository informations": "Information sur le dépôt Git",
   "Actions informations": "Informations sur les actions",
-  "The https connection to the 'Utdon' server uses a self-signed certificate": "La connexion https vers le serveur 'Utdon' utilise un certificat auto-signé"
+  "The https connection to the 'Utdon' server uses a self-signed certificate": "La connexion https vers le serveur 'Utdon' utilise un certificat auto-signé",
+  "Toggle list.table": "Basculer Liste/tableau",
+  "Production url": "Url de production",
+  "Git url": "Url Git"
 }

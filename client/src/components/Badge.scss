@@ -6,7 +6,7 @@
   align-items: center;
   column-gap: 0;
   height: 2rem;
-  width: max-content;
+  min-width: 9rem;
   .label {
     background-color: $badge-background-color;
     color: $badge-label-color;
@@ -26,7 +26,7 @@
     border-radius: 0 $border-radius-badge $border-radius-badge 0;
     font-weight: bold;
     height: inherit;
-    width: max-content;
+    width: 100%;
     display: flex;
     align-items: center;
     &.uptodate {

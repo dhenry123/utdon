@@ -22,6 +22,7 @@ const initialState: contextSliceType = {
   isAdmin: false,
   search: "",
   isLoaderShip: false,
+  displayControlsAsList: true,
 };
 
 export const contextSlice = createSlice({
@@ -63,6 +64,9 @@ export const contextSlice = createSlice({
     setIsLoaderShip(state, value) {
       state.isLoaderShip = value.payload;
     },
+    setDisplayControlsAsList(state, value) {
+      state.displayControlsAsList = value.payload;
+    },
   },
 });
 
@@ -76,5 +80,6 @@ export const {
   setIsAdmin,
   setSearch,
   setIsLoaderShip,
+  setDisplayControlsAsList,
 } = contextSlice.actions;
 export default contextSlice.reducer;

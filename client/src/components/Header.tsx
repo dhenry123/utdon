@@ -21,7 +21,11 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
+import {
+  setDisplayControlsAsList,
+  setIsAdmin,
+  setRefetchuptodateForm,
+} from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
 import { Search } from "./Search.tsx";
 
@@ -38,6 +42,10 @@ export const Header = () => {
   const isAdmin = useAppSelector((state) => state.context.isAdmin);
 
   const searchString = useAppSelector((state) => state.context.search);
+
+  const displayControlsAsList = useAppSelector(
+    (state) => state.context.displayControlsAsList
+  );
 
   /**
    * Used for server errors (api entrypoint call)
@@ -86,6 +94,10 @@ export const Header = () => {
       <ChangePassword onHide={() => setIsDialogVisible(false)} />
     );
     setIsDialogVisible(true);
+  };
+
+  const toggleListTable = () => {
+    dispatch(setDisplayControlsAsList(!displayControlsAsList));
   };
 
   const displayDialogCurlCommands = () => {
@@ -209,7 +221,14 @@ export const Header = () => {
             />
           </div>
           <ButtonGeneric
-            icon={"ti ti-logout"}
+            icon={`${displayControlsAsList ? "article" : "border-all"}`}
+            title={intl.formatMessage({
+              id: displayControlsAsList ? "Display table" : "Display cards",
+            })}
+            onClick={toggleListTable}
+          />
+          <ButtonGeneric
+            icon={"logout"}
             title={`${intl.formatMessage({ id: "Logout" })}: ${
               userInfo && userInfo.login ? userInfo.login : ""
             }`}

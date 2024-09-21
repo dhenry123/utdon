@@ -26,7 +26,8 @@
       margin: auto;
       padding: $padding-default;
       width: max-content;
-      width: 80vw;
+      width: auto;
+      max-width: 80vw;
       -webkit-animation-name: animatetop;
       -webkit-animation-duration: 0.4s;
       animation-name: animatetop;
@@ -34,7 +35,6 @@
       max-height: 90vh;
       overflow-y: auto;
       border: $border-default;
-
       @media (prefers-color-scheme: dark) {
         background-color: $background-color-dark;
         color: $color-text-primary-dark;

@@ -108,6 +108,7 @@ export type contextSliceType = {
   refetchuptodateForm: boolean;
   isAdmin: boolean;
   search: string;
+  displayControlsAsList: boolean;
   isLoaderShip: boolean;
 };
 

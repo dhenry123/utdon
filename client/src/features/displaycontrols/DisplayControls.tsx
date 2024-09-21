@@ -15,6 +15,7 @@ import {
   ControlToPause,
   ErrorServer,
   UptodateForm,
+  UptoDateOrNotState,
 } from "../../../../src/Global.types";
 import { Control } from "../../components/Control";
 import { showServiceMessage } from "../../app/serviceMessageSlice";
@@ -35,6 +36,10 @@ import {
   setIsLoaderShip,
   setRefetchuptodateForm,
 } from "../../app/contextSlice";
+import { Badge } from "../../components/Badge";
+import { CheckBox } from "../../components/CheckBox";
+import { ControlGroupButtons } from "../../components/ControlGroupButtons";
+import { CurlCommands } from "../curlcommands/CurlCommands";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -65,6 +70,14 @@ export const DisplayControls = () => {
   const [userAuthBearer, setuserAuthBearer] = useState("");
 
   const searchString = useAppSelector((state) => state.context.search);
+  const displayControlsAsList = useAppSelector(
+    (state) => state.context.displayControlsAsList
+  );
+
+  const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
+  const [isCurlCommandVisible, setIsCurlCommandVisible] = useState(false);
+
+  const [isDialogCompareVisible, setIsDialogCompareVisible] = useState(false);
 
   const {
     data,
@@ -131,6 +144,10 @@ export const DisplayControls = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetchAskedFromOtherComponent]);
+
+  const handleOnCurlCommands = () => {
+    setIsCurlCommandVisible(true);
+  };
 
   const handleOnDelete = async (uuid: string) => {
     await dispatch(mytinydcUPDONApi.endpoints.deleteCheck.initiate(uuid))
@@ -245,30 +262,144 @@ export const DisplayControls = () => {
     setUuidToPause(INTIALIZED_CONTROL_TO_PAUSE);
   };
 
+  const handleOnEdit = (uuid: string) => {
+    return navigate(`/ui/editcontrol/${uuid}`);
+  };
+
+  useEffect(() => {
+    console.log(resultCompare);
+  }, [resultCompare]);
+
+  console.log(data);
   return (
     <div className={`DisplayControls`}>
       {isSuccess ? (
         <>
-          {/* <div className="filters">Filter on :</div> */}
-          <div className="list">
-            {data.map((item: UptodateForm) => {
-              if (
-                searchString &&
-                !item.name.match(new RegExp(searchString, "i"))
-              )
-                return null;
-              return (
-                <Control
-                  handleOnDelete={handleOnDelete}
-                  handleOnCompare={handleOnCompare}
-                  key={item.uuid}
-                  data={item}
-                  userAuthBearer={userAuthBearer}
-                  handleOnPause={handleOnPause}
-                />
-              );
-            })}
-          </div>
+          {displayControlsAsList ? (
+            <div className="list">
+              {data.map((item: UptodateForm) => {
+                if (
+                  searchString &&
+                  !item.name.match(new RegExp(searchString, "i"))
+                )
+                  return null;
+                return (
+                  <Control
+                    handleOnDelete={handleOnDelete}
+                    handleOnCompare={handleOnCompare}
+                    key={item.uuid}
+                    data={item}
+                    handleOnPause={handleOnPause}
+                    handleOnEdit={handleOnEdit}
+                    handleOnCurlCommands={handleOnCurlCommands}
+                    setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
+                    confirmDeleteIsVisible={confirmDeleteIsVisible}
+                    setIsDialogCompareVisible={setIsDialogCompareVisible}
+                    setResultCompare={setResultCompare}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <div className="table-container">
+              <div className={`flex-table flex-header `} role="rowgroup">
+                <div className="flex-row first" role="columnheader">
+                  Logo
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Name" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "uuid" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Groups" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Production url" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Git url" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Latest comparison" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Controls" })}
+                </div>
+              </div>
+              {data.map((item: UptodateForm) => {
+                if (
+                  searchString &&
+                  !item.name.match(new RegExp(searchString, "i"))
+                )
+                  return null;
+                return (
+                  <div
+                    key={`control${item.uuid}`}
+                    className={`flex-table`}
+                    role="rowgroup"
+                  >
+                    <div className="flex-row  first" role="cell">
+                      {item.logo ? (
+                        <img
+                          className="image"
+                          src={item.logo}
+                          alt={`logo app ${item.name}`}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      {item.name}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      {item.uuid}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      {item.groups}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      {item.urlProduction}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      {item.urlGitHub}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      {item.compareResult && item.compareResult.ts ? (
+                        <Badge
+                          isSuccess={item.compareResult.state}
+                          isWarning={!item.compareResult.strictlyEqual}
+                          // onClick={() => {
+                          //   if (item.compareResult) {
+                          //     setResultCompare(item.compareResult);
+                          //     setTimeout(() => {
+                          //       setIsDialogCompareVisible(true);
+                          //     }, 100);
+                          //   }
+                          // }}
+                          // title={relativeTime}
+                        />
+                      ) : (
+                        <Badge isSuccess={false} />
+                      )}
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      <ControlGroupButtons
+                        data={data}
+                        handleOnEdit={handleOnEdit}
+                        setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
+                        handleOnCurlCommands={handleOnCurlCommands}
+                        handleOnCompare={handleOnCompare}
+                        handleOnPause={handleOnPause}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       ) : isError ? (
         <div>Error</div>
@@ -285,6 +416,36 @@ export const DisplayControls = () => {
           control={checkInProgress}
         />
       </Dialog>
+      <Dialog
+        visible={isCurlCommandVisible}
+        onHide={() => setIsCurlCommandVisible(false)}
+        header={intl.formatMessage({ id: "Curl commands for this control" })}
+        closeButton
+      >
+        <CurlCommands
+          uptodateForm={data}
+          onClose={() => setIsCurlCommandVisible(false)}
+          userAuthBearer={userAuthBearer}
+        />
+      </Dialog>
+      <Dialog
+        visible={isDialogCompareVisible}
+        onHide={() => setIsDialogCompareVisible(false)}
+        header={intl.formatMessage({ id: "Comparison result" })}
+        closeButton
+        footerClose
+      >
+        <ResultCompare
+          result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
+          control={
+            data &&
+            (data as UptodateForm[]).filter(
+              (item) => item.name === resultCompare.name
+            )[0]
+          }
+        />
+      </Dialog>
+
       <ConfirmDialog
         message={`${intl.formatMessage({
           id: "Are you sure you want to pause this control",

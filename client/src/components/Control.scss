@@ -66,24 +66,7 @@
       }
     }
   }
-  .groupButtons {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    flex-grow: 1;
-    .buttons {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      column-gap: 1rem;
-      row-gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0.7rem;
-      width: 95%;
-      margin-top: auto;
-      .ButtonGeneric {
-        border-radius: $border-radius-round;
-      }
-    }
+  .ControlGroupButtons {
+    margin-top: 1rem;
   }
 }

@@ -4,57 +4,44 @@
  */
 
 import { useIntl } from "react-intl";
-import { useNavigate } from "react-router-dom";
-
-import "./Control.scss";
 import { UptoDateOrNotState, UptodateForm } from "../../../src/Global.types";
-import ButtonGeneric from "./ButtonGeneric";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { ChangeEvent, useState } from "react";
 import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
 import { FieldSetClickableUrl } from "./FieldSetClickableUrl";
-import { Dialog } from "./Dialog";
-import { CurlCommands } from "../features/curlcommands/CurlCommands";
-import { CheckBox } from "./CheckBox";
 import { Badge } from "./Badge";
-import { ResultCompare } from "./ResultCompare";
 import { getRelativeTime } from "../helpers/DateHelper";
-import { INPROGRESS_UPTODATEORNOTSTATE } from "../../../src/Constants";
 import { useAppSelector } from "../app/hook";
+import { ControlGroupButtons } from "./ControlGroupButtons";
+
+import "./Control.scss";
 
 interface ControlProps {
   data: UptodateForm;
   handleOnDelete: (uuid: string) => void;
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
-  userAuthBearer: string;
+  handleOnEdit: (value: string) => void;
+  handleOnCurlCommands: (value: string) => void;
+  setConfirmDeleteIsVisible: (value: boolean) => void;
+  confirmDeleteIsVisible: boolean;
+  setIsDialogCompareVisible: (value: boolean) => void;
+  setResultCompare: (control: UptoDateOrNotState) => void;
 }
 export const Control = ({
   data,
   handleOnDelete,
   handleOnCompare,
   handleOnPause,
-  userAuthBearer,
+  handleOnEdit,
+  handleOnCurlCommands,
+  setConfirmDeleteIsVisible,
+  confirmDeleteIsVisible,
+  setIsDialogCompareVisible,
+  setResultCompare,
 }: ControlProps) => {
   const intl = useIntl();
-  const navigate = useNavigate();
-
-  const handleOnEdit = () => {
-    return navigate(`/ui/editcontrol/${data.uuid}`);
-  };
-
-  const handleOnCurlCommands = () => {
-    setIsCurlCommandVisible(true);
-  };
-
-  const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
-  const [isCurlCommandVisible, setIsCurlCommandVisible] = useState(false);
-
-  const [resultCompare, setResultCompare] = useState<UptoDateOrNotState>(
-    INPROGRESS_UPTODATEORNOTSTATE
-  );
-  const [isDialogCompareVisible, setIsDialogCompareVisible] = useState(false);
 
   const isAdmin = useAppSelector((state) => state.context.isAdmin);
 
@@ -133,6 +120,7 @@ export const Control = ({
               isWarning={!data.compareResult.strictlyEqual}
               onClick={() => {
                 if (data.compareResult) {
+                  console.log(data.compareResult);
                   setResultCompare(data.compareResult);
                   setTimeout(() => {
                     setIsDialogCompareVisible(true);
@@ -169,42 +157,14 @@ export const Control = ({
           )}
         </div>
       </FieldSet>
-      <div className="groupButtons">
-        <div className="buttons">
-          <ButtonGeneric
-            title={intl.formatMessage({ id: "Edit" })}
-            onClick={handleOnEdit}
-            icon="pencil"
-          />
-          <ButtonGeneric
-            className="warning"
-            title={intl.formatMessage({ id: "Delete" })}
-            onClick={() => setConfirmDeleteIsVisible(true)}
-            icon="trash"
-          />
-          <ButtonGeneric
-            title={intl.formatMessage({ id: "Curl commands for this control" })}
-            onClick={handleOnCurlCommands}
-            icon="slashes"
-          />
-          <ButtonGeneric
-            className="success"
-            title={intl.formatMessage({ id: "Start comparison" })}
-            onClick={() => handleOnCompare(data)}
-            icon="git-compare"
-          />
-        </div>
-        <CheckBox
-          label={intl.formatMessage({ id: "Disable actions for this control" })}
-          onChange={(event) => {
-            handleOnPause(event, data.uuid);
-          }}
-          title={intl.formatMessage({
-            id: "In the case of a global selection, only the comparison will be processed",
-          })}
-          checked={data.isPause}
-        />
-      </div>
+      <ControlGroupButtons
+        data={data}
+        handleOnEdit={() => handleOnEdit(data.uuid)}
+        setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
+        handleOnCurlCommands={handleOnCurlCommands}
+        handleOnCompare={handleOnCompare}
+        handleOnPause={handleOnPause}
+      />
       <ConfirmDialog
         visible={confirmDeleteIsVisible}
         message={
@@ -217,30 +177,6 @@ export const Control = ({
         }}
         onCancel={() => setConfirmDeleteIsVisible(false)}
       />
-      <Dialog
-        visible={isCurlCommandVisible}
-        onHide={() => setIsCurlCommandVisible(false)}
-        header={intl.formatMessage({ id: "Curl commands for this control" })}
-        closeButton
-      >
-        <CurlCommands
-          uptodateForm={data}
-          onClose={() => setIsCurlCommandVisible(false)}
-          userAuthBearer={userAuthBearer}
-        />
-      </Dialog>
-      <Dialog
-        visible={isDialogCompareVisible}
-        onHide={() => setIsDialogCompareVisible(false)}
-        header={intl.formatMessage({ id: "Comparison result" })}
-        closeButton
-        footerClose
-      >
-        <ResultCompare
-          result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          control={data}
-        />
-      </Dialog>
     </Block>
   );
 };
