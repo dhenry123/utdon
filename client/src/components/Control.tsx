@@ -148,16 +148,18 @@ export const Control = ({
             <div className="compareVersions">
               <div
                 className="productionVersion"
-                title={intl.formatMessage({ id: "Your production version" })}
+                title={`${intl.formatMessage({
+                  id: "Your production version",
+                })}: ${data.compareResult.productionVersion}`}
               >
                 {data.compareResult.productionVersion}
               </div>
               <div className="separator">/</div>
               <div
                 className="githubLatestRelease"
-                title={intl.formatMessage({
+                title={`${intl.formatMessage({
                   id: "Latest available version detected",
-                })}
+                })}: ${data.compareResult.githubLatestRelease}`}
               >
                 {data.compareResult.githubLatestRelease}
               </div>

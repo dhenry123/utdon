@@ -93,8 +93,8 @@ export const FieldSetApiEntrypoint = ({
           title={intl.formatMessage({ id: "Copy command to the clipboard" })}
         />
       </div>
-      {/* // only if https, is certificate self-signed ?? */}
-      {window.location.protocol === "https:" ? (
+      {/* if this server use https protocol with self-signed certificate, curl needs -k */}
+      {window.location.protocol === "http:" ? (
         <CheckBox
           onChange={(event) => {
             // problem with re-renderer
@@ -105,7 +105,7 @@ export const FieldSetApiEntrypoint = ({
             }, 50);
           }}
           label={intl.formatMessage({
-            id: "This secure connection use a self signed certificate",
+            id: "The https connection to the 'Utdon' server uses a self-signed certificate",
           })}
           checked={isChecked}
         />

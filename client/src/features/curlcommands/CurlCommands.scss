@@ -2,6 +2,10 @@
 .CurlCommands {
   display: flex;
   flex-direction: column;
+  .listcurlcommands {
+    overflow: auto;
+    height: 60vh;
+  }
   .name {
     div {
       font-weight: bold;
@@ -11,7 +15,6 @@
   .closeButton {
     align-self: center;
     justify-self: center;
-    margin: $margin-default;
     padding: $padding-default;
   }
 }

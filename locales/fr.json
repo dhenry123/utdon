@@ -160,5 +160,6 @@
   "Identity": "Identité",
   "Production informations": "Informations sur la  production",
   "Git repository informations": "Information sur le dépôt Git",
-  "Actions informations": "Informations sur les actions"
+  "Actions informations": "Informations sur les actions",
+  "The https connection to the 'Utdon' server uses a self-signed certificate": "La connexion https vers le serveur 'Utdon' utilise un certificat auto-signé"
 }
