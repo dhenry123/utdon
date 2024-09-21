@@ -120,7 +120,6 @@ export const Control = ({
               isWarning={!data.compareResult.strictlyEqual}
               onClick={() => {
                 if (data.compareResult) {
-                  console.log(data.compareResult);
                   setResultCompare(data.compareResult);
                   setTimeout(() => {
                     setIsDialogCompareVisible(true);

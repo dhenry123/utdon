@@ -92,7 +92,6 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
         );
       })
       .catch((error: FetchBaseQueryError) => {
-        console.log(error);
         dispatchServerError(error);
       });
   };

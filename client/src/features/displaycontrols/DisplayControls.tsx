@@ -266,11 +266,6 @@ export const DisplayControls = () => {
     return navigate(`/ui/editcontrol/${uuid}`);
   };
 
-  useEffect(() => {
-    console.log(resultCompare);
-  }, [resultCompare]);
-
-  console.log(data);
   return (
     <div className={`DisplayControls`}>
       {isSuccess ? (
