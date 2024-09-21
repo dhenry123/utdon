@@ -45,16 +45,6 @@ export const Control = ({
 
   const isAdmin = useAppSelector((state) => state.context.isAdmin);
 
-  /**
-   * To update the badge's relative time without having to update the entire content
-   */
-  const [relativeTime, setRelativeTime] = useState("");
-  const updateRelativeTime = () => {
-    if (data.compareResult && data.compareResult.ts) {
-      setRelativeTime(getRelativeTime(data.compareResult.ts, intl));
-    }
-  };
-
   return (
     <Block className={`Control`}>
       <div className="identity">
@@ -108,12 +98,7 @@ export const Control = ({
         className="lastestCompare"
         legend={intl.formatMessage({ id: "Latest comparison" })}
       >
-        <div
-          className="details"
-          onMouseEnter={() => {
-            updateRelativeTime();
-          }}
-        >
+        <div className="details">
           {data.compareResult && data.compareResult.ts ? (
             <Badge
               isSuccess={data.compareResult.state}
@@ -126,7 +111,7 @@ export const Control = ({
                   }, 100);
                 }
               }}
-              title={relativeTime}
+              title={getRelativeTime(data.compareResult.ts, intl)}
             />
           ) : (
             <Badge isSuccess={false} />

@@ -40,6 +40,7 @@ import { Badge } from "../../components/Badge";
 import { CheckBox } from "../../components/CheckBox";
 import { ControlGroupButtons } from "../../components/ControlGroupButtons";
 import { CurlCommands } from "../curlcommands/CurlCommands";
+import { getRelativeTime } from "../../helpers/DateHelper";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -319,9 +320,7 @@ export const DisplayControls = () => {
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Latest comparison" })}
                 </div>
-                <div className="flex-row" role="columnheader">
-                  {intl.formatMessage({ id: "Controls" })}
-                </div>
+                <div className="flex-row" role="columnheader"></div>
               </div>
               {data.map((item: UptodateForm) => {
                 if (
@@ -366,15 +365,15 @@ export const DisplayControls = () => {
                         <Badge
                           isSuccess={item.compareResult.state}
                           isWarning={!item.compareResult.strictlyEqual}
-                          // onClick={() => {
-                          //   if (item.compareResult) {
-                          //     setResultCompare(item.compareResult);
-                          //     setTimeout(() => {
-                          //       setIsDialogCompareVisible(true);
-                          //     }, 100);
-                          //   }
-                          // }}
-                          // title={relativeTime}
+                          onClick={() => {
+                            if (item.compareResult) {
+                              setResultCompare(item.compareResult);
+                              setTimeout(() => {
+                                setIsDialogCompareVisible(true);
+                              }, 100);
+                            }
+                          }}
+                          title={getRelativeTime(item.compareResult.ts, intl)}
                         />
                       ) : (
                         <Badge isSuccess={false} />
@@ -382,7 +381,7 @@ export const DisplayControls = () => {
                     </div>
                     <div className={`flex-row`} role="cell">
                       <ControlGroupButtons
-                        data={data}
+                        data={item}
                         handleOnEdit={handleOnEdit}
                         setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
                         handleOnCurlCommands={handleOnCurlCommands}
