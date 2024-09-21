@@ -10,8 +10,15 @@ interface BadgeProps {
   isWarning?: boolean;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   title?: string;
+  noState?: boolean;
 }
-export const Badge = ({ isSuccess, isWarning, onClick, title }: BadgeProps) => {
+export const Badge = ({
+  isSuccess,
+  isWarning,
+  onClick,
+  title,
+  noState,
+}: BadgeProps) => {
   return (
     <div
       className={`Badge`}
@@ -21,10 +28,16 @@ export const Badge = ({ isSuccess, isWarning, onClick, title }: BadgeProps) => {
       <div className={`label`}>State</div>
       <div
         className={`value ${
-          isSuccess ? (isWarning ? "uptodatewithwarn" : "uptodate") : "toupdate"
+          isSuccess
+            ? isWarning
+              ? "uptodatewithwarn"
+              : "uptodate"
+            : noState
+            ? "nostate"
+            : "toupdate"
         }`}
       >
-        {isSuccess ? "UP to date" : "OUT of date"}
+        {isSuccess ? "UP to date" : noState ? "No State" : "OUT of date"}
       </div>
     </div>
   );

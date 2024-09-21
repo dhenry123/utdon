@@ -444,7 +444,11 @@ export const DisplayControls = () => {
                           title={getRelativeTime(item.compareResult.ts, intl)}
                         />
                       ) : (
-                        <Badge isSuccess={false} />
+                        <Badge
+                          noState={true}
+                          isSuccess={false}
+                          title={intl.formatMessage({ id: "Start comparison" })}
+                        />
                       )}
                     </div>
                   </div>

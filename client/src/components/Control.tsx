@@ -111,7 +111,11 @@ export const Control = ({
               title={getRelativeTime(data.compareResult.ts, intl)}
             />
           ) : (
-            <Badge isSuccess={false} />
+            <Badge
+              noState={true}
+              isSuccess={false}
+              title={intl.formatMessage({ id: "Start comparison" })}
+            />
           )}
           {data.compareResult && data.compareResult.productionVersion ? (
             <div className="compareVersions">

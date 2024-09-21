@@ -28,6 +28,7 @@ $palette-theme-origin-color-26: #424242;
 $palette-theme-origin-color-27: #ebebeb;
 $palette-theme-origin-color-28: #f7f5f5;
 $palette-theme-origin-color-29: #1c1c1c;
+$palette-theme-origin-color-30: #f7cf87;
 
 $color-text-primary: $palette-theme-origin-color-5;
 $color-text-primary-dark: $palette-theme-origin-color-6;
@@ -96,6 +97,11 @@ $badge-color-error-dark: $palette-theme-origin-color-27;
 $badge-background-color-warning: $palette-theme-origin-color-17;
 $badge-color-warning: $palette-theme-origin-color-27;
 $badge-color-warning-dark: $palette-theme-origin-color-27;
+
+$badge-background-color-nostate: $palette-theme-origin-color-30;
+$badge-color-nostate: $palette-theme-origin-color-18;
+$badge-color-nostate-dark: $palette-theme-origin-color-27;
+
 $badge-label-color: $palette-theme-origin-color-27;
 $badge-label-color-dark: $palette-theme-origin-color-27;
 

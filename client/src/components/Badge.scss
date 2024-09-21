@@ -50,5 +50,12 @@
         color: $badge-color-warning-dark;
       }
     }
+    &.nostate {
+      background-color: $badge-background-color-nostate;
+      color: $badge-color-nostate;
+      @media (prefers-color-scheme: dark) {
+        color: $badge-color-nostate-dark;
+      }
+    }
   }
 }
