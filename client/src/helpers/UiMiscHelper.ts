@@ -32,3 +32,12 @@ export const buidMultiSelectGroups = (groups: string[]): Option[] => {
   }
   return options;
 };
+
+export const convertUrlToTabName = (url: string) => {
+  return url
+    .replace(
+      /^(?:https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/?\n]+\.+[^:/?\n]+)/,
+      "$1"
+    )
+    .replace(/\.+/g, "_");
+};

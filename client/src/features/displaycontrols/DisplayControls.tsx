@@ -39,7 +39,7 @@ import { Badge } from "../../components/Badge";
 import { ControlGroupButtons } from "../../components/ControlGroupButtons";
 import { CurlCommands } from "../curlcommands/CurlCommands";
 import { getRelativeTime } from "../../helpers/DateHelper";
-import { UrlOpener } from "../../components/UrlOpener";
+import { UrlLinkButtons } from "../../components/UrlLinkButtons";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -75,13 +75,12 @@ export const DisplayControls = () => {
   );
 
   const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
-  const [controlUuidToDelete, setControlUuidToDelete] = useState("");
-
   const [confirmDuplicatControlIsVisible, setConfirmDuplicatControlIsVisible] =
     useState(false);
 
-  const [controlUuidToDuplicate, setControlUuidToDuplicate] =
-    useState<UptodateForm | null>();
+  const [controlUuidToManage, setControlUuidToManage] = useState<
+    UptodateForm | null | string
+  >(null);
 
   const [isCurlCommandVisible, setIsCurlCommandVisible] = useState(false);
   const [isDialogCompareVisible, setIsDialogCompareVisible] = useState(false);
@@ -152,25 +151,28 @@ export const DisplayControls = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetchAskedFromOtherComponent]);
 
-  const handleOnCurlCommands = () => {
+  const handleOnCurlCommands = (uptodateForm: UptodateForm) => {
+    setControlUuidToManage(uptodateForm);
     setIsCurlCommandVisible(true);
   };
 
   const handleOnDelete = async (uuid: string) => {
-    setControlUuidToDelete(uuid);
+    setControlUuidToManage(uuid);
     setConfirmDeleteIsVisible(true);
   };
 
   const handleOnConfirmDelete = async () => {
-    if (!controlUuidToDelete) return;
+    if (!controlUuidToManage) return;
     await dispatch(
-      mytinydcUPDONApi.endpoints.deleteCheck.initiate(controlUuidToDelete)
+      mytinydcUPDONApi.endpoints.deleteCheck.initiate(
+        controlUuidToManage as string
+      )
     )
       .unwrap()
       .then((response) => {
         refetch();
-        if (response.uuid === controlUuidToDelete) {
-          setControlUuidToDelete("");
+        if (response.uuid === controlUuidToManage) {
+          setControlUuidToManage(null);
           dispatch(
             showServiceMessage({
               ...INITIALIZED_TOAST,
@@ -178,7 +180,7 @@ export const DisplayControls = () => {
               detail:
                 intl.formatMessage({
                   id: intl.formatMessage({ id: "Control has been deleted" }),
-                }) + `: ${controlUuidToDelete}`,
+                }) + `: ${controlUuidToManage}`,
             })
           );
         } else {
@@ -285,16 +287,17 @@ export const DisplayControls = () => {
   };
 
   const handleOnDuplicate = (uptodateForm: UptodateForm) => {
-    setControlUuidToDuplicate(uptodateForm);
+    setControlUuidToManage(uptodateForm);
     setConfirmDuplicatControlIsVisible(true);
   };
 
   const handleOnConfirmDuplicate = () => {
-    if (!controlUuidToDuplicate) return;
+    if (!controlUuidToManage) return;
+    const constrolToDuplicate = controlUuidToManage as UptodateForm;
     dispatch(
       mytinydcUPDONApi.endpoints.postUptodateForm.initiate({
-        ...controlUuidToDuplicate,
-        name: `${controlUuidToDuplicate.name} (copy)`,
+        ...constrolToDuplicate,
+        name: `${constrolToDuplicate.name} (copy)`,
         uuid: "",
         compareResult: null,
       })
@@ -302,7 +305,7 @@ export const DisplayControls = () => {
       .unwrap()
       .then((response) => {
         const control = response?.control as UptodateForm;
-        setControlUuidToDuplicate(null);
+        setControlUuidToManage(null);
         if (control.uuid) {
           handleOnEdit(control.uuid);
         } else {
@@ -394,10 +397,10 @@ export const DisplayControls = () => {
                       )}
                     </div>
                     <div className={`flex-row name`} role="cell">
-                      {item.name}
+                      <div className="name">{item.name}</div>
                     </div>
                     <div className={`flex-row`} role="cell">
-                      {item.uuid}
+                      <div className="uuid">{item.uuid}</div>
                     </div>
                     <div
                       className={`flex-row`}
@@ -409,10 +412,10 @@ export const DisplayControls = () => {
                       <div className="groups">{item.groups.join(" ")}</div>
                     </div>
                     <div className={`flex-row `} role="cell">
-                      <UrlOpener url={item.urlProduction} />
+                      <UrlLinkButtons url={item.urlProduction} />
                     </div>
                     <div className={`flex-row urlGitHub`} role="cell">
-                      <UrlOpener url={item.urlGitHub} />
+                      <UrlLinkButtons url={item.urlGitHub} />
                     </div>
                     <div className={`flex-row`} role="cell">
                       <ControlGroupButtons
@@ -472,7 +475,7 @@ export const DisplayControls = () => {
         closeButton
       >
         <CurlCommands
-          uptodateForm={data}
+          uptodateForm={controlUuidToManage as UptodateForm}
           onClose={() => setIsCurlCommandVisible(false)}
           userAuthBearer={userAuthBearer}
         />
@@ -501,33 +504,32 @@ export const DisplayControls = () => {
       </Dialog>
       <ConfirmDialog
         visible={confirmDeleteIsVisible}
-        message={
-          intl.formatMessage({ id: "Are you sure to delete this control" }) +
-          " ?"
-        }
+        message={`${intl.formatMessage({
+          id: "Are you sure to delete this control",
+        })} (${controlUuidToManage as string}) ?`}
         onConfirm={() => {
           setConfirmDeleteIsVisible(false);
           handleOnConfirmDelete();
         }}
         onCancel={() => setConfirmDeleteIsVisible(false)}
       />
-      <ConfirmDialog
-        visible={confirmDuplicatControlIsVisible}
-        message={
-          intl.formatMessage({ id: "Are you sure to duplicate this control" }) +
-          " ?"
-        }
-        onConfirm={() => {
-          setConfirmDuplicatControlIsVisible(false);
-          handleOnConfirmDuplicate();
-        }}
-        onCancel={() => setConfirmDuplicatControlIsVisible(false)}
-      />
-
+      {controlUuidToManage ? (
+        <ConfirmDialog
+          visible={confirmDuplicatControlIsVisible}
+          message={`${intl.formatMessage({
+            id: "Are you sure to duplicate this control",
+          })} (${(controlUuidToManage as UptodateForm).uuid}) ?`}
+          onConfirm={() => {
+            setConfirmDuplicatControlIsVisible(false);
+            handleOnConfirmDuplicate();
+          }}
+          onCancel={() => setConfirmDuplicatControlIsVisible(false)}
+        />
+      ) : null}
       <ConfirmDialog
         message={`${intl.formatMessage({
           id: "Are you sure you want to pause this control",
-        })}?`}
+        })} (${uuidToPause.uuid})?`}
         visible={isConfirmVisible}
         onCancel={() => setIsConfirmVisible(false)}
         onConfirm={() => handleUpdatePauseStatus(uuidToPause)}

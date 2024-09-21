@@ -19,27 +19,24 @@
 
     .flex-table {
       display: grid;
-      grid-template-columns: 3rem 10% 18% 10% 18% 18% 14% 14%;
+      grid-template-columns: 2.5% 20% 20% 15% 9% 9% 15% 10%;
       grid-template-rows: 100% 100%;
       transition: 0.5s;
+      box-shadow: $boxshadow-default;
+      margin-bottom: 0.5rem;
+      @media (prefers-color-scheme: dark) {
+        box-shadow: $boxshadow-default-dark;
+      }
       &:first-of-type .flex-row {
-        background: $table-header;
         color: $font-color-header;
-        @media (prefers-color-scheme: dark) {
-          background-color: $background-color-dark;
-        }
       }
       &.flex-header {
+        border-bottom: 1px solid $palette-theme-origin-color-10;
+        margin-bottom: 4px;
         .flex-row {
           font-weight: bold;
         }
       }
-      // &.row {
-      //   &:hover {
-      //     border: 1px dashed $palette-theme-origin-color-12;
-      //     transition: 100ms;
-      //   }
-      // }
     }
 
     .flex-row {
@@ -82,9 +79,16 @@
       &.state {
         cursor: pointer;
       }
-      &.name {
+      .name {
         font-weight: bold;
         text-transform: capitalize;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 98%;
+      }
+      .uuid {
+        font-style: italic;
       }
     }
 

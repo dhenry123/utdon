@@ -32,7 +32,7 @@ export const App = () => {
   }, []);
 
   return (
-    <div>
+    <div className="main">
       <IntlProvider
         locale={contextLanguage.locale}
         messages={contextLanguage.lang}

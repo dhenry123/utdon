@@ -7,11 +7,13 @@ import "./UrlOpener.scss";
 
 interface UrlOpenerProp {
   url: string;
+  className?: string;
 }
-export const UrlOpener = ({ url }: UrlOpenerProp) => {
+export const UrlOpener = ({ url, className }: UrlOpenerProp) => {
   return (
     <div className={`UrlOpener`}>
       <a
+        className={className ? className : ""}
         href={url}
         title={url}
         target={`_${url

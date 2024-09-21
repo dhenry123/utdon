@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 
 export const PageHome = () => {
   return (
-    <div className={`main`}>
+    <div className={`PageHome`}>
       <Header />
       <Outlet />
     </div>

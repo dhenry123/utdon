@@ -58,7 +58,7 @@ $usermanagerbuttonsize: 2rem;
     grid-template-rows: 100% auto;
     transition: 0.5s;
     &:first-of-type .flex-row {
-      background: $table-header;
+      background: transparent;
       color: $font-color-header;
     }
     &.row {

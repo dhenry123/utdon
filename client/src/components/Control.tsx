@@ -22,7 +22,7 @@ interface ControlProps {
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
   handleOnEdit: (value: string) => void;
-  handleOnCurlCommands: (value: string) => void;
+  handleOnCurlCommands: (control: UptodateForm) => void;
   setIsDialogCompareVisible: (value: boolean) => void;
   setResultCompare: (control: UptoDateOrNotState) => void;
   handleOnDuplicate: (control: UptodateForm) => void;

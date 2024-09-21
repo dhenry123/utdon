@@ -14,7 +14,7 @@ interface ControlGroupButtonsProps {
   data: UptodateForm;
   handleOnEdit: (value: string) => void;
   handleOnDelete: (value: string) => void;
-  handleOnCurlCommands: (value: string) => void;
+  handleOnCurlCommands: (control: UptodateForm) => void;
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
   handleOnDuplicate: (control: UptodateForm) => void;
@@ -52,7 +52,7 @@ export const ControlGroupButtons = ({
         />
         <ButtonGeneric
           title={intl.formatMessage({ id: "Curl commands for this control" })}
-          onClick={() => handleOnCurlCommands(data.uuid)}
+          onClick={() => handleOnCurlCommands(data)}
           icon="slashes"
         />
         <ButtonGeneric
