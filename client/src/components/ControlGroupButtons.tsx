@@ -13,7 +13,7 @@ import { ChangeEvent } from "react";
 interface ControlGroupButtonsProps {
   data: UptodateForm;
   handleOnEdit: (value: string) => void;
-  setConfirmDeleteIsVisible: (value: boolean) => void;
+  handleOnDelete: (value: string) => void;
   handleOnCurlCommands: (value: string) => void;
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
@@ -23,7 +23,7 @@ interface ControlGroupButtonsProps {
 export const ControlGroupButtons = ({
   data,
   handleOnEdit,
-  setConfirmDeleteIsVisible,
+  handleOnDelete,
   handleOnCurlCommands,
   handleOnCompare,
   handleOnPause,
@@ -47,7 +47,7 @@ export const ControlGroupButtons = ({
         <ButtonGeneric
           className="warning"
           title={intl.formatMessage({ id: "Delete" })}
-          onClick={() => setConfirmDeleteIsVisible(true)}
+          onClick={() => handleOnDelete(data.uuid)}
           icon="trash"
         />
         <ButtonGeneric

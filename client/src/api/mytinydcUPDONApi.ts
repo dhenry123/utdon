@@ -58,12 +58,13 @@ export const mytinydcUPDONApi = createApi({
               responseHandler: (response) => response.text(),
             },
     }),
-    postCheck: builder.mutation({
-      query: (checkData: UptodateForm) => ({
+    postUptodateForm: builder.mutation({
+      query: (uptodateFormData: UptodateForm) => ({
         method: "POST",
         url: `/control`,
-        body: checkData,
+        body: uptodateFormData,
       }),
+      invalidatesTags: ["Controls"],
     }),
     getCompare: builder.query({
       query: (uuid: string) => ({

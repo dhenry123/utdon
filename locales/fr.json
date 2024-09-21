@@ -168,5 +168,7 @@
   "State": "Etat",
   "Display in card format": "Afficher sous forme de cartes",
   "Display in table format": "Afficher sous forme de tableau",
-  "Duplicate": "Dupliquer"
+  "Duplicate": "Dupliquer",
+  "Unexpected error after duplicating a control": "Erreur inattendue après la duplication d'un contrôle",
+  "Are you sure to duplicate this control": "Etes-vous sûr(e) de vouloir dupliquer ce contrôle"
 }

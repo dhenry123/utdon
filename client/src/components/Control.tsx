@@ -5,7 +5,6 @@
 
 import { useIntl } from "react-intl";
 import { UptoDateOrNotState, UptodateForm } from "../../../src/Global.types";
-import { ConfirmDialog } from "./ConfirmDialog";
 import { ChangeEvent } from "react";
 import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
@@ -24,8 +23,6 @@ interface ControlProps {
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
   handleOnEdit: (value: string) => void;
   handleOnCurlCommands: (value: string) => void;
-  setConfirmDeleteIsVisible: (value: boolean) => void;
-  confirmDeleteIsVisible: boolean;
   setIsDialogCompareVisible: (value: boolean) => void;
   setResultCompare: (control: UptoDateOrNotState) => void;
   handleOnDuplicate: (control: UptodateForm) => void;
@@ -37,8 +34,6 @@ export const Control = ({
   handleOnPause,
   handleOnEdit,
   handleOnCurlCommands,
-  setConfirmDeleteIsVisible,
-  confirmDeleteIsVisible,
   setIsDialogCompareVisible,
   setResultCompare,
   handleOnDuplicate,
@@ -146,23 +141,11 @@ export const Control = ({
       <ControlGroupButtons
         data={data}
         handleOnEdit={() => handleOnEdit(data.uuid)}
-        setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
+        handleOnDelete={() => handleOnDelete(data.uuid)}
         handleOnCurlCommands={handleOnCurlCommands}
         handleOnCompare={handleOnCompare}
         handleOnPause={handleOnPause}
         handleOnDuplicate={handleOnDuplicate}
-      />
-      <ConfirmDialog
-        visible={confirmDeleteIsVisible}
-        message={
-          intl.formatMessage({ id: "Are you sure to delete this control" }) +
-          " ?"
-        }
-        onConfirm={() => {
-          setConfirmDeleteIsVisible(false);
-          handleOnDelete(data.uuid as string);
-        }}
-        onCancel={() => setConfirmDeleteIsVisible(false)}
       />
     </Block>
   );

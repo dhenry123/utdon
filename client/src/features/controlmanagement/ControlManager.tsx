@@ -197,7 +197,9 @@ export const ControlManager = () => {
    */
   const handleOnSave = async () => {
     return new Promise((resolv, reject) => {
-      dispatch(mytinydcUPDONApi.endpoints.postCheck.initiate(uptodateForm))
+      dispatch(
+        mytinydcUPDONApi.endpoints.postUptodateForm.initiate(uptodateForm)
+      )
         .unwrap()
         .then((response) => {
           const control = response?.control as UptodateForm;

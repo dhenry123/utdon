@@ -75,8 +75,15 @@ export const DisplayControls = () => {
   );
 
   const [confirmDeleteIsVisible, setConfirmDeleteIsVisible] = useState(false);
-  const [isCurlCommandVisible, setIsCurlCommandVisible] = useState(false);
+  const [controlUuidToDelete, setControlUuidToDelete] = useState("");
 
+  const [confirmDuplicatControlIsVisible, setConfirmDuplicatControlIsVisible] =
+    useState(false);
+
+  const [controlUuidToDuplicate, setControlUuidToDuplicate] =
+    useState<UptodateForm | null>();
+
+  const [isCurlCommandVisible, setIsCurlCommandVisible] = useState(false);
   const [isDialogCompareVisible, setIsDialogCompareVisible] = useState(false);
 
   const {
@@ -150,11 +157,20 @@ export const DisplayControls = () => {
   };
 
   const handleOnDelete = async (uuid: string) => {
-    await dispatch(mytinydcUPDONApi.endpoints.deleteCheck.initiate(uuid))
+    setControlUuidToDelete(uuid);
+    setConfirmDeleteIsVisible(true);
+  };
+
+  const handleOnConfirmDelete = async () => {
+    if (!controlUuidToDelete) return;
+    await dispatch(
+      mytinydcUPDONApi.endpoints.deleteCheck.initiate(controlUuidToDelete)
+    )
       .unwrap()
       .then((response) => {
         refetch();
-        if (response.uuid === uuid) {
+        if (response.uuid === controlUuidToDelete) {
+          setControlUuidToDelete("");
           dispatch(
             showServiceMessage({
               ...INITIALIZED_TOAST,
@@ -162,7 +178,7 @@ export const DisplayControls = () => {
               detail:
                 intl.formatMessage({
                   id: intl.formatMessage({ id: "Control has been deleted" }),
-                }) + `: ${uuid}`,
+                }) + `: ${controlUuidToDelete}`,
             })
           );
         } else {
@@ -248,7 +264,9 @@ export const DisplayControls = () => {
           ...controlData[0],
           isPause: uuidToPause.state,
         };
-        dispatch(mytinydcUPDONApi.endpoints.postCheck.initiate(dataToUpdate))
+        dispatch(
+          mytinydcUPDONApi.endpoints.postUptodateForm.initiate(dataToUpdate)
+        )
           .unwrap()
           .then(() => {
             refetch();
@@ -266,8 +284,38 @@ export const DisplayControls = () => {
     return navigate(`/ui/editcontrol/${uuid}`);
   };
 
-  const handleOnDuplicate = (control: UptodateForm) => {
-    console.log("Control to duplicate", control);
+  const handleOnDuplicate = (uptodateForm: UptodateForm) => {
+    setControlUuidToDuplicate(uptodateForm);
+    setConfirmDuplicatControlIsVisible(true);
+  };
+
+  const handleOnConfirmDuplicate = () => {
+    if (!controlUuidToDuplicate) return;
+    dispatch(
+      mytinydcUPDONApi.endpoints.postUptodateForm.initiate({
+        ...controlUuidToDuplicate,
+        name: `${controlUuidToDuplicate.name} (copy)`,
+        uuid: "",
+        compareResult: null,
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        const control = response?.control as UptodateForm;
+        setControlUuidToDuplicate(null);
+        if (control.uuid) {
+          handleOnEdit(control.uuid);
+        } else {
+          throw new Error(
+            intl.formatMessage({
+              id: "Unexpected error after duplicating a control",
+            })
+          );
+        }
+      })
+      .catch((error: FetchBaseQueryError) => {
+        dispatchServerError(error);
+      });
   };
 
   return (
@@ -291,8 +339,6 @@ export const DisplayControls = () => {
                     handleOnPause={handleOnPause}
                     handleOnEdit={handleOnEdit}
                     handleOnCurlCommands={handleOnCurlCommands}
-                    setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
-                    confirmDeleteIsVisible={confirmDeleteIsVisible}
                     setIsDialogCompareVisible={setIsDialogCompareVisible}
                     setResultCompare={setResultCompare}
                     handleOnDuplicate={handleOnDuplicate}
@@ -319,10 +365,10 @@ export const DisplayControls = () => {
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Git url" })}
                 </div>
+                <div className="flex-row" role="columnheader"></div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "State" })}
                 </div>
-                <div className="flex-row" role="columnheader"></div>
               </div>
               {data.map((item: UptodateForm) => {
                 if (
@@ -333,7 +379,7 @@ export const DisplayControls = () => {
                 return (
                   <div
                     key={`control${item.uuid}`}
-                    className={`flex-table`}
+                    className={`flex-table row`}
                     role="rowgroup"
                   >
                     <div className="flex-row  first" role="cell">
@@ -368,6 +414,17 @@ export const DisplayControls = () => {
                     <div className={`flex-row urlGitHub`} role="cell">
                       <UrlOpener url={item.urlGitHub} />
                     </div>
+                    <div className={`flex-row`} role="cell">
+                      <ControlGroupButtons
+                        data={item}
+                        handleOnEdit={handleOnEdit}
+                        handleOnCurlCommands={handleOnCurlCommands}
+                        handleOnCompare={handleOnCompare}
+                        handleOnPause={handleOnPause}
+                        handleOnDuplicate={handleOnDuplicate}
+                        handleOnDelete={handleOnDelete}
+                      />
+                    </div>
                     <div className={`flex-row state`} role="cell">
                       {item.compareResult && item.compareResult.ts ? (
                         <Badge
@@ -386,17 +443,6 @@ export const DisplayControls = () => {
                       ) : (
                         <Badge isSuccess={false} />
                       )}
-                    </div>
-                    <div className={`flex-row`} role="cell">
-                      <ControlGroupButtons
-                        data={item}
-                        handleOnEdit={handleOnEdit}
-                        setConfirmDeleteIsVisible={setConfirmDeleteIsVisible}
-                        handleOnCurlCommands={handleOnCurlCommands}
-                        handleOnCompare={handleOnCompare}
-                        handleOnPause={handleOnPause}
-                        handleOnDuplicate={handleOnDuplicate}
-                      />
                     </div>
                   </div>
                 );
@@ -453,6 +499,30 @@ export const DisplayControls = () => {
           }
         />
       </Dialog>
+      <ConfirmDialog
+        visible={confirmDeleteIsVisible}
+        message={
+          intl.formatMessage({ id: "Are you sure to delete this control" }) +
+          " ?"
+        }
+        onConfirm={() => {
+          setConfirmDeleteIsVisible(false);
+          handleOnConfirmDelete();
+        }}
+        onCancel={() => setConfirmDeleteIsVisible(false)}
+      />
+      <ConfirmDialog
+        visible={confirmDuplicatControlIsVisible}
+        message={
+          intl.formatMessage({ id: "Are you sure to duplicate this control" }) +
+          " ?"
+        }
+        onConfirm={() => {
+          setConfirmDuplicatControlIsVisible(false);
+          handleOnConfirmDuplicate();
+        }}
+        onCancel={() => setConfirmDuplicatControlIsVisible(false)}
+      />
 
       <ConfirmDialog
         message={`${intl.formatMessage({

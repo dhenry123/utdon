@@ -14,18 +14,32 @@
   }
   .table-container {
     display: block;
-    // margin: 0.5em;
-    width: 95%;
+    margin: 0.5em;
+    width: 94%;
 
     .flex-table {
       display: grid;
       grid-template-columns: 3rem 10% 18% 10% 18% 18% 14% 14%;
-      grid-template-rows: 100% auto;
+      grid-template-rows: 100% 100%;
       transition: 0.5s;
       &:first-of-type .flex-row {
         background: $table-header;
         color: $font-color-header;
+        @media (prefers-color-scheme: dark) {
+          background-color: $background-color-dark;
+        }
       }
+      &.flex-header {
+        .flex-row {
+          font-weight: bold;
+        }
+      }
+      // &.row {
+      //   &:hover {
+      //     border: 1px dashed $palette-theme-origin-color-12;
+      //     transition: 100ms;
+      //   }
+      // }
     }
 
     .flex-row {
@@ -38,6 +52,10 @@
       background: $background-color-controls-table;
       margin: 2px 0;
       border-radius: $border-radius-default;
+      @media (prefers-color-scheme: dark) {
+        background-color: $background-color-controls-table-dark;
+        color: $color-text-primary-dark;
+      }
       img {
         width: 2rem;
         height: 2rem;
