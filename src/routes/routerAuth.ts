@@ -30,6 +30,7 @@ routerAuth.post(
           req.app.get("LOGGER").info({
             action: "login",
             user: req.body.login,
+            ipAddr: req.ip,
           });
           const session = req.session as SessionExt;
           session.user = req.app.get("AUTH").getInfoForUi(req.body.login);
@@ -95,6 +96,7 @@ routerAuth.post(
           req.app.get("LOGGER").info({
             action: "create user",
             user: newUser.login,
+            ipAddr: req.ip,
           });
           res.status(200).json({ login: newUser.login });
         } else {
@@ -150,6 +152,7 @@ routerAuth.put(
             req.app.get("LOGGER").info({
               action: "modify user",
               user: userToUpdate.login,
+              ipAddr: req.ip,
             });
             res.status(204).send();
           } else {
@@ -197,6 +200,7 @@ routerAuth.delete(
           req.app.get("LOGGER").info({
             action: "delete user",
             user: `${user.uuid} - ${user.login}`,
+            ipAddr: req.ip,
           });
           // groups cleaning
           req.app.get("AUTH").cleanGroups();
@@ -254,6 +258,7 @@ routerAuth.get(
       req.app.get("LOGGER").info({
         action: "logout",
         user: session.user.login ? session.user.login : "session user unknown",
+        ipAddr: req.ip,
       });
       session.user.login = "";
       req.session.destroy((error: Error) => {

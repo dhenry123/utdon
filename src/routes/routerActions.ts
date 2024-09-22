@@ -64,7 +64,14 @@ routerActions.put(
         } else {
           finalRecords = record;
         }
+
         for (const item of finalRecords) {
+          req.app.get("LOGGER").info({
+            uuid: item.uuid,
+            name: item.name,
+            ipAddr: req.ip,
+            action: "compare",
+          });
           // get state
           await getUpToDateOrNotState(item)
             .then(async (compareResult) => {
@@ -92,6 +99,7 @@ routerActions.put(
                         };
                       req.app.get("LOGGER").info({
                         ...finalResponse,
+                        ipAddr: req.ip,
                         action: "send state to external monitoring",
                       });
                       finalResponseArray.push(finalResponse);
@@ -109,7 +117,9 @@ routerActions.put(
                     error: message,
                   };
                   req.app.get("LOGGER").info({
-                    ...item,
+                    uuid: item.uuid,
+                    name: item.name,
+                    ipAddr: req.ip,
                     action: message,
                   });
                   finalResponseArray.push({ ...finalResponse });
@@ -141,7 +151,7 @@ routerActions.put(
                   })
                   .catch((error: Error) => {
                     req.app.get("LOGGER").error({
-                      ...item,
+                      ...itemResponse,
                       action: error.toString(),
                     });
                   });
@@ -203,6 +213,7 @@ routerActions.put(
                 url: record.urlCICD,
                 httpmethod: record.httpMethodCICD,
                 response: response,
+                ipAddr: req.ip,
               });
               res.status(200).send(response);
             })
@@ -210,8 +221,9 @@ routerActions.put(
               next(error);
             });
         } else {
-          req.app.get("LOGGER").error(UUIDNOTFOUND);
-          res.status(404).json({ error: UUIDNOTFOUND });
+          const message = `${UUIDNOTFOUND} or no urlCICD`;
+          req.app.get("LOGGER").error(message);
+          res.status(404).json({ error: message });
         }
       } else {
         req.app.get("LOGGER").error(UUIDNOTPROVIDED);
@@ -251,6 +263,9 @@ routerActions.put(
                 urlCronJobMonitoringWithPayloadResponse: response,
               };
               req.app.get("LOGGER").info({
+                uuid: record.uuid,
+                name: record.name,
+                ipAddr: req.ip,
                 ...finalResponse,
                 action: "send state to external monitoring",
                 response: response,

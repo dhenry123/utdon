@@ -13,10 +13,6 @@ export const scrapUrl = async (
   customHttpHeader?: string
 ): Promise<string> => {
   let authHeader: RequestInit = { method: method };
-  // // NodeJS 21 @todo impossible to implement and dont want to add nodes-fetch
-  // const agent = new https.Agent({
-  //   rejectUnauthorized: false, // This option disables certificate validation
-  // });
   const header = new Headers();
   if (customHttpHeader) {
     const split = customHttpHeader.split(":");
@@ -25,7 +21,7 @@ export const scrapUrl = async (
       authHeader = { ...authHeader, headers: header };
     }
   }
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
   const content = await fetch(`${url}`, { ...authHeader }).then(
     async (response) => {
       if (!response.ok) {
@@ -37,7 +33,6 @@ export const scrapUrl = async (
       return text;
     }
   );
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1";
   return content;
 };
 
