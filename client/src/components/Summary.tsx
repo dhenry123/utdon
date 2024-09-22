@@ -98,7 +98,7 @@ export const Summary = ({
             <div className="label">{uptodateForm.exprProduction}</div>
           </FieldSet>
         </Block>
-        <Block className="">
+        <Block className="git">
           <h3>{intl.formatMessage({ id: "Git repository informations" })}</h3>
           <FieldSetClickableUrl
             legend={intl.formatMessage({ id: "Git repository url" })}
@@ -109,7 +109,7 @@ export const Summary = ({
             <div className="label">{uptodateForm.exprGithub}</div>
           </FieldSet>
         </Block>
-        <Block className="">
+        <Block className="actions">
           <h3>{intl.formatMessage({ id: "Actions informations" })}</h3>
           <FieldSet
             legend={intl.formatMessage({

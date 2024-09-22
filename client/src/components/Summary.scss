@@ -26,6 +26,10 @@
       align-items: center;
       justify-content: center;
     }
+    &.identity,
+    &.actions {
+      flex-grow: 1;
+    }
     .mustbesaved {
       animation-name: greenPulse;
       animation-duration: 3s;
