@@ -60,7 +60,7 @@ routerControl.post(
             dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));
             req.app
               .get("LOGGER")
-              .info({ action: "control updated", uuid: rupd });
+              .info({ action: "control updated", uuid: rupd, ipAddr: req.ip });
             res.status(200).json({ control: { ...req.body, uuid: rupd } });
           } else {
             next(new Error("update return empty"));
@@ -72,7 +72,7 @@ routerControl.post(
               dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));
               req.app
                 .get("LOGGER")
-                .info({ action: "control added", uuid: uuid });
+                .info({ action: "control added", uuid: uuid, ipAddr: req.ip });
               res.status(200).json({ control: { ...req.body, uuid: uuid } });
             })
             .catch((error: Error) => {
@@ -137,7 +137,11 @@ routerControl.delete(
             .then(() => {
               req.app
                 .get("LOGGER")
-                .info({ action: "control deleted", uuid: req.params.uuid });
+                .info({
+                  action: "control deleted",
+                  uuid: req.params.uuid,
+                  ipAddr: req.ip,
+                });
               res.status(200).json({ uuid: rec });
             })
             .catch((error: Error) => {

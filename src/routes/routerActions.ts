@@ -153,6 +153,7 @@ routerActions.put(
                     req.app.get("LOGGER").error({
                       ...itemResponse,
                       action: error.toString(),
+                      ipAddr: req.ip,
                     });
                   });
               }
