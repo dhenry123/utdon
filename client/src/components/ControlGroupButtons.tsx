@@ -16,7 +16,10 @@ interface ControlGroupButtonsProps {
   handleOnEdit: (control: UptodateForm) => void;
   handleOnCurlCommands: (control: UptodateForm) => void;
   handleOnCompare: (control: UptodateForm) => void;
-  handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
+  handleOnPause: (
+    event: ChangeEvent<HTMLInputElement>,
+    control: UptodateForm
+  ) => void;
   handleOnDuplicate: (control: UptodateForm) => void;
 }
 
@@ -65,7 +68,7 @@ export const ControlGroupButtons = ({
       <CheckBox
         label={intl.formatMessage({ id: "Disable actions" })}
         onChange={(event) => {
-          handleOnPause(event, data.uuid);
+          handleOnPause(event, data);
         }}
         title={intl.formatMessage({
           id: "In the case of a global selection, only the comparison will be processed",

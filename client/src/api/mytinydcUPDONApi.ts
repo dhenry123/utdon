@@ -84,6 +84,7 @@ export const mytinydcUPDONApi = createApi({
         method: "DELETE",
         url: `/control/${uuid}`,
       }),
+      invalidatesTags: ["Controls"],
     }),
     sendStateExternalMonitoring: builder.mutation({
       query: (data: ActionStatusType) => ({

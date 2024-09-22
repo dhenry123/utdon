@@ -160,7 +160,6 @@ export const DisplayControls = () => {
     )
       .unwrap()
       .then((response) => {
-        refetch();
         if (response.uuid === controlToManage) {
           setControlToManage(null);
           dispatch(
@@ -230,11 +229,12 @@ export const DisplayControls = () => {
 
   const handleOnPause = async (
     event: ChangeEvent<HTMLInputElement>,
-    uuid: string
+    uptodateForm: UptodateForm
   ) => {
-    if (uuid) {
+    if (uptodateForm.uuid) {
+      setControlToManage(uptodateForm);
       const controlToPause: ControlToPause = {
-        uuid: uuid,
+        uuid: uptodateForm.uuid,
         state: event.target.checked,
       };
       setUuidToPause(controlToPause);
@@ -248,6 +248,7 @@ export const DisplayControls = () => {
   };
 
   const handleUpdatePauseStatus = (control: ControlToPause) => {
+    console.log("handleUpdatePauseStatus", control);
     if (control && control.uuid) {
       const controlData = data.filter(
         (item: UptodateForm) => item.uuid === control.uuid
@@ -261,9 +262,6 @@ export const DisplayControls = () => {
           mytinydcUPDONApi.endpoints.postUptodateForm.initiate(dataToUpdate)
         )
           .unwrap()
-          .then(() => {
-            refetch();
-          })
           .catch((error: FetchBaseQueryError) => {
             dispatchServerError(error);
           });
@@ -333,9 +331,9 @@ export const DisplayControls = () => {
                 // [X] delete
                 // [X] edit
                 // [X] compare
-                // [ ] pause
+                // [X] lastcomparison
+                // [X] pause
                 // [ ] curlcommand
-                // [ ] lastcomparison
                 return (
                   <Control
                     key={item.uuid}
@@ -344,9 +342,9 @@ export const DisplayControls = () => {
                     handleOnDelete={handleOnDelete}
                     handleOnEdit={handleOnEdit}
                     handleOnCompare={handleOnCompare}
+                    handleOnDisplayLatestCompare={handleOnDisplayLatestCompare}
                     handleOnPause={handleOnPause}
                     handleOnCurlCommands={handleOnCurlCommands}
-                    handleOnDisplayLatestCompare={handleOnDisplayLatestCompare}
                   />
                 );
               })}
@@ -426,8 +424,8 @@ export const DisplayControls = () => {
                         handleOnDelete={handleOnDelete}
                         handleOnEdit={handleOnEdit}
                         handleOnCompare={handleOnCompare}
-                        handleOnCurlCommands={handleOnCurlCommands}
                         handleOnPause={handleOnPause}
+                        handleOnCurlCommands={handleOnCurlCommands}
                       />
                     </div>
                     <div className={`flex-row state`} role="cell">

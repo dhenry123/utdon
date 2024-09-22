@@ -20,7 +20,10 @@ interface ControlProps {
   data: UptodateForm;
   handleOnDelete: (control: UptodateForm) => void;
   handleOnCompare: (control: UptodateForm) => void;
-  handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
+  handleOnPause: (
+    event: ChangeEvent<HTMLInputElement>,
+    control: UptodateForm
+  ) => void;
   handleOnEdit: (control: UptodateForm) => void;
   handleOnCurlCommands: (control: UptodateForm) => void;
   handleOnDisplayLatestCompare: (control: UptodateForm) => void;

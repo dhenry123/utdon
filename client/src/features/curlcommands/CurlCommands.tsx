@@ -52,7 +52,7 @@ export const CurlCommands = ({
           apiEntrypoint={`/api/v1/action/compare/${
             uptodateForm !== "all" ? uptodateForm.uuid : uptodateForm
           }/0`}
-          method={"GET"}
+          method={"PUT"}
         />
         <FieldSetApiEntrypoint
           commandTitle={intl.formatMessage({
@@ -62,7 +62,7 @@ export const CurlCommands = ({
           apiEntrypoint={`/api/v1/action/compare/${
             uptodateForm !== "all" ? uptodateForm.uuid : uptodateForm
           }/1`}
-          method={"GET"}
+          method={"PUT"}
         />
         {uptodateForm !== "all" ? (
           <>
