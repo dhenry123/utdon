@@ -170,5 +170,7 @@
   "Display in table format": "Afficher sous forme de tableau",
   "Duplicate": "Dupliquer",
   "Unexpected error after duplicating a control": "Erreur inattendue après la duplication d'un contrôle",
-  "Are you sure to duplicate this control": "Etes-vous sûr(e) de vouloir dupliquer ce contrôle"
+  "Are you sure to duplicate this control": "Etes-vous sûr(e) de vouloir dupliquer ce contrôle",
+  "Open link in new tab": "Ouvrir le lien dans un nouvel onglet",
+  "Copy link": "Copier le lien"
 }
