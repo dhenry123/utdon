@@ -236,9 +236,7 @@ export const ControlManager = () => {
     return new Promise((resolv, reject) => {
       if (uptodateForm.uuid) {
         dispatch(
-          mytinydcUPDONApi.endpoints.getCompare.initiate(uptodateForm.uuid, {
-            forceRefetch: true,
-          })
+          mytinydcUPDONApi.endpoints.putCompare.initiate(uptodateForm.uuid)
         )
           .unwrap()
           .then((response) => {

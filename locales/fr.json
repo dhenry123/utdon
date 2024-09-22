@@ -105,7 +105,7 @@
   "Control has been deleted": "Le contrôle a bien été supprimé",
   "In the case of a global selection, only the comparison will be processed": "Dans le cadre d'une sélection globale, seule la comparaison sera effectuée",
   "uuid not provided": "uuid non fourni",
-  "Are you sure you want to pause this control": "Êtes-vous sûr(e) de mettre ce contrôle en pause",
+  "Are you sure you want to disable actions for this control": "Êtes-vous sûr(e) de vouloir desactiver les action pour ce contrôle",
   "Git repository url": "Url du repository Git",
   "Production version url": "Url de la version de production",
   "Name": "Nom",

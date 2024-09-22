@@ -12,8 +12,8 @@ import { ChangeEvent } from "react";
 
 interface ControlGroupButtonsProps {
   data: UptodateForm;
-  handleOnEdit: (value: string) => void;
-  handleOnDelete: (value: string) => void;
+  handleOnDelete: (control: UptodateForm) => void;
+  handleOnEdit: (control: UptodateForm) => void;
   handleOnCurlCommands: (control: UptodateForm) => void;
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
@@ -36,7 +36,7 @@ export const ControlGroupButtons = ({
       <div className="groupButtons">
         <ButtonGeneric
           title={intl.formatMessage({ id: "Edit" })}
-          onClick={() => handleOnEdit(data.uuid)}
+          onClick={() => handleOnEdit(data)}
           icon="pencil"
         />
         <ButtonGeneric
@@ -47,7 +47,7 @@ export const ControlGroupButtons = ({
         <ButtonGeneric
           className="warning"
           title={intl.formatMessage({ id: "Delete" })}
-          onClick={() => handleOnDelete(data.uuid)}
+          onClick={() => handleOnDelete(data)}
           icon="trash"
         />
         <ButtonGeneric

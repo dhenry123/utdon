@@ -7,7 +7,7 @@
     color: $color-error;
   }
   .operation {
-    height: 6rem;
+    height: max-content;
     .groupButtons {
       display: flex;
       flex-direction: column;

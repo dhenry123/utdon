@@ -62,7 +62,7 @@ components:
         ts:
           type: number
           description: Execution timestamp
-    
+
     UptodateForm:
       type: object
       description: control record
@@ -72,19 +72,19 @@ components:
           description: url of the production application to be verified
         headerkey:
           type: string
-          description: 'Scrap production: Header key'
+          description: "Scrap production: Header key"
         headervalue:
           type: string
-          description: 'Scrap production: Header value'
+          description: "Scrap production: Header value"
         headerkeyGit:
           type: string
-          description: 'Scrap git repo: Header key'
+          description: "Scrap git repo: Header key"
         headervalueGit:
           type: string
-          description: 'Scrap git repo: Header value'
+          description: "Scrap git repo: Header value"
         typeRepo:
           $ref: "#/components/schemas/TypeGitRepo"
-          description: 'Type of git repository'
+          description: "Type of git repository"
         scrapTypeProduction:
           type: string
           description: type of content
@@ -139,7 +139,7 @@ servers:
   - url: /api/v1
 paths:
   /action/compare/{controlUuid}/{setStatus}:
-    get:
+    put:
       summary: Call up the comparison method and can update the monitoring status
       description: Call up the comparison method and can update the monitoring status
       security:

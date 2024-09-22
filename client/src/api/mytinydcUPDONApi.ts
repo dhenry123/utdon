@@ -66,10 +66,12 @@ export const mytinydcUPDONApi = createApi({
       }),
       invalidatesTags: ["Controls"],
     }),
-    getCompare: builder.query({
+    putCompare: builder.mutation({
       query: (uuid: string) => ({
         url: `/action/compare/${encodeURIComponent(uuid)}/0`,
+        method: "PUT",
       }),
+      invalidatesTags: ["Controls"],
     }),
     getControl: builder.query({
       query: (uuidOrAll: string) => ({

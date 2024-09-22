@@ -37,7 +37,7 @@ const updateExternalStatus = (
 /**
  * Call up the comparison method and can update the monitoring status: 'all' is accepted
  */
-routerActions.get(
+routerActions.put(
   "/action/compare/:controlUuid/:setStatus",
   async (req: Request, res: Response, next: NextFunction) => {
     try {

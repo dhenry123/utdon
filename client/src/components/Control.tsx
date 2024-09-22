@@ -18,13 +18,12 @@ import "./Control.scss";
 
 interface ControlProps {
   data: UptodateForm;
-  handleOnDelete: (uuid: string) => void;
+  handleOnDelete: (control: UptodateForm) => void;
   handleOnCompare: (control: UptodateForm) => void;
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
-  handleOnEdit: (value: string) => void;
+  handleOnEdit: (control: UptodateForm) => void;
   handleOnCurlCommands: (control: UptodateForm) => void;
   setIsDialogCompareVisible: (value: boolean) => void;
-  setResultCompare: (control: UptoDateOrNotState) => void;
   handleOnDuplicate: (control: UptodateForm) => void;
 }
 export const Control = ({
@@ -35,7 +34,6 @@ export const Control = ({
   handleOnEdit,
   handleOnCurlCommands,
   setIsDialogCompareVisible,
-  setResultCompare,
   handleOnDuplicate,
 }: ControlProps) => {
   const intl = useIntl();
@@ -101,12 +99,12 @@ export const Control = ({
               isSuccess={data.compareResult.state}
               isWarning={!data.compareResult.strictlyEqual}
               onClick={() => {
-                if (data.compareResult) {
-                  setResultCompare(data.compareResult);
-                  setTimeout(() => {
-                    setIsDialogCompareVisible(true);
-                  }, 100);
-                }
+                // if (data.compareResult) {
+                //   setResultCompare(data.compareResult);
+                //   setTimeout(() => {
+                //     setIsDialogCompareVisible(true);
+                //   }, 100);
+                // }
               }}
               title={getRelativeTime(data.compareResult.ts, intl)}
             />
@@ -144,12 +142,12 @@ export const Control = ({
       </FieldSet>
       <ControlGroupButtons
         data={data}
-        handleOnEdit={() => handleOnEdit(data.uuid)}
-        handleOnDelete={() => handleOnDelete(data.uuid)}
+        handleOnDuplicate={handleOnDuplicate}
+        handleOnDelete={() => handleOnDelete(data)}
+        handleOnEdit={() => handleOnEdit(data)}
         handleOnCurlCommands={handleOnCurlCommands}
         handleOnCompare={handleOnCompare}
         handleOnPause={handleOnPause}
-        handleOnDuplicate={handleOnDuplicate}
       />
     </Block>
   );
