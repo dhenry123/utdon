@@ -160,7 +160,7 @@ export const DisplayControls = () => {
     )
       .unwrap()
       .then((response) => {
-        if (response.uuid === controlToManage) {
+        if (response.uuid === controlToManage.uuid) {
           setControlToManage(null);
           dispatch(
             showServiceMessage({
@@ -169,7 +169,7 @@ export const DisplayControls = () => {
               detail:
                 intl.formatMessage({
                   id: intl.formatMessage({ id: "Control has been deleted" }),
-                }) + `: ${controlToManage}`,
+                }) + `: ${controlToManage.uuid}`,
             })
           );
         } else {
