@@ -15,10 +15,10 @@ import ButtonGeneric from "./ButtonGeneric";
 import { useRef } from "react";
 
 interface FieldSetAuthorizationHeaderProps {
-  authBearer: string;
+  authToken: string;
 }
 export const FieldSetAuthorizationHeader = ({
-  authBearer,
+  authToken,
 }: FieldSetAuthorizationHeaderProps) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
@@ -53,8 +53,8 @@ export const FieldSetAuthorizationHeader = ({
       legend={intl.formatMessage({ id: "HTTP authorization header" })}
       className={`FieldSetAuthorizationHeader`}
     >
-      <div className="authBearer">
-        <div ref={divRef}>{`Authorization: ${authBearer}`}</div>
+      <div className="authToken">
+        <div ref={divRef}>{`Authorization: ${authToken}`}</div>
         <ButtonGeneric
           className="copyToClipboard"
           onClick={handleOnCopyToClipboard}

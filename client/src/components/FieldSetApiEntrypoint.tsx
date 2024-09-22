@@ -21,7 +21,7 @@ interface FieldSetApiEntrypointProps {
   method: string;
   commandTitle: string;
   body?: string;
-  userAuthBearer: string;
+  userAuthToken: string;
 }
 export const FieldSetApiEntrypoint = ({
   className,
@@ -29,7 +29,7 @@ export const FieldSetApiEntrypoint = ({
   method,
   commandTitle,
   body,
-  userAuthBearer,
+  userAuthToken,
 }: FieldSetApiEntrypointProps) => {
   const intl = useIntl();
 
@@ -82,7 +82,7 @@ export const FieldSetApiEntrypoint = ({
         <div className="command" ref={divRef}>
           {`curl -s ${kParameter ? "-k" : ""} ${
             method && method !== "GET" ? `-X ${method}` : ""
-          } ${userAuthBearer ? `-H "Authorization: ${userAuthBearer}"` : ""} ${
+          } ${userAuthToken ? `-H "Authorization: ${userAuthToken}"` : ""} ${
             body ? `-H "Content-Type: application/json" --data '${body}'` : ""
           } ${url}`}
         </div>

@@ -28,6 +28,7 @@ const initialState: contextSliceType = {
   displayControlsType: localStorage.getItem(
     "displayControlsAsList"
   ) as DisplayControlsType,
+  authToken: "",
 };
 
 export const contextSlice = createSlice({
@@ -73,6 +74,9 @@ export const contextSlice = createSlice({
       localStorage.setItem("displayControlsAsList", value.payload);
       state.displayControlsType = value.payload;
     },
+    setAuthToken(state, value) {
+      state.authToken = value.payload;
+    },
   },
 });
 
@@ -87,5 +91,6 @@ export const {
   setSearch,
   setIsLoaderShip,
   setDisplayControlsAsList,
+  setAuthToken,
 } = contextSlice.actions;
 export default contextSlice.reducer;

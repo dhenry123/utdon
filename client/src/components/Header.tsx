@@ -6,6 +6,7 @@
 import { useNavigate } from "react-router-dom";
 import {
   mytinydcUPDONApi,
+  useGetAuthTokenQuery,
   useGetUserLoginQuery,
 } from "../api/mytinydcUPDONApi";
 import { useIntl } from "react-intl";
@@ -22,6 +23,7 @@ import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
 import {
+  setAuthToken,
   setDisplayControlsAsList,
   setIsAdmin,
   setRefetchuptodateForm,
@@ -47,11 +49,17 @@ export const Header = () => {
     (state) => state.context.displayControlsType
   );
 
+  const { data: authToken } = useGetAuthTokenQuery(null);
+
   /**
    * Used for server errors (api entrypoint call)
    * @param error
    * @returns
    */
+
+  useEffect(() => {
+    if (authToken) dispatch(setAuthToken(authToken));
+  }, [authToken]);
 
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error && error.data) {
@@ -105,24 +113,19 @@ export const Header = () => {
   };
 
   const displayDialogCurlCommands = () => {
-    dispatch(mytinydcUPDONApi.endpoints.getBearer.initiate(null))
-      .unwrap()
-      .then((response) => {
-        setDialogHeader(
-          intl.formatMessage({ id: "Curl commands for all controls" })
-        );
-        setDialogContent(
-          <CurlCommands
-            uptodateForm={"all"}
-            userAuthBearer={response.bearer}
-            onClose={() => setIsDialogVisible(false)}
-          />
-        );
-        setIsDialogVisible(true);
-      })
-      .catch((error: FetchBaseQueryError) => {
-        dispatchServerError(error);
-      });
+    if (authToken) {
+      setDialogHeader(
+        intl.formatMessage({ id: "Curl commands for all controls" })
+      );
+      setDialogContent(
+        <CurlCommands
+          uptodateForm={"all"}
+          userAuthToken={authToken}
+          onClose={() => setIsDialogVisible(false)}
+        />
+      );
+      setIsDialogVisible(true);
+    }
   };
 
   const displayDialogUsersManager = () => {

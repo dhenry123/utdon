@@ -27,13 +27,13 @@ type Story = StoryObj<typeof meta>;
 export const ForOneControl: Story = {
   args: {
     uptodateForm: STORYBOOK_UPTODATEFORM,
-    userAuthBearer: "xxxxx",
+    userAuthToken: "xxxxx",
   },
 };
 
 export const ForAllControls: Story = {
   args: {
     uptodateForm: "all",
-    userAuthBearer: "xxxxx",
+    userAuthToken: "xxxxx",
   },
 };

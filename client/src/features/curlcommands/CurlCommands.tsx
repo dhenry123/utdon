@@ -15,17 +15,15 @@ import { FieldSetAuthorizationHeader } from "../../components/FieldSetAuthorizat
 interface CurlCommandsProps {
   uptodateForm: UptodateForm | "all";
   onClose?: () => void;
-  userAuthBearer: string;
+  userAuthToken: string;
 }
 
 export const CurlCommands = ({
   uptodateForm,
   onClose,
-  userAuthBearer,
+  userAuthToken,
 }: CurlCommandsProps) => {
   const intl = useIntl();
-
-  const auth = `${userAuthBearer}`;
 
   return (
     <Block className={`CurlCommands`}>
@@ -41,14 +39,14 @@ export const CurlCommands = ({
       ) : (
         <></>
       )}
-      <FieldSetAuthorizationHeader authBearer={auth} />
+      <FieldSetAuthorizationHeader authToken={userAuthToken} />
 
       <div className="listcurlcommands">
         <FieldSetApiEntrypoint
           commandTitle={intl.formatMessage({
             id: "API entry point to compare versions",
           })}
-          userAuthBearer={auth}
+          userAuthToken={userAuthToken}
           apiEntrypoint={`/api/v1/action/compare/${
             uptodateForm !== "all" ? uptodateForm.uuid : uptodateForm
           }/0`}
@@ -58,7 +56,7 @@ export const CurlCommands = ({
           commandTitle={intl.formatMessage({
             id: "API entry point to compare versions and send status to monitoring service",
           })}
-          userAuthBearer={auth}
+          userAuthToken={userAuthToken}
           apiEntrypoint={`/api/v1/action/compare/${
             uptodateForm !== "all" ? uptodateForm.uuid : uptodateForm
           }/1`}
@@ -70,7 +68,7 @@ export const CurlCommands = ({
               commandTitle={intl.formatMessage({
                 id: "API entry point for the github version of the latest comparison",
               })}
-              userAuthBearer={auth}
+              userAuthToken={userAuthToken}
               apiEntrypoint={`/api/v1/action/lastcomparegitrelease/${uptodateForm.uuid}`}
               method={"GET"}
             />
@@ -78,7 +76,7 @@ export const CurlCommands = ({
               commandTitle={intl.formatMessage({
                 id: "API entry point for calling the CI/CD chain for this control",
               })}
-              userAuthBearer={auth}
+              userAuthToken={userAuthToken}
               apiEntrypoint={`/api/v1/action/cicd/`}
               body={JSON.stringify({ uuid: uptodateForm.uuid })}
               method={"PUT"}
@@ -87,7 +85,7 @@ export const CurlCommands = ({
               commandTitle={intl.formatMessage({
                 id: "API entry point for this control",
               })}
-              userAuthBearer={auth}
+              userAuthToken={userAuthToken}
               apiEntrypoint={`/api/v1/control/${uptodateForm.uuid}`}
               method={"GET"}
             />
@@ -98,7 +96,7 @@ export const CurlCommands = ({
               commandTitle={intl.formatMessage({
                 id: "API entry point for all controls",
               })}
-              userAuthBearer={auth}
+              userAuthToken={userAuthToken}
               apiEntrypoint={"/api/v1/control/all"}
               method={"GET"}
             />
@@ -106,7 +104,7 @@ export const CurlCommands = ({
               commandTitle={intl.formatMessage({
                 id: "API entrypoint for UTDON version",
               })}
-              userAuthBearer={""}
+              userAuthToken={""}
               apiEntrypoint={"/api/v1/version"}
               method={"GET"}
             />

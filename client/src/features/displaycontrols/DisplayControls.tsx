@@ -53,7 +53,7 @@ export const DisplayControls = () => {
     INTIALIZED_CONTROL_TO_PAUSE
   );
 
-  const [userAuthBearer, setuserAuthBearer] = useState("");
+  const authToken = useAppSelector((state) => state.context.authToken);
 
   const searchString = useAppSelector((state) => state.context.search);
   const displayControlsAsList = useAppSelector(
@@ -113,23 +113,6 @@ export const DisplayControls = () => {
       if (error.status === 401) return navigate("/login");
     }
   };
-
-  useEffect(() => {
-    //Reload
-    refetch();
-    // get auth bearer
-    if (!userAuthBearer) {
-      dispatch(mytinydcUPDONApi.endpoints.getBearer.initiate(null))
-        .unwrap()
-        .then((response) => {
-          setuserAuthBearer(response.bearer);
-        })
-        .catch((error) => {
-          dispatchServerError(error);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (isError && ErrorOnFetch) {
@@ -470,7 +453,7 @@ export const DisplayControls = () => {
             <CurlCommands
               uptodateForm={controlToManage as UptodateForm}
               onClose={() => setIsDialogCurlCommandsVisible(false)}
-              userAuthBearer={userAuthBearer}
+              userAuthToken={authToken}
             />
           </Dialog>
           {/* Duplicate */}

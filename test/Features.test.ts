@@ -12,10 +12,8 @@ import {
 describe("Features", () => {
   test("compareVersion - strictlyEqual true", () => {
     const name = "xxxxx";
-    const uuid = "uuid";
-    const result = compareVersion(name, uuid, "x100", "x100", "", "");
+    const result = compareVersion(name, "x100", "x100", "", "");
     expect(result.name).toEqual(name);
-    expect(result.uuid).toEqual(uuid);
     expect(result.githubLatestRelease).toEqual("x100");
     expect(result.productionVersion).toEqual("x100");
     expect(result.strictlyEqual).toBeTruthy();
@@ -27,10 +25,8 @@ describe("Features", () => {
 
   test("compareVersion - githubLatestReleaseIncludesProductionVersion", () => {
     const name = "xxxxx";
-    const uuid = "uuid";
-    const result = compareVersion(name, uuid, "x100", "x10", "", "");
+    const result = compareVersion(name, "x100", "x10", "", "");
     expect(result.name).toEqual(name);
-    expect(result.uuid).toEqual(uuid);
     expect(result.githubLatestRelease).toEqual("x100");
     expect(result.productionVersion).toEqual("x10");
     expect(result.strictlyEqual).toBeFalsy();
@@ -42,11 +38,8 @@ describe("Features", () => {
 
   test("compareVersion - productionVersionIncludesGithubLatestRelease", () => {
     const name = "xxxxx";
-    const uuid = "uuid";
-    const result = compareVersion(name, uuid, "100", "x100", "", "");
+    const result = compareVersion(name, "100", "x100", "", "");
     expect(result.name).toEqual(name);
-    expect(result.uuid).toEqual(uuid);
-    expect(result.uuid).toEqual(uuid);
     expect(result.githubLatestRelease).toEqual("100");
     expect(result.productionVersion).toEqual("x100");
     expect(result.strictlyEqual).toBeFalsy();

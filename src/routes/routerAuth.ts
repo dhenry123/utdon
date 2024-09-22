@@ -305,14 +305,14 @@ routerAuth.put(
  * get user user auth Token
  */
 routerAuth.get(
-  "/bearer",
+  "/authtoken",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;
       if (session.user && session.user.login) {
-        res.status(200).json({
-          bearer: req.app.get("AUTH").getUserBearer(session.user.login),
-        });
+        res
+          .status(200)
+          .json(req.app.get("AUTH").getUserBearer(session.user.login));
       } else {
         res.status(500).json({ error: "User is not logged with session" });
       }
@@ -345,7 +345,7 @@ routerAuth.get(
  * Used by UI to get new user auth Token
  */
 routerAuth.put(
-  "/bearer",
+  "/authtoken",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = req.session as SessionExt;

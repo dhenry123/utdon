@@ -96,9 +96,9 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
     setFormData({ ...formData, [key]: value });
   };
 
-  const handleOnRenewTokenApi = () => {
+  const handleOnRenewAuthToken = () => {
     setIsDialogVisible(false);
-    dispatch(mytinydcUPDONApi.endpoints.putBearer.initiate(null))
+    dispatch(mytinydcUPDONApi.endpoints.putAuthToken.initiate(null))
       .unwrap()
       // 204 no response
       .then(() => {
@@ -192,7 +192,7 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
           id: "Are you sure you want to change the authentication token? You'll need to update all tools calling this API.",
         })}
         onCancel={() => setIsDialogVisible(false)}
-        onConfirm={() => handleOnRenewTokenApi()}
+        onConfirm={() => handleOnRenewAuthToken()}
         visible={isDialogVisible}
       />
     </Block>

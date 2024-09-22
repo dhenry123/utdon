@@ -17,7 +17,7 @@ export const mytinydcUPDONApi = createApi({
   // Query service name
   reducerPath: "api",
   // tag types
-  tagTypes: ["User", "Users", "Groups", "Controls"],
+  tagTypes: ["User", "Users", "Groups", "Controls", "AuthToken"],
   // Url Base API
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
@@ -109,17 +109,19 @@ export const mytinydcUPDONApi = createApi({
         body: data,
       }),
     }),
-    getBearer: builder.mutation({
+    getAuthToken: builder.query({
       query: () => ({
         method: "GET",
-        url: `/bearer/`,
+        url: `/authtoken/`,
       }),
+      providesTags: ["AuthToken"],
     }),
-    putBearer: builder.mutation({
+    putAuthToken: builder.mutation({
       query: () => ({
         method: "PUT",
-        url: `/bearer/`,
+        url: `/authtoken/`,
       }),
+      invalidatesTags: ["AuthToken"],
     }),
     getUsers: builder.query({
       query: () => ({
@@ -185,4 +187,5 @@ export const {
   useGetUsersQuery,
   useGetUserLoginQuery,
   useGetGroupsQuery,
+  useGetAuthTokenQuery,
 } = mytinydcUPDONApi;

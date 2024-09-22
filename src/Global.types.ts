@@ -112,6 +112,7 @@ export type contextSliceType = {
   search: string;
   displayControlsType: DisplayControlsType;
   isLoaderShip: boolean;
+  authToken: string;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";

@@ -8,3 +8,4 @@ test/devtest.test.ts
 coverage/**
 .envlocaldev
 public
+src/data
