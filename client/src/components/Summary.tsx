@@ -7,40 +7,31 @@ import { useIntl } from "react-intl";
 import "./Summary.scss";
 import { useEffect, useState } from "react";
 import ButtonGeneric from "./ButtonGeneric";
-import { UptoDateOrNotState, UptodateForm } from "../../../src/Global.types";
-import { ResultCompare } from "./ResultCompare";
+import { UptodateForm } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { useAppDispatch } from "../app/hook";
-import { Dialog } from "./Dialog";
 import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";
 import { FieldSetClickableUrl } from "./FieldSetClickableUrl";
-import {
-  INITIALIZED_TOAST,
-  INPROGRESS_UPTODATEORNOTSTATE,
-} from "../../../src/Constants";
+import { INITIALIZED_TOAST } from "../../../src/Constants";
 
 export interface SummaryProps {
   uptodateForm: UptodateForm;
   isChangesOnModel: boolean;
   onSave: () => Promise<unknown>;
   isRecordable: boolean;
-  onCompare: () => Promise<UptoDateOrNotState>;
+  handleOnCompare: () => void;
 }
 
 export const Summary = ({
   uptodateForm,
   isChangesOnModel,
   onSave,
-  onCompare,
+  handleOnCompare,
   isRecordable,
 }: SummaryProps) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
-
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
-
-  const [resultCompare, setResultCompare] = useState<UptoDateOrNotState>();
 
   const [isCompareButtonDisabled, setIsCompareButtonDisabled] = useState(true);
 
@@ -54,15 +45,6 @@ export const Summary = ({
         })
       );
       setIsCompareButtonDisabled(false);
-    });
-    //error has been intercepted by parent
-  };
-
-  const handleOnCompare = () => {
-    setResultCompare(INPROGRESS_UPTODATEORNOTSTATE);
-    onCompare().then((result: UptoDateOrNotState) => {
-      setIsDialogVisible(true);
-      setResultCompare(result);
     });
     //error has been intercepted by parent
   };
@@ -191,17 +173,6 @@ export const Summary = ({
           }
         />
       </Block>
-      <Dialog
-        visible={isDialogVisible}
-        onHide={() => setIsDialogVisible(false)}
-        header={intl.formatMessage({ id: "Action" })}
-        closeButton
-      >
-        <ResultCompare
-          result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          control={uptodateForm}
-        />
-      </Dialog>
     </div>
   );
 };

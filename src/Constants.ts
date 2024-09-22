@@ -15,7 +15,6 @@ import {
 
 export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   name: "In progress",
-  uuid: "",
   githubLatestRelease: "In progress",
   productionVersion: "In progress",
   githubLatestReleaseIncludesProductionVersion: false,

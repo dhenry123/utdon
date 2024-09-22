@@ -192,7 +192,6 @@ export const DisplayControls = () => {
   };
 
   const handleOnCompare = async (uptodateForm: UptodateForm) => {
-    console.log("handleOnCompare", uptodateForm);
     if (uptodateForm.uuid) {
       setControlToManage(uptodateForm);
       dispatch(setIsLoaderShip(true));
@@ -202,8 +201,6 @@ export const DisplayControls = () => {
         .unwrap()
         .then((response) => {
           if (response) {
-            console.log(response);
-            setControlToManage(uptodateForm);
             setIsDialogCompareVisible(true);
           }
         })
@@ -335,7 +332,7 @@ export const DisplayControls = () => {
                 // [X] duplicate
                 // [X] delete
                 // [X] edit
-                // [ ] compare
+                // [X] compare
                 // [ ] pause
                 // [ ] curlcommand
                 // [ ] lastcomparison

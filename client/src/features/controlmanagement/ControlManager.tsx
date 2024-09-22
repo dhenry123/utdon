@@ -10,7 +10,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hook";
 import { ScrapProduction } from "../../components/ScrapProduction";
 import {
   ErrorServer,
-  UptoDateOrNotState,
   UptodateForm,
   UptodateFormFields,
 } from "../../../../src/Global.types";
@@ -29,6 +28,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { StepperStep } from "../../components/StepperStep";
 import { INITIALIZED_TOAST } from "../../../../src/Constants";
 import { useIntl } from "react-intl";
+import { Dialog } from "../../components/Dialog";
+import { ResultCompare } from "../../components/ResultCompare";
 
 export const ControlManager = () => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,9 @@ export const ControlManager = () => {
   ]);
 
   const [stepActive, setStepActive] = useState<number>(0);
-
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [uptodateFormWithFreshCompare, setUptodateFormWithFreshCompare] =
+    useState<UptodateForm>();
   /**
    * production server to test
    */
@@ -232,24 +235,31 @@ export const ControlManager = () => {
    * ask server to compare
    * @returns
    */
-  const handleOnCompare = async (): Promise<UptoDateOrNotState> => {
-    return new Promise((resolv, reject) => {
-      if (uptodateForm.uuid) {
-        dispatch(
-          mytinydcUPDONApi.endpoints.putCompare.initiate(uptodateForm.uuid)
-        )
-          .unwrap()
-          .then((response) => {
-            resolv(response);
-          })
-          .catch((error: FetchBaseQueryError) => {
-            dispatchServerError(error);
-            reject(error.data);
-          });
-      } else {
-        reject(new Error("uuid not provided"));
-      }
-    });
+  const handleOnCompare = () => {
+    if (uptodateForm.uuid) {
+      dispatch(
+        mytinydcUPDONApi.endpoints.putCompare.initiate(uptodateForm.uuid)
+      )
+        .unwrap()
+        .then((response) => {
+          const newUptodateFrom = { ...uptodateForm };
+          newUptodateFrom.compareResult = response;
+          setUptodateFormWithFreshCompare(newUptodateFrom);
+          setIsDialogVisible(true);
+        })
+        .catch((error: FetchBaseQueryError) => {
+          dispatchServerError(error);
+        });
+    } else {
+      dispatch(
+        showServiceMessage({
+          ...INITIALIZED_TOAST,
+          severity: "error",
+          sticky: true,
+          detail: intl.formatMessage({ id: "uuid not provided" }),
+        })
+      );
+    }
   };
 
   /**
@@ -334,11 +344,21 @@ export const ControlManager = () => {
         <Summary
           uptodateForm={uptodateForm}
           onSave={handleOnSave}
-          onCompare={handleOnCompare}
+          handleOnCompare={handleOnCompare}
           isRecordable={isRecordable}
           isChangesOnModel={isChangesOnModel}
         />
       </StepperStep>
+      {uptodateFormWithFreshCompare ? (
+        <Dialog
+          visible={isDialogVisible}
+          onHide={() => setIsDialogVisible(false)}
+          header={intl.formatMessage({ id: "Action" })}
+          closeButton
+        >
+          <ResultCompare control={uptodateFormWithFreshCompare} />
+        </Dialog>
+      ) : null}
     </div>
   );
 };

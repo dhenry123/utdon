@@ -4,7 +4,7 @@
  */
 
 import { useIntl } from "react-intl";
-import { UptoDateOrNotState, UptodateForm } from "../../../src/Global.types";
+import { UptodateForm } from "../../../src/Global.types";
 import { ChangeEvent } from "react";
 import { Block } from "./Block";
 import { FieldSet } from "./FieldSet";

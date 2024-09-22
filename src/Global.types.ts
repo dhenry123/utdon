@@ -153,7 +153,6 @@ export interface ErrorServerJson {
 
 export type UptoDateOrNotState = {
   name: string;
-  uuid: string;
   githubLatestRelease: string;
   productionVersion: string;
   state: boolean;

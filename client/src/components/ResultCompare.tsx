@@ -11,7 +11,6 @@ import {
   ActionCiCdType,
   ActionStatusType,
   ErrorServer,
-  UptoDateOrNotState,
   UptodateForm,
 } from "../../../src/Global.types";
 import ButtonGeneric from "./ButtonGeneric";
