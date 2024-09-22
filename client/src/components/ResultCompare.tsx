@@ -128,7 +128,6 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
       });
   };
 
-  console.log(control.compareResult);
   return (
     <div className={`ResultCompare`}>
       {control.compareResult ? (

@@ -226,6 +226,11 @@ export const DisplayControls = () => {
     }
   };
 
+  const handleOnDisplayLatestCompare = (uptodateForm: UptodateForm) => {
+    setControlToManage(uptodateForm);
+    setIsDialogCompareVisible(true);
+  };
+
   const handleOnPause = async (
     event: ChangeEvent<HTMLInputElement>,
     uuid: string
@@ -344,7 +349,7 @@ export const DisplayControls = () => {
                     handleOnCompare={handleOnCompare}
                     handleOnPause={handleOnPause}
                     handleOnCurlCommands={handleOnCurlCommands}
-                    setIsDialogCompareVisible={setIsDialogCompareVisible}
+                    handleOnDisplayLatestCompare={handleOnDisplayLatestCompare}
                   />
                 );
               })}
@@ -434,12 +439,7 @@ export const DisplayControls = () => {
                           isSuccess={item.compareResult.state}
                           isWarning={!item.compareResult.strictlyEqual}
                           onClick={() => {
-                            // if (item.compareResult) {
-                            //   setResultCompare(item.compareResult);
-                            //   setTimeout(() => {
-                            //     setIsDialogCompareVisible(true);
-                            //   }, 100);
-                            // }
+                            handleOnDisplayLatestCompare(item);
                           }}
                           title={getRelativeTime(item.compareResult.ts, intl)}
                         />

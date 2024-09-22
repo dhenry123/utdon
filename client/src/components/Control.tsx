@@ -23,7 +23,7 @@ interface ControlProps {
   handleOnPause: (control: ChangeEvent<HTMLInputElement>, uuid: string) => void;
   handleOnEdit: (control: UptodateForm) => void;
   handleOnCurlCommands: (control: UptodateForm) => void;
-  setIsDialogCompareVisible: (value: boolean) => void;
+  handleOnDisplayLatestCompare: (control: UptodateForm) => void;
   handleOnDuplicate: (control: UptodateForm) => void;
 }
 export const Control = ({
@@ -33,7 +33,7 @@ export const Control = ({
   handleOnPause,
   handleOnEdit,
   handleOnCurlCommands,
-  setIsDialogCompareVisible,
+  handleOnDisplayLatestCompare,
   handleOnDuplicate,
 }: ControlProps) => {
   const intl = useIntl();
@@ -99,12 +99,7 @@ export const Control = ({
               isSuccess={data.compareResult.state}
               isWarning={!data.compareResult.strictlyEqual}
               onClick={() => {
-                // if (data.compareResult) {
-                //   setResultCompare(data.compareResult);
-                //   setTimeout(() => {
-                //     setIsDialogCompareVisible(true);
-                //   }, 100);
-                // }
+                handleOnDisplayLatestCompare(data);
               }}
               title={getRelativeTime(data.compareResult.ts, intl)}
             />
