@@ -19,7 +19,7 @@
 
     .flex-table {
       display: grid;
-      grid-template-columns: 2.5% 20% 20% 15% 9% 9% 15% 10%;
+      grid-template-columns: 2.5% 15% 20% 15% 9% 9% 20% 10%;
       grid-template-rows: 100% 100%;
       transition: 0.5s;
       box-shadow: $boxshadow-default;

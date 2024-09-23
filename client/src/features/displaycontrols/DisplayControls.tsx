@@ -298,6 +298,18 @@ export const DisplayControls = () => {
       });
   };
 
+  const isMatchString = (item: UptodateForm): boolean => {
+    if (
+      searchString &&
+      !item.name.match(new RegExp(searchString, "i")) &&
+      !item.uuid.match(new RegExp(searchString, "i"))
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  console.log(searchString);
   return (
     <div className={`DisplayControls`}>
       {isSuccess ? (
@@ -305,18 +317,9 @@ export const DisplayControls = () => {
           {displayControlsAsList === "cards" ? (
             <div className="list">
               {data.map((item: UptodateForm) => {
-                if (
-                  searchString &&
-                  !item.name.match(new RegExp(searchString, "i"))
-                )
+                if (!isMatchString(item)) {
                   return null;
-                // [X] duplicate
-                // [X] delete
-                // [X] edit
-                // [X] compare
-                // [X] lastcomparison
-                // [X] pause
-                // [ ] curlcommand
+                }
                 return (
                   <Control
                     key={item.uuid}
@@ -357,11 +360,7 @@ export const DisplayControls = () => {
                 </div>
               </div>
               {data.map((item: UptodateForm) => {
-                if (
-                  searchString &&
-                  !item.name.match(new RegExp(searchString, "i"))
-                )
-                  return null;
+                if (!isMatchString(item)) return null;
                 return (
                   <div
                     key={`control${item.uuid}`}
