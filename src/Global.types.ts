@@ -228,3 +228,26 @@ export type UserDescriptionType = {
   uuid: string;
   groups: string[];
 };
+
+export interface OptionsLogType {
+  message?: string;
+  scrapResponse?: string;
+  uuid?: string;
+  urlCICD?: string;
+  gitAuthenticationProvided?: boolean;
+  productionAuthenticationProvided?: boolean;
+  newUser?: string;
+  userDeleted?: string;
+  userUpdated?: string;
+}
+export interface logInfo extends OptionsLogType {
+  userId: string;
+  userLogin: string;
+  apiPath: string;
+  apiMethod: string;
+  ipAddr: string | undefined;
+}
+
+export interface logError extends logInfo {
+  error: string;
+}

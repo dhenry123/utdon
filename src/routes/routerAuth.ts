@@ -12,6 +12,7 @@ import {
   UserType,
 } from "../Global.types";
 import { SessionExt } from "../ServerTypes";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
 const routerAuth = express.Router();
 
 /**
@@ -27,13 +28,9 @@ routerAuth.post(
           .get("AUTH")
           .verifyPassword(req.body.login, req.body.password);
         if (verif[0] === 200) {
-          req.app.get("LOGGER").info({
-            action: "login",
-            user: req.body.login,
-            ipAddr: req.ip,
-          });
           const session = req.session as SessionExt;
           session.user = req.app.get("AUTH").getInfoForUi(req.body.login);
+          req.app.get("LOGGER").info(getLogObjectInfo(req));
         }
       }
       // no need to send info, login page is isolated, if user press F5
@@ -93,11 +90,11 @@ routerAuth.post(
           for (const group of newUser.groups) {
             req.app.get("AUTH").addGroupMember(group, user.uuid);
           }
-          req.app.get("LOGGER").info({
-            action: "create user",
-            user: newUser.login,
-            ipAddr: req.ip,
-          });
+          req.app.get("LOGGER").info(
+            getLogObjectInfo(req, {
+              newUser: newUser.login,
+            })
+          );
           res.status(200).json({ login: newUser.login });
         } else {
           res.status(400).json({ error: "User already exists" });
@@ -149,14 +146,14 @@ routerAuth.put(
             }
             // groups cleaning
             req.app.get("AUTH").cleanGroups();
-            req.app.get("LOGGER").info({
-              action: "modify user",
-              user: userToUpdate.login,
-              ipAddr: req.ip,
-            });
+            req.app
+              .get("LOGGER")
+              .info(getLogObjectInfo(req), { userUpdated: users[idx].uuid });
             res.status(204).send();
           } else {
-            res.status(400).json({ error: "User  not found" });
+            const message = "User  not found";
+            req.app.get("LOGGER").info(getLogObjectError(req, message));
+            res.status(400).json({ error: message });
           }
         } else {
           next(new Error("User uuid not set, mandatory for update"));
@@ -197,16 +194,18 @@ routerAuth.delete(
         if (user && session.user.uuid !== req.params.uuid) {
           // if so, delete it
           req.app.get("AUTH").deleteUser(user.uuid); // add user to the list
-          req.app.get("LOGGER").info({
-            action: "delete user",
-            user: `${user.uuid} - ${user.login}`,
-            ipAddr: req.ip,
-          });
+          req.app.get("LOGGER").info(
+            getLogObjectInfo(req, {
+              userDeleted: `${user.uuid} - ${user.login}`,
+            })
+          );
           // groups cleaning
           req.app.get("AUTH").cleanGroups();
           res.status(200).json({ login: user.login, uuid: user.uuid });
         } else {
-          res.status(404).json({ error: "User not found" });
+          const message = "User  not found";
+          req.app.get("LOGGER").info(getLogObjectError(req, message));
+          res.status(400).json({ error: message });
         }
       } else {
         res.status(401).send();
@@ -225,6 +224,13 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const verif = req.app.get("AUTH").isAuthenticated(req);
+      if (verif) {
+        req.app.get("LOGGER").info(getLogObjectInfo(req));
+      } else {
+        req.app
+          .get("LOGGER")
+          .info(getLogObjectError(req, "user is not authenticated"));
+      }
       res.status(verif ? 204 : 401).json();
     } catch (error) {
       next(error);
@@ -257,13 +263,16 @@ routerAuth.get(
       const session = req.session as SessionExt;
       req.app.get("LOGGER").info({
         action: "logout",
-        user: session.user.login ? session.user.login : "session user unknown",
+        user: session.user?.login ? session.user.login : "session user unknown",
         ipAddr: req.ip,
       });
-      session.user.login = "";
       req.session.destroy((error: Error) => {
         if (error) {
-          req.app.get("LOGGER").error(error);
+          req.app.get("LOGGER").error({
+            action: "logout",
+            error: error.toString(),
+            ipAddr: req.ip,
+          });
         }
         res.clearCookie("connect.sid");
         res.status(204).json();

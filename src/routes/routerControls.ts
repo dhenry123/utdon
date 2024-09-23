@@ -15,6 +15,7 @@ import {
 import { recordsOrder } from "../lib/Features";
 import { SessionExt } from "../ServerTypes";
 import { getTypeGitRepo } from "../lib/helperGitRepository";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
 const routerControl = express.Router();
 
 routerControl.post(
@@ -58,9 +59,7 @@ routerControl.post(
           const rupd = dbUpdateRecord(req.app.get("DB"), req.body);
           if (rupd) {
             dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));
-            req.app
-              .get("LOGGER")
-              .info({ action: "control updated", uuid: rupd, ipAddr: req.ip });
+            req.app.get("LOGGER").info(getLogObjectInfo(req, { uuid: rupd }));
             res.status(200).json({ control: { ...req.body, uuid: rupd } });
           } else {
             next(new Error("update return empty"));
@@ -70,9 +69,7 @@ routerControl.post(
           dbInsert(req.app.get("DB"), { ...req.body })
             .then((uuid) => {
               dbCommit(req.app.get("DBFILE") || "", req.app.get("DB"));
-              req.app
-                .get("LOGGER")
-                .info({ action: "control added", uuid: uuid, ipAddr: req.ip });
+              req.app.get("LOGGER").info(getLogObjectInfo(req, { uuid: uuid }));
               res.status(200).json({ control: { ...req.body, uuid: uuid } });
             })
             .catch((error: Error) => {
@@ -135,13 +132,11 @@ routerControl.delete(
           //commit
           dbCommit(req.app.get("DBFILE") as string, req.app.get("DB"))
             .then(() => {
-              req.app
-                .get("LOGGER")
-                .info({
-                  action: "control deleted",
+              req.app.get("LOGGER").info(
+                getLogObjectInfo(req, {
                   uuid: req.params.uuid,
-                  ipAddr: req.ip,
-                });
+                })
+              );
               res.status(200).json({ uuid: rec });
             })
             .catch((error: Error) => {
@@ -153,6 +148,9 @@ routerControl.delete(
           });
         }
       } else {
+        req.app
+          .get("LOGGER")
+          .info(getLogObjectError(req, `user not found: ${req.params.uuid}`));
         res.status(404).send();
       }
     } catch (error: unknown) {
