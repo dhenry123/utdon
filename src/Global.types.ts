@@ -239,6 +239,7 @@ export interface OptionsLogType {
   newUser?: string;
   userDeleted?: string;
   userUpdated?: string;
+  userLogout?: string;
 }
 export interface logInfo extends OptionsLogType {
   userId: string;

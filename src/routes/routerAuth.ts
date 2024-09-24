@@ -31,12 +31,204 @@ routerAuth.post(
           const session = req.session as SessionExt;
           session.user = req.app.get("AUTH").getInfoForUi(req.body.login);
           req.app.get("LOGGER").info(getLogObjectInfo(req));
+          req.session.regenerate((error: Error) => {
+            if (error)
+              req.app
+                .get("LOGGER")
+                .error(getLogObjectError(req, error.toString()));
+            req.session.destroy((error: Error) => {
+              if (error)
+                req.app
+                  .get("LOGGER")
+                  .error(getLogObjectError(req, error.toString()));
+            });
+          });
         }
+        // no need to send info, login page is isolated, if user press F5
+        // UI loose user infos
+        res.status(verif[0]).send();
+      } else {
+        throw new Error(`login or password not set`);
       }
-      // no need to send info, login page is isolated, if user press F5
-      // UI loose user infos
-      res.status(verif[0]).send();
     } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * is the user logged in ?
+ */
+routerAuth.get(
+  "/isauthenticated",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const verif = req.app.get("AUTH").isAuthenticated(req);
+      if (verif) {
+        req.app.get("LOGGER").info(getLogObjectInfo(req));
+      } else {
+        req.app
+          .get("LOGGER")
+          .info(getLogObjectError(req, "user is not authenticated"));
+      }
+      res.status(verif ? 204 : 401).json();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * does the user have the administrator role ?
+ */
+routerAuth.get(
+  "/isadmin",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const verif = req.app.get("AUTH").isAdmin(req);
+      res.status(verif ? 204 : 401).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * user logout method
+ */
+routerAuth.get(
+  "/userlogout",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      req.app.get("LOGGER").info(
+        getLogObjectInfo(req, {
+          userLogout: session.user?.login
+            ? session.user.login
+            : "session user unknown",
+        })
+      );
+      req.session.destroy((error: Error) => {
+        if (error) {
+          req.app.get("LOGGER").error(getLogObjectError(req, error.toString()));
+        }
+        res.status(204).json();
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * user change password
+ */
+routerAuth.put(
+  "/changepassword",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        const changepassword = req.body as ChangePasswordType;
+        const verified = req.app
+          .get("AUTH")
+          .changePassword(changepassword, session.user.login);
+        if (verified[0] === 200) {
+          res.status(204).send();
+        } else {
+          res.status(500).json({ error: verified[1] });
+        }
+      } else {
+        res.status(500).json({ error: "User is not logged with session" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * get user user auth Token
+ */
+routerAuth.get(
+  "/authtoken",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        res
+          .status(200)
+          .json(req.app.get("AUTH").getUserBearer(session.user.login));
+      } else {
+        res.status(500).json({ error: "User is not logged with session" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * Used by UI to show the user's login in the header
+ */
+routerAuth.get(
+  "/userlogin",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        res.status(200).json({ login: session.user.login });
+      } else {
+        res.status(401).json({ error: "User is not logged with session" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * Used by UI to get new user auth Token
+ */
+routerAuth.put(
+  "/authtoken",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        const result = req.app.get("AUTH").changeBearer(session.user.login);
+        if (result[0] === 200) {
+          res.status(204).json();
+        } else {
+          res.status(500).json({ error: result[1].toString() });
+        }
+      } else {
+        res.status(500).json({ error: "User is not logged with session" });
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * Used by UI to display user's groups
+ */
+routerAuth.get(
+  "/groups",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = req.session as SessionExt;
+      if (session.user && session.user.login) {
+        let groups: string[] = [];
+        groups = req.app.get("AUTH").getGroups(req);
+        res.status(200).json(groups);
+      } else {
+        res
+          .status(401)
+          .json({ error: "User is not logged with session or not admin" });
+      }
+    } catch (error: unknown) {
       next(error);
     }
   }
@@ -209,187 +401,6 @@ routerAuth.delete(
         }
       } else {
         res.status(401).send();
-      }
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-);
-
-/**
- * is the user logged in ?
- */
-routerAuth.get(
-  "/isauthenticated",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const verif = req.app.get("AUTH").isAuthenticated(req);
-      if (verif) {
-        req.app.get("LOGGER").info(getLogObjectInfo(req));
-      } else {
-        req.app
-          .get("LOGGER")
-          .info(getLogObjectError(req, "user is not authenticated"));
-      }
-      res.status(verif ? 204 : 401).json();
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-/**
- * does the user have the administrator role ?
- */
-routerAuth.get(
-  "/isadmin",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const verif = req.app.get("AUTH").isAdmin(req);
-      res.status(verif ? 204 : 401).send();
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-/**
- * user logout method
- */
-routerAuth.get(
-  "/userlogout",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const session = req.session as SessionExt;
-      req.app.get("LOGGER").info({
-        action: "logout",
-        user: session.user?.login ? session.user.login : "session user unknown",
-        ipAddr: req.ip,
-      });
-      req.session.destroy((error: Error) => {
-        if (error) {
-          req.app.get("LOGGER").error({
-            action: "logout",
-            error: error.toString(),
-            ipAddr: req.ip,
-          });
-        }
-        res.clearCookie("connect.sid");
-        res.status(204).json();
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-/**
- * user change password
- */
-routerAuth.put(
-  "/changepassword",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const session = req.session as SessionExt;
-      if (session.user && session.user.login) {
-        const changepassword = req.body as ChangePasswordType;
-        const verified = req.app
-          .get("AUTH")
-          .changePassword(changepassword, session.user.login);
-        if (verified[0] === 200) {
-          res.status(204).send();
-        } else {
-          res.status(500).json({ error: verified[1] });
-        }
-      } else {
-        res.status(500).json({ error: "User is not logged with session" });
-      }
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-);
-
-/**
- * get user user auth Token
- */
-routerAuth.get(
-  "/authtoken",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const session = req.session as SessionExt;
-      if (session.user && session.user.login) {
-        res
-          .status(200)
-          .json(req.app.get("AUTH").getUserBearer(session.user.login));
-      } else {
-        res.status(500).json({ error: "User is not logged with session" });
-      }
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-);
-
-/**
- * Used by UI to show the user's login in the header
- */
-routerAuth.get(
-  "/userlogin",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const session = req.session as SessionExt;
-      if (session.user && session.user.login) {
-        res.status(200).json({ login: session.user.login });
-      } else {
-        res.status(401).json({ error: "User is not logged with session" });
-      }
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-);
-
-/**
- * Used by UI to get new user auth Token
- */
-routerAuth.put(
-  "/authtoken",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const session = req.session as SessionExt;
-      if (session.user && session.user.login) {
-        const result = req.app.get("AUTH").changeBearer(session.user.login);
-        if (result[0] === 200) {
-          res.status(204).json();
-        } else {
-          res.status(500).json({ error: result[1].toString() });
-        }
-      } else {
-        res.status(500).json({ error: "User is not logged with session" });
-      }
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-);
-
-/**
- * Used by UI to display user's groups
- */
-routerAuth.get(
-  "/groups",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const session = req.session as SessionExt;
-      if (session.user && session.user.login) {
-        let groups: string[] = [];
-        groups = req.app.get("AUTH").getGroups(req);
-        res.status(200).json(groups);
-      } else {
-        res
-          .status(401)
-          .json({ error: "User is not logged with session or not admin" });
       }
     } catch (error: unknown) {
       next(error);

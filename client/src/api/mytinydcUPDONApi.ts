@@ -27,17 +27,21 @@ export const mytinydcUPDONApi = createApi({
         url: `/userlogin`,
         body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User", "Controls", "AuthToken"],
     }),
-    getUserIsAuthenticated: builder.query({
+    getUserIsAuthenticated: builder.mutation({
       query: () => ({
+        method: "GET",
         url: `/isauthenticated/`,
       }),
+      invalidatesTags: ["User", "Controls", "AuthToken"],
     }),
-    getUserLogout: builder.query({
+    getUserLogout: builder.mutation({
       query: () => ({
+        method: "GET",
         url: `/userlogout`,
       }),
+      invalidatesTags: ["User", "Controls", "AuthToken"],
     }),
     getScrapUrl: builder.query({
       query: (data: {

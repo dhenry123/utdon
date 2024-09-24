@@ -196,9 +196,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (auth.isAuthenticated(req)) {
     return next(null);
   } else {
-    return next(
-      new Error(`${SERVER_ERROR_USER_IS_NOT_AUTHENTIFIED}-RemoteIp:[${req.ip}]`)
-    );
+    return next(new Error(SERVER_ERROR_USER_IS_NOT_AUTHENTIFIED));
   }
 });
 
@@ -226,14 +224,12 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error && typeof error === "object") {
     logger.error({
       srcFile: __filename,
-      triggered: "app.use(err... object)",
       errorToString: error.toString(),
       stack: JSON.stringify(error.stack),
     });
   } else {
     logger.error({
       srcFile: __filename,
-      triggered: "app.use(err... string)",
       errorToString: error,
       stack: "not available - error is not an Error Object",
     });

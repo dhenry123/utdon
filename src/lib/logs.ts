@@ -43,6 +43,8 @@ export const getLogObjectInfo = (
       logItem = { ...logItem, userDeleted: optionsLog.userDeleted };
     if (optionsLog.userUpdated)
       logItem = { ...logItem, userUpdated: optionsLog.userUpdated };
+    if (optionsLog.userLogout)
+      logItem = { ...logItem, userUpdated: optionsLog.userLogout };
   }
   return logItem;
 };

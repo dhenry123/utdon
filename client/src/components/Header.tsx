@@ -79,13 +79,11 @@ export const Header = () => {
   };
 
   const handleOnLogout = () => {
-    dispatch(
-      mytinydcUPDONApi.endpoints.getUserLogout.initiate(null, {
-        forceRefetch: true,
-      })
-    ).then(() => {
-      return navigate("/login");
-    });
+    dispatch(mytinydcUPDONApi.endpoints.getUserLogout.initiate(null)).then(
+      () => {
+        return navigate("/login");
+      }
+    );
   };
 
   const handleOnNavigateToApiDoc = () => {
