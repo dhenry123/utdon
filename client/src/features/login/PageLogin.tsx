@@ -16,6 +16,7 @@ import {
   APPLICATION_VERSION,
   INITIALIZED_TOAST,
 } from "../../../../src/Constants";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 export const PageLogin = () => {
   const dispatch = useAppDispatch();
@@ -34,15 +35,13 @@ export const PageLogin = () => {
     return await userLogin(jsonloginpassword)
       .unwrap()
       .then(async () => {
-        // user info will be set by header. Header is calle even user press F5
-        // if already connected, info will be redispatch on global state
         // reset Toast
-        await dispatch(clearToast());
+        dispatch(clearToast());
         return navigate("/");
       })
-      .catch((error) => {
+      .catch((error: FetchBaseQueryError) => {
         let message = intl.formatMessage({ id: "Authentication failure" });
-        if (error.originalStatus !== 401)
+        if (error.status !== 401)
           message = intl.formatMessage({
             id: "Unexpected error, see server logs",
           });
