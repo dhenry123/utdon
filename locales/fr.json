@@ -172,5 +172,9 @@
   "Unexpected error after duplicating a control": "Erreur inattendue après la duplication d'un contrôle",
   "Are you sure to duplicate this control": "Etes-vous sûr(e) de vouloir dupliquer ce contrôle",
   "Open link in new tab": "Ouvrir le lien dans un nouvel onglet",
-  "Copy link": "Copier le lien"
+  "Copy link": "Copier le lien",
+  "Global Github token": "Token Github global",
+  "Modifying the global Github token": "Modifier le token Github global",
+  "Specify Github token": "Spécifier le token Github",
+  "Are you sure you want to change the Global Github token": "Êtes-vous sûr(e) de vouloir modifier le token Github global"
 }

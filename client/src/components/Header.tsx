@@ -30,6 +30,7 @@ import {
 } from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
 import { Search } from "./Search.tsx";
+import { GlobalGithubToken } from "./GlobalGithubToken.tsx";
 
 export const Header = () => {
   const intl = useIntl();
@@ -98,6 +99,19 @@ export const Header = () => {
     );
     setDialogContent(
       <ChangePassword onHide={() => setIsDialogVisible(false)} />
+    );
+    setIsDialogVisible(true);
+  };
+
+  const displayDialogGlobalGithubToken = () => {
+    setDialogHeader(intl.formatMessage({ id: "Global Github token" }));
+    setDialogContent(
+      <GlobalGithubToken
+        onHide={() => setIsDialogVisible(false)}
+        handleOnPost={function (token: string): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
     );
     setIsDialogVisible(true);
   };
@@ -218,6 +232,12 @@ export const Header = () => {
                 title={intl.formatMessage({ id: "Users manager" })}
               />
             ) : null}
+
+            <ButtonGeneric
+              icon={"brand-github"}
+              title={intl.formatMessage({ id: "Global Github token" })}
+              onClick={displayDialogGlobalGithubToken}
+            />
 
             <ButtonGeneric
               icon={"key"}

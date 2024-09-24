@@ -16,6 +16,8 @@ interface ButtonGenericProps {
   className?: string;
   disabled?: boolean;
   autoFocus?: boolean;
+  onMouseDown?: () => void;
+  onMouseUP?: () => void;
 }
 
 const ButtonGeneric = ({
@@ -26,6 +28,8 @@ const ButtonGeneric = ({
   className,
   disabled = false,
   autoFocus = false,
+  onMouseDown,
+  onMouseUP,
 }: ButtonGenericProps) => {
   return (
     <button
@@ -36,6 +40,10 @@ const ButtonGeneric = ({
       title={title}
       disabled={disabled}
       autoFocus={autoFocus}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUP}
+      onKeyDown={onMouseDown}
+      onKeyUp={onMouseUP}
     >
       {icon ? <i className={`ti ti-${icon}`}></i> : ""}
       {label ? <label className="label">{label}</label> : ""}
