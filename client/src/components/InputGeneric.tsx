@@ -19,6 +19,7 @@ export interface InputGenericProps {
   onBlur?: React.FocusEventHandler;
   onKeyUp?: (keyboardKeyAsString: string) => void;
   onKeyDown?: (keyboardKeyAsString: string) => void;
+  disabled?: boolean;
 }
 
 const InputGeneric = ({
@@ -34,6 +35,7 @@ const InputGeneric = ({
   onKeyUp,
   onKeyDown,
   ref,
+  disabled,
 }: InputGenericProps) => {
   useEffect(() => {
     onChange(value);
@@ -56,6 +58,7 @@ const InputGeneric = ({
       title={title}
       // Only one per page !!!!
       autoFocus={autoFocus}
+      disabled={disabled}
     />
   );
 };

@@ -268,6 +268,7 @@ export const UserManager = () => {
               value={formData.login}
               onChange={(value) => handleOnChange("login", value)}
               autoComplete="off"
+              disabled={editMode}
             />
           </FieldSet>
           <FieldSet
