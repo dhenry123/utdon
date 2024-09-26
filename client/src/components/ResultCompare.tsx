@@ -114,7 +114,7 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: "success",
-            sticky: true,
+            sticky: false,
             detail:
               intl.formatMessage({
                 id: "The status has been sent to the monitoring service",

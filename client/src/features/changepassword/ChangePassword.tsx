@@ -80,7 +80,7 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
             showServiceMessage({
               ...INITIALIZED_TOAST,
               severity: "info",
-              sticky: true,
+              sticky: false,
               detail: intl.formatMessage({
                 id: "Your password has been changed",
               }),
@@ -107,7 +107,7 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: "info",
-            sticky: true,
+            sticky: false,
             detail: intl.formatMessage({
               id: "Your authentication token has been changed",
             }),

@@ -198,6 +198,7 @@ export const DisplayControls = () => {
       dispatch(
         showServiceMessage({
           ...INITIALIZED_TOAST,
+          severity: "error",
           sticky: true,
           detail: intl.formatMessage({ id: "uuid not provided" }),
         })
