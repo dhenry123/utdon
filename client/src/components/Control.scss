@@ -50,20 +50,6 @@
       .Badge:hover {
         cursor: pointer;
       }
-      .compareVersions {
-        display: flex;
-        flex-wrap: wrap;
-        .productionVersion,
-        .githubLatestRelease {
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 4rem;
-        }
-        .separator {
-          padding: 0 0.2rem 0 0.2rem;
-        }
-      }
     }
   }
   .ControlGroupButtons {

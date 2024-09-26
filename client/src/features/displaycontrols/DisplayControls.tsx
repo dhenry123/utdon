@@ -38,6 +38,7 @@ import { ControlGroupButtons } from "../../components/ControlGroupButtons";
 import { CurlCommands } from "../curlcommands/CurlCommands";
 import { getRelativeTime } from "../../helpers/DateHelper";
 import { UrlLinkButtons } from "../../components/UrlLinkButtons";
+import { DisplayVersions } from "../../components/DisplayVersions";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -349,13 +350,13 @@ export const DisplayControls = () => {
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Groups" })}
                 </div>
+                <div className="flex-row" role="columnheader"></div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Production url" })}
                 </div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "Git url" })}
                 </div>
-                <div className="flex-row" role="columnheader"></div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "State" })}
                 </div>
@@ -394,12 +395,6 @@ export const DisplayControls = () => {
                     >
                       <div className="groups">{item.groups.join(" ")}</div>
                     </div>
-                    <div className={`flex-row `} role="cell">
-                      <UrlLinkButtons url={item.urlProduction} />
-                    </div>
-                    <div className={`flex-row urlGitHub`} role="cell">
-                      <UrlLinkButtons url={item.urlGitHub} />
-                    </div>
                     <div className={`flex-row`} role="cell">
                       <ControlGroupButtons
                         data={item}
@@ -411,16 +406,25 @@ export const DisplayControls = () => {
                         handleOnCurlCommands={handleOnCurlCommands}
                       />
                     </div>
+                    <div className={`flex-row `} role="cell">
+                      <UrlLinkButtons url={item.urlProduction} />
+                    </div>
+                    <div className={`flex-row urlGitHub`} role="cell">
+                      <UrlLinkButtons url={item.urlGitHub} />
+                    </div>
                     <div className={`flex-row state`} role="cell">
                       {item.compareResult && item.compareResult.ts ? (
-                        <Badge
-                          isSuccess={item.compareResult.state}
-                          isWarning={!item.compareResult.strictlyEqual}
-                          onClick={() => {
-                            handleOnDisplayLatestCompare(item);
-                          }}
-                          title={getRelativeTime(item.compareResult.ts, intl)}
-                        />
+                        <div className="statecontent">
+                          <Badge
+                            isSuccess={item.compareResult.state}
+                            isWarning={!item.compareResult.strictlyEqual}
+                            onClick={() => {
+                              handleOnDisplayLatestCompare(item);
+                            }}
+                            title={getRelativeTime(item.compareResult.ts, intl)}
+                          />
+                          <DisplayVersions data={item} />
+                        </div>
                       ) : (
                         <Badge
                           noState={true}

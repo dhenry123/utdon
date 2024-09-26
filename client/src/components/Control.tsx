@@ -15,6 +15,7 @@ import { useAppSelector } from "../app/hook";
 import { ControlGroupButtons } from "./ControlGroupButtons";
 
 import "./Control.scss";
+import { DisplayVersions } from "./DisplayVersions";
 
 interface ControlProps {
   data: UptodateForm;
@@ -113,29 +114,7 @@ export const Control = ({
               title={intl.formatMessage({ id: "Start comparison" })}
             />
           )}
-          {data.compareResult && data.compareResult.productionVersion ? (
-            <div className="compareVersions">
-              <div
-                className="productionVersion"
-                title={`${intl.formatMessage({
-                  id: "Your production version",
-                })}: ${data.compareResult.productionVersion}`}
-              >
-                {data.compareResult.productionVersion}
-              </div>
-              <div className="separator">/</div>
-              <div
-                className="githubLatestRelease"
-                title={`${intl.formatMessage({
-                  id: "Latest available version detected",
-                })}: ${data.compareResult.githubLatestRelease}`}
-              >
-                {data.compareResult.githubLatestRelease}
-              </div>
-            </div>
-          ) : (
-            <div className="compareVersions">"No version detected"</div>
-          )}
+          <DisplayVersions data={data} />
         </div>
       </FieldSet>
       <ControlGroupButtons
