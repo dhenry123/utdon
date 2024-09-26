@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { FieldSet } from "./FieldSet";
 import InputGeneric from "./InputGeneric";
+import { useGetGlobalgithubtokenQuery } from "../api/mytinydcUPDONApi";
 
 interface GlobalGithubTokenProps {
   onHide: () => void;
@@ -29,9 +30,15 @@ export const GlobalGithubToken = ({
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [inputType, setInputType] = useState(defaultInputType);
 
+  const { data } = useGetGlobalgithubtokenQuery(null);
+
   useEffect(() => {
     setIsButtonDisabled(!(globalGithubToken.length >= 40));
   }, [globalGithubToken]);
+
+  useEffect(() => {
+    if (data) setGlobalGithubToken(data);
+  }, [data]);
 
   return (
     <Block className={`GlobalGithubToken`}>
@@ -63,6 +70,10 @@ export const GlobalGithubToken = ({
           onClick={() => setIsDialogVisible(true)}
           className={"error"}
           disabled={isButtonDisabled}
+        />
+        <ButtonGeneric
+          label={intl.formatMessage({ id: "Close" })}
+          onClick={onHide}
         />
       </div>
       <ConfirmDialog

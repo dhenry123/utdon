@@ -17,7 +17,14 @@ export const mytinydcUPDONApi = createApi({
   // Query service name
   reducerPath: "api",
   // tag types
-  tagTypes: ["User", "Users", "Groups", "Controls", "AuthToken"],
+  tagTypes: [
+    "User",
+    "Users",
+    "Groups",
+    "Controls",
+    "AuthToken",
+    "GlobalGithubToken",
+  ],
   // Url Base API
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
@@ -34,14 +41,14 @@ export const mytinydcUPDONApi = createApi({
         method: "GET",
         url: `/isauthenticated/`,
       }),
-      invalidatesTags: ["User", "Controls", "AuthToken"],
+      invalidatesTags: ["User", "Controls", "AuthToken", "GlobalGithubToken"],
     }),
     getUserLogout: builder.mutation({
       query: () => ({
         method: "GET",
         url: `/userlogout`,
       }),
-      invalidatesTags: ["User", "Controls", "AuthToken"],
+      invalidatesTags: ["User", "Controls", "AuthToken", "GlobalGithubToken"],
     }),
     getScrapUrl: builder.query({
       query: (data: {
@@ -182,6 +189,20 @@ export const mytinydcUPDONApi = createApi({
         url: `/userGroups/`,
       }),
     }),
+    pubGlobalgithubtoken: builder.mutation({
+      query: (data: { token: string }) => ({
+        method: "PUT",
+        url: `/globalgithubtoken/`,
+        body: data,
+      }),
+      invalidatesTags: ["GlobalGithubToken"],
+    }),
+    getGlobalgithubtoken: builder.query({
+      query: () => ({
+        url: `/globalgithubtoken/`,
+      }),
+      providesTags: ["GlobalGithubToken"],
+    }),
   }),
 });
 
@@ -192,4 +213,5 @@ export const {
   useGetUserLoginQuery,
   useGetGroupsQuery,
   useGetAuthTokenQuery,
+  useGetGlobalgithubtokenQuery,
 } = mytinydcUPDONApi;

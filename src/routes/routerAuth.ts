@@ -13,6 +13,10 @@ import {
 } from "../Global.types";
 import { SessionExt } from "../ServerTypes";
 import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+import {
+  getGlobalGithubToken,
+  setGlobalGithubToken,
+} from "../lib/GlobalGithubToken";
 const routerAuth = express.Router();
 
 /**
@@ -428,4 +432,69 @@ routerAuth.get(
   }
 );
 
+/** Global Github token */
+
+routerAuth.put(
+  "/globalgithubtoken",
+  async (req: Request, res: Response, next: NextFunction) => {
+    //next step: for admin users only
+    try {
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.uuid &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        // get the list of current users, to check if user exists before deleting it
+        setGlobalGithubToken(req.body.token || ""); // empty is allowed to reset token
+        req.app.get("LOGGER").info(getLogObjectInfo(req));
+        res.status(200).json("OK");
+      } else {
+        req.app
+          .get("LOGGER")
+          .info(
+            getLogObjectError(
+              req,
+              `Non admin user tried to set the global github token`
+            )
+          );
+        res.status(401).send();
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
+
+routerAuth.get(
+  "/globalgithubtoken",
+  async (req: Request, res: Response, next: NextFunction) => {
+    //next step: for admin users only
+    try {
+      const session = req.session as SessionExt;
+      if (
+        session.user &&
+        session.user.uuid &&
+        req.app.get("AUTH").isAdmin(req)
+      ) {
+        // get the list of current users, to check if user exists before deleting it
+        const token = getGlobalGithubToken();
+        req.app.get("LOGGER").info(getLogObjectInfo(req));
+        res.status(200).json(token);
+      } else {
+        req.app
+          .get("LOGGER")
+          .info(
+            getLogObjectError(
+              req,
+              `Non admin user tried to read the global github token`
+            )
+          );
+        res.status(401).send();
+      }
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+);
 export default routerAuth;

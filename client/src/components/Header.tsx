@@ -103,14 +103,46 @@ export const Header = () => {
     setIsDialogVisible(true);
   };
 
+  const handleOnSetGlobalGithubToken = (token: string) => {
+    if (token) {
+      dispatch(
+        mytinydcUPDONApi.endpoints.pubGlobalgithubtoken.initiate({ token })
+      )
+        .unwrap()
+        .then((response) => {
+          if (response === "OK") {
+            setIsDialogVisible(false);
+            dispatch(
+              showServiceMessage({
+                ...INITIALIZED_TOAST,
+                severity: "info",
+                sticky: true,
+                detail: intl.formatMessage({
+                  id: "The global Github token has been updated",
+                }),
+              })
+            );
+          }
+        })
+        .catch((error: FetchBaseQueryError) => {
+          dispatch(
+            showServiceMessage({
+              ...INITIALIZED_TOAST,
+              severity: "error",
+              sticky: true,
+              detail: error.data ? error.data : "unknown error",
+            })
+          );
+        });
+    }
+  };
+
   const displayDialogGlobalGithubToken = () => {
     setDialogHeader(intl.formatMessage({ id: "Global Github token" }));
     setDialogContent(
       <GlobalGithubToken
         onHide={() => setIsDialogVisible(false)}
-        handleOnPost={function (token: string): void {
-          throw new Error("Function not implemented.");
-        }}
+        handleOnPost={handleOnSetGlobalGithubToken}
       />
     );
     setIsDialogVisible(true);

@@ -176,5 +176,6 @@
   "Global Github token": "Token Github global",
   "Modifying the global Github token": "Modifier le token Github global",
   "Specify Github token": "Spécifier le token Github",
-  "Are you sure you want to change the Global Github token": "Êtes-vous sûr(e) de vouloir modifier le token Github global"
+  "Are you sure you want to change the Global Github token": "Êtes-vous sûr(e) de vouloir modifier le token Github global",
+  "The global Github token has been updated": "Le token Github global a été mis à jour"
 }
