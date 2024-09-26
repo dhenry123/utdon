@@ -4,8 +4,6 @@
  */
 
 import { useIntl } from "react-intl";
-import { useAppDispatch } from "../app/hook";
-import { useNavigate } from "react-router-dom";
 
 import "./DisplayVersions.scss";
 

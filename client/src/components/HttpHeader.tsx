@@ -34,18 +34,20 @@ export const HttpHeader = ({
       })}
               ${intl.formatMessage({ id: "eg" })}:
               - ${intl.formatMessage({
-                id: "Attribut: Authorization ; value: Bearer myauthtoken",
+                id: "Attribute: Authorization ; value: Bearer myauthtoken",
               })}
               - ${intl.formatMessage({
-                id: "Attribut: X-Auth ; value: myauthtoken",
+                id: "Attribute: X-Auth ; value: myauthtoken",
               })}
-
+              - ${intl.formatMessage({
+                id: "For Github => Attribute: Authorization ; value: Bearer [your github token]",
+              })} (${intl.formatMessage({ id: "Bearer is important" })})
               `}
     >
       <InputGeneric
         className="headerhttpkey"
         value={headerkey}
-        placeholder={intl.formatMessage({ id: "HTTP header attribut" })}
+        placeholder={intl.formatMessage({ id: "HTTP header attribute" })}
         title={intl.formatMessage({ id: "HTTP header attribut" })}
         onChange={(value: string) => handleOnChange(headerkeyField, value)}
       />

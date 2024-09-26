@@ -46,21 +46,44 @@ export const GlobalGithubToken = ({
         className="githubtoken"
         legend={intl.formatMessage({ id: "Specify Github token" })}
       >
-        <InputGeneric
-          value={globalGithubToken}
-          onChange={(value: string) => setGlobalGithubToken(value)}
-          type={inputType}
-          autoComplete="new-password"
-          onKeyUp={(key: string) => {
-            if (key === "Enter") handleOnPost(globalGithubToken);
-          }}
-        />
-        <ButtonGeneric
-          icon="eye-question"
-          onClick={() => {}}
-          onMouseDown={() => setInputType("")}
-          onMouseUP={() => setInputType(defaultInputType)}
-        />
+        <div className="explain">
+          <label>
+            {intl.formatMessage({
+              id: "This github token is used to query all Github repositories linked to the controls",
+            })}
+            .
+          </label>
+          <label>
+            <b>{intl.formatMessage({ id: "It is not used" })}</b>{" "}
+            {intl.formatMessage({
+              id: "when the control already has an authentication header",
+            })}{" "}
+            ({intl.formatMessage({ id: "e.g. for private repositories" })}).
+          </label>
+          <label>
+            {intl.formatMessage({
+              id: "This prevents Github from blocking the rate-limit",
+            })}
+            .
+          </label>
+        </div>
+        <div className="input">
+          <InputGeneric
+            value={globalGithubToken}
+            onChange={(value: string) => setGlobalGithubToken(value)}
+            type={inputType}
+            autoComplete="new-password"
+            onKeyUp={(key: string) => {
+              if (key === "Enter") handleOnPost(globalGithubToken);
+            }}
+          />
+          <ButtonGeneric
+            icon="eye-question"
+            onClick={() => {}}
+            onMouseDown={() => setInputType("")}
+            onMouseUP={() => setInputType(defaultInputType)}
+          />
+        </div>
       </FieldSet>
       <div className="groupButtons">
         <ButtonGeneric
