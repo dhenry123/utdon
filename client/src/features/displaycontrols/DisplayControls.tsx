@@ -233,7 +233,6 @@ export const DisplayControls = () => {
   };
 
   const handleUpdatePauseStatus = (control: ControlToPause) => {
-    console.log("handleUpdatePauseStatus", control);
     if (control && control.uuid) {
       const controlData = data.filter(
         (item: UptodateForm) => item.uuid === control.uuid
@@ -311,7 +310,6 @@ export const DisplayControls = () => {
     return true;
   };
 
-  console.log(searchString);
   return (
     <div className={`DisplayControls`}>
       {isSuccess ? (

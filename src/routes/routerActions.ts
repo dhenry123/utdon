@@ -14,6 +14,10 @@ import { scrapUrl, getUpToDateOrNotState } from "../lib/Features";
 import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
 import { SessionExt } from "../ServerTypes";
 import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+import {
+  getGlobalGithubToken,
+  setControlGlobalGithubToken,
+} from "../lib/GlobalGithubToken";
 
 const routerActions = express.Router();
 
@@ -67,7 +71,9 @@ routerActions.put(
           finalRecords = record;
         }
 
-        for (const item of finalRecords) {
+        const globalGithubToken = getGlobalGithubToken();
+
+        for (let item of finalRecords) {
           req.app.get("LOGGER").info(
             getLogObjectInfo(req, {
               uuid: item.uuid,
@@ -75,6 +81,7 @@ routerActions.put(
               productionAuthenticationProvided: item.headerkey ? true : false,
             })
           );
+          item = setControlGlobalGithubToken({ ...item }, globalGithubToken);
           // get state
           await getUpToDateOrNotState(item)
             .then(async (compareResult) => {
