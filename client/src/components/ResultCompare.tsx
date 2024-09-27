@@ -23,7 +23,10 @@ import { useNavigate } from "react-router-dom";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useState } from "react";
-import { INITIALIZED_TOAST } from "../../../src/Constants";
+import {
+  INITIALIZED_TOAST,
+  TOAST_DEFAULT_LIFETIME,
+} from "../../../src/Constants";
 import { getRelativeTime } from "../helpers/DateHelper";
 
 interface ResultCompareProps {
@@ -83,7 +86,7 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: severity,
-            life: 30000,
+            life: TOAST_DEFAULT_LIFETIME,
             summary: summary,
             detail: message,
           })

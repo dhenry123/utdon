@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import {
   INITIALIZED_NEWUSER,
   INITIALIZED_TOAST,
+  TOAST_DEFAULT_LIFETIME,
 } from "../../../../src/Constants";
 import {
   ErrorServer,
@@ -186,7 +187,7 @@ export const UserManager = () => {
         detail: `${intl.formatMessage({
           id: `You can assign a new password, or groups to the selected user`,
         })}: ${user.login}`,
-        life: 8000,
+        life: TOAST_DEFAULT_LIFETIME,
       })
     );
   };
