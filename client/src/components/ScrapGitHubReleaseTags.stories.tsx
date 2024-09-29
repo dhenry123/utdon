@@ -12,6 +12,7 @@ import { UptodateForm, UptodateFormFields } from "../../../src/Global.types";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
 import { fn } from "@storybook/test";
 import { useState } from "react";
+import React from "react";
 
 const releaseTagNameSample = [
   {

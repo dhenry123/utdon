@@ -7,7 +7,7 @@ import {
 } from "storybook-addon-remix-react-router";
 
 const meta = {
-  title: "NewComponent/UrlLinkButtons",
+  title: "UI/UrlLinkButtons",
   component: UrlLinkButtons,
   decorators: [withRouter],
   parameters: {

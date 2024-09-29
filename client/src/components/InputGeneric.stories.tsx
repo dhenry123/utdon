@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import InputGeneric from "./InputGeneric";
 import { useArgs } from "@storybook/preview-api";
+import React from "react";
 
 const meta = {
   title: "Components/Input/InputGeneric",

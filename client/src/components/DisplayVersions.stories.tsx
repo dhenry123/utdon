@@ -42,7 +42,14 @@ type Story = StoryObj<typeof meta>;
 //   return <DisplayVersions {...args} onChange={onChange} />;
 // };
 export const Primary: Story = {
-  args: {},
+  args: {
+    data: {
+      compareResult: {
+        productionVersion: "V prod",
+        githubLatestRelease: "V git",
+      },
+    },
+  },
   // if you need to get a specific render see SelectArs component...
   // render: (args) => Component(args),
 };

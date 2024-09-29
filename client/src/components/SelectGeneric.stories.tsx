@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import SelectGeneric from "./SelectGeneric";
 import { useArgs } from "@storybook/preview-api";
 import { SelectOptionType } from "../../../src/Global.types";
+import React from "react";
 
 const meta = {
   title: "Components/Input/SelectGeneric",
