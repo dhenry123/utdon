@@ -68,9 +68,7 @@ routerAuth.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const verif = req.app.get("AUTH").isAuthenticated(req);
-      if (verif) {
-        req.app.get("LOGGER").info(getLogObjectInfo(req));
-      } else {
+      if (!verif) {
         req.app
           .get("LOGGER")
           .info(getLogObjectError(req, "user is not authenticated"));

@@ -21,6 +21,22 @@ $usermanagerbuttonsize: 2rem;
       }
     }
   }
+  .Block {
+    .dropdown-container {
+      @media (prefers-color-scheme: dark) {
+        border: $border-default-dark;
+        background-color: $background-color-dark;
+        color: $color-text-primary-dark;
+      }
+      .dropdown-content * {
+        @media (prefers-color-scheme: dark) {
+          background-color: $background-color-dark;
+          color: $color-text-primary-dark;
+          border: none;
+        }
+      }
+    }
+  }
   .new-user-label {
     margin-bottom: 0;
   }

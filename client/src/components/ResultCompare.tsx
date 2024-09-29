@@ -199,7 +199,7 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
                       .productionVersionIncludesGithubLatestRelease ? (
                       <div className="label">
                         {intl.formatMessage({
-                          id: "Your production version includes the latest Github Release tag",
+                          id: "Your production version includes the latest git Release tag",
                         })}
                       </div>
                     ) : null}

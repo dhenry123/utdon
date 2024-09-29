@@ -36,7 +36,7 @@
   "Compare": "Effectuer une comparaison",
   "This result may be a false positive": "Ce résultat peut-être un faux positif",
   "The latest Github Release tag includes your production version": "La dernière release Github inclut votre version de production.",
-  "Your production version includes the latest Github Release tag": "Votre version de production inclut la dernière release Github",
+  "Your production version includes the latest git Release tag": "Votre version de production inclut la dernière release git",
   "Your production version": "Votre version de production",
   "Save": "Enregistrer",
   "Next": "Suivant",
