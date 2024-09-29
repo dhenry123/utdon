@@ -51,7 +51,7 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
           ...INITIALIZED_TOAST,
           severity: "error",
           sticky: true,
-          detail: servererror.error,
+          detail: `ResultCompare: ${servererror.error}}`,
         })
       );
       if (error.status === 401) return navigate("/login");

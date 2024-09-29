@@ -155,6 +155,7 @@
   "eg": "ex",
   "Attribute: Authorization ; value: Bearer myauthtoken": "Attribut: Authorization ; valeur: Bearer myauthtoken",
   "Attribute: X-Auth ; value: myauthtoken": "Attribut: X-Auth ; valeur: myauthtoken",
+  "Value for Autorization header attribut (eg: Bearer yourtoken)": "Valeur de l'attribut Authorization dans le Header (ex: Bearer yourtoken)",
   "(Optional) HTTP Header, use when authentication with token is needed": "(Facultatif) En-tête HTTP à utiliser lorsque l'authentification par jeton est requise.",
   "HTTP authorization header": "En-tête HTTP d'autorisation",
   "Identity": "Identité",

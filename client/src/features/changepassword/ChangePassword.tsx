@@ -53,7 +53,7 @@ export const ChangePassword = ({ onHide }: ChangePasswordProps) => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `ChangePassword: ${servererror.error}}`,
           })
         );
       }

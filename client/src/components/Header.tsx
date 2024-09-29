@@ -71,7 +71,7 @@ export const Header = () => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `Header: ${servererror.error}}`,
           })
         );
       }
@@ -258,19 +258,20 @@ export const Header = () => {
         <div className="flexPushLeft logout">
           <div className="manager">
             {isAdmin ? (
-              <ButtonGeneric
-                onClick={displayDialogUsersManager}
-                icon={"users"}
-                title={intl.formatMessage({ id: "Users manager" })}
-              />
+              <>
+                <ButtonGeneric
+                  onClick={displayDialogUsersManager}
+                  icon={"users"}
+                  title={intl.formatMessage({ id: "Users manager" })}
+                />
+
+                <ButtonGeneric
+                  icon={"brand-github"}
+                  title={intl.formatMessage({ id: "Global Github token" })}
+                  onClick={displayDialogGlobalGithubToken}
+                />
+              </>
             ) : null}
-
-            <ButtonGeneric
-              icon={"brand-github"}
-              title={intl.formatMessage({ id: "Global Github token" })}
-              onClick={displayDialogGlobalGithubToken}
-            />
-
             <ButtonGeneric
               icon={"key"}
               title={intl.formatMessage({ id: "Change you password" })}

@@ -101,13 +101,13 @@ export const DisplayControls = () => {
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error) {
       const servererror = error.data as ErrorServer;
-      if (servererror.error) {
+      if (servererror.error && error.status !== 401) {
         dispatch(
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `DisplayControl ${servererror.error}}`,
           })
         );
       }

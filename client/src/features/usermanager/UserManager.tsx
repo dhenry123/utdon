@@ -92,7 +92,9 @@ export const UserManager = () => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `UserManager: ${intl.formatMessage({
+              id: servererror.error,
+            })}`,
           })
         );
       }

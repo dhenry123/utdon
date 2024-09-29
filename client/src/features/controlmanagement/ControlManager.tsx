@@ -80,7 +80,7 @@ export const ControlManager = () => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `ControlManager: ${servererror.error}}`,
           })
         );
       }
