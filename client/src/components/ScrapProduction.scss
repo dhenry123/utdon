@@ -6,6 +6,15 @@
   row-gap: $rowgap-default;
   padding: $padding-default;
   width: 100%;
+  .nameandfixed {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    margin-right: 2rem;
+    .FieldSet {
+      width: 100% !important;
+    }
+  }
   .Block {
     flex-wrap: wrap;
     align-items: center;
@@ -14,6 +23,9 @@
     }
     &.filter {
       flex-direction: row;
+    }
+    .flogo {
+      align-self: center;
     }
     .expression {
       flex-grow: 1;
@@ -32,7 +44,6 @@
     }
     .url {
       flex-grow: 1;
-      width: 25%;
       .inputgeneric {
         width: 90%;
       }

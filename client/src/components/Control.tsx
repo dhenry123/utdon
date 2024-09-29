@@ -83,11 +83,20 @@ export const Control = ({
       ) : (
         <></>
       )}
-
-      <FieldSetClickableUrl
-        legend={intl.formatMessage({ id: "Production version url" })}
-        url={data.urlProduction}
-      />
+      {data.fixed ? (
+        <FieldSet
+          legend={intl.formatMessage({
+            id: "Fixed version",
+          })}
+        >
+          <div className="label">{data.fixed}</div>
+        </FieldSet>
+      ) : (
+        <FieldSetClickableUrl
+          legend={intl.formatMessage({ id: "Production version url" })}
+          url={data.urlProduction}
+        />
+      )}
       <FieldSetClickableUrl
         legend={intl.formatMessage({ id: "Git repository url" })}
         url={data.urlGitHub}

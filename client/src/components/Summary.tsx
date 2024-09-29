@@ -86,17 +86,29 @@ export const Summary = ({
         </Block>
         <Block className="production">
           <h3>{intl.formatMessage({ id: "Production informations" })}</h3>
-          <FieldSetClickableUrl
-            legend={intl.formatMessage({ id: "Production version url" })}
-            url={uptodateForm.urlProduction}
-            className="label"
-          />
-          <FieldSet legend={intl.formatMessage({ id: "Type of content" })}>
-            <div className="label">{uptodateForm.scrapTypeProduction}</div>
-          </FieldSet>
-          <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
-            <div className="label">{uptodateForm.exprProduction}</div>
-          </FieldSet>
+          {uptodateForm.fixed ? (
+            <FieldSet
+              legend={intl.formatMessage({
+                id: "Fixed version",
+              })}
+            >
+              <div className="label">{uptodateForm.fixed}</div>
+            </FieldSet>
+          ) : (
+            <>
+              <FieldSetClickableUrl
+                legend={intl.formatMessage({ id: "Production version url" })}
+                url={uptodateForm.urlProduction}
+                className="label"
+              />
+              <FieldSet legend={intl.formatMessage({ id: "Type of content" })}>
+                <div className="label">{uptodateForm.scrapTypeProduction}</div>
+              </FieldSet>
+              <FieldSet legend={intl.formatMessage({ id: "Expression" })}>
+                <div className="label">{uptodateForm.exprProduction}</div>
+              </FieldSet>
+            </>
+          )}
         </Block>
         <Block className="git">
           <h3>{intl.formatMessage({ id: "Git repository informations" })}</h3>

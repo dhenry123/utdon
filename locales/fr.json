@@ -184,5 +184,14 @@
   "e.g. for private repositories": "exemple: pour les dépôts privés",
   "This prevents Github from blocking the rate-limit": "Ceci permet d'éviter le blocage lié au \"rate-limit\" appliqué par Github",
   "For Github => Attribute: Authorization ; value: Bearer [your github token]": "Pour Github => Attribut: Authorization ; value: Bearer [your github token]",
-  "Bearer is important": "Bearer est important"
+  "Bearer is important": "Bearer est important",
+  "Production version": "Version de la production",
+  "Release on Git": "Version sur Git",
+  "Fixed version": "Version fixée",
+  "This component is deactivated because a fixed version has been specified": "Ce composant est désactivé, car une version fixe a été est renseignée",
+  "This component is deactivated because a production url has been entered": "Ce composant est désactivé, car une url de production a été est renseignée",
+  "If you specify a fixed value, the comparison will be based on this value": "Si vous indiquer une valeur fixe, la comparaison sera effectuée à partir de cette valeur",
+  "Use cases": "Cas d'utilisation",
+  "Allows comparison with the Git repository of an application that does not provide an API entry point": "Permet la comparaison au dépôt Git d'une application qui ne fournit pas de point d'entrée API",
+  "You just want to track the progress of a project hosted on a Git repository": "Vous souhaitez juste suivre l'évolution d'un projet hébergé sur un dépôt Git"
 }

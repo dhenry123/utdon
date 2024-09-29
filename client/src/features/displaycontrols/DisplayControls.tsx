@@ -350,10 +350,10 @@ export const DisplayControls = () => {
                 </div>
                 <div className="flex-row" role="columnheader"></div>
                 <div className="flex-row" role="columnheader">
-                  {intl.formatMessage({ id: "Production url" })}
+                  {intl.formatMessage({ id: "Production version" })}
                 </div>
                 <div className="flex-row" role="columnheader">
-                  {intl.formatMessage({ id: "Git url" })}
+                  {intl.formatMessage({ id: "Release on Git" })}
                 </div>
                 <div className="flex-row" role="columnheader">
                   {intl.formatMessage({ id: "State" })}
@@ -405,7 +405,16 @@ export const DisplayControls = () => {
                       />
                     </div>
                     <div className={`flex-row `} role="cell">
-                      <UrlLinkButtons url={item.urlProduction} />
+                      {item.fixed ? (
+                        <div className="fixedversion">
+                          <label>
+                            {intl.formatMessage({ id: "Fixed version" })}
+                          </label>
+                          <label>{item.fixed}</label>
+                        </div>
+                      ) : (
+                        <UrlLinkButtons url={item.urlProduction} />
+                      )}
                     </div>
                     <div className={`flex-row urlGitHub`} role="cell">
                       <UrlLinkButtons url={item.urlGitHub} />

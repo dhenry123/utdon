@@ -89,24 +89,36 @@ export const getUpToDateOrNotState = async (
   // eslint-disable-next-line no-async-promise-executor
   return await new Promise(async (resolv, reject) => {
     try {
-      // Getting production version
-      const productionVersion = await scrapUrl(
-        record.urlProduction,
-        "GET",
-        record.headerkey ? `${record.headerkey}:${record.headervalue}` : ""
-      )
-        .then(async (output) => {
-          let version = "";
-          if (record.scrapTypeProduction === "json") {
-            version = filterJson(output as string, record.exprProduction || "");
-          } else if (record.scrapTypeProduction === "text") {
-            version = filterText(output as string, record.exprProduction || "");
-          }
-          return version;
-        })
-        .catch((error: Error) => {
-          reject(new Error(`${error.toString()}-${record.urlProduction}`));
-        });
+      let productionVersion: string | void = "";
+      // fixed version
+      if (record.fixed) {
+        productionVersion = record.fixed;
+      } else {
+        // Getting production version
+        productionVersion = await scrapUrl(
+          record.urlProduction,
+          "GET",
+          record.headerkey ? `${record.headerkey}:${record.headervalue}` : ""
+        )
+          .then(async (output) => {
+            let version = "";
+            if (record.scrapTypeProduction === "json") {
+              version = filterJson(
+                output as string,
+                record.exprProduction || ""
+              );
+            } else if (record.scrapTypeProduction === "text") {
+              version = filterText(
+                output as string,
+                record.exprProduction || ""
+              );
+            }
+            return version;
+          })
+          .catch((error: Error) => {
+            reject(new Error(`${error.toString()}-${record.urlProduction}`));
+          });
+      }
       if (!productionVersion) {
         reject(
           new Error(

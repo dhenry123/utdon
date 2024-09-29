@@ -28,6 +28,7 @@ export type ScrapType = "json" | "text";
 export type UptodateForm = {
   uuid: string;
   name: string;
+  fixed?: string;
   logo?: string;
   urlProduction: string;
   headerkey: string;
@@ -70,7 +71,8 @@ export type UptodateFormFields =
   | "headerkey"
   | "headervalue"
   | "headerkeyGit"
-  | "headervalueGit";
+  | "headervalueGit"
+  | "fixed";
 
 export type ApiResponseType = {
   data?: JSON;

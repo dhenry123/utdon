@@ -15,6 +15,7 @@ interface HttpHeaderProps {
   headervalue: string;
   headerkeyField: UptodateFormFields;
   headervalueField: UptodateFormFields;
+  disabled?: boolean;
 }
 export const HttpHeader = ({
   handleOnChange,
@@ -22,6 +23,7 @@ export const HttpHeader = ({
   headervalueField,
   headerkey,
   headervalue,
+  disabled,
 }: HttpHeaderProps) => {
   const intl = useIntl();
 
@@ -50,6 +52,7 @@ export const HttpHeader = ({
         placeholder={intl.formatMessage({ id: "HTTP header attribute" })}
         title={intl.formatMessage({ id: "HTTP header attribut" })}
         onChange={(value: string) => handleOnChange(headerkeyField, value)}
+        disabled={disabled}
       />
       <InputGeneric
         className="headerhttpvalue"
@@ -61,6 +64,7 @@ export const HttpHeader = ({
         })}
         value={headervalue}
         onChange={(value: string) => handleOnChange(headervalueField, value)}
+        disabled={disabled}
       />
     </FieldSet>
   );
