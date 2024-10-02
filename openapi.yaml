@@ -93,7 +93,7 @@ components:
           description: Expression to apply to get the version
         urlGitHub:
           type: string
-          description: url of the github repository
+          description: url of the git repository
         exprGithub:
           type: string
           description: Expression to apply to get the version

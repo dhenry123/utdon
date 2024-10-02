@@ -11,7 +11,18 @@ Give your control a name, the name of the application for example, and add the a
 The first difficulty is to retrieve the production version. How to retrieve this information may be indicated in the application documentation, but this is often not the case. Look for yourself... there's often an entrypoint api, like "[URL of the application]/version" or "[URL of the application]/api/v1/version"... which returns text or JSON format. The version can also be included in the login page. Depending on the type of response, you can either use the filters provided or create your own.
 create your own.
 
+### Fixed value
+
+**Implemented in version 1.7.0**, this method solves two problems:
+
+- Some applications don't offer an entry point for obtaining their version (e.g. pgAdmin4).
+- When you want to track a project you don't host.
+
+Simply enter a fixed value, the comparison will be made against this value and there will be no network call to resolve the production version.
+
 ### Filters (RegExp or JmesPath)
+
+These are the filters you wish to apply to obtain a value comparable to the version available on the git repository.
 
 #### Text/Html/Xml (RegExp)
 
@@ -64,15 +75,18 @@ The Jmespath expression will be : 'join('.',\*)' ==> 1.89.0
 
 ## Retrieving the latest release from GitHub
 
-I've simplified it: you paste the url of the application repository, the tool queries the github API for "release tags", then you apply the desired filter.
+**Starting with version 1.7.0**, **Gitea-type** repositories (Codeberg is compatible) are supported.
 
-**WARNING**: The Github service applies a "rate-limit" policy to the use of its APIs. For the time being, this product has not been designed to authenticate to GITHUB APIs, so Github applies the most restrictive policy, i.e. and at this date: 60 calls per hour.
+Simply paste the url of the application repository, UTDON takes care of querying the API entry point which returns the "release tags", then you apply the desired filter.
 
-See the GitHub document :
+~~**WARNING**: The Github service applies a "rate-limit" policy to the use of its APIs. For the time being, this product has not been designed to authenticate to GITHUB APIs, so Github applies the most restrictive policy, i.e. and at this date: 60 calls per hour.~~
 
-- FR : https://docs.github.com/fr/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28
-- EN : https://docs.github.com/en/rest/rate-limit/rate-limit?apiVersion=2022-11-28#get-rate-limit-status-for-the-authenticated-user
+~~See the GitHub document :~~
 
+- ~~FR : https://docs.github.com/fr/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28~~
+- ~~EN : https://docs.github.com/en/rest/rate-limit/rate-limit?apiVersion=2022-11-28#get-rate-limit-status-for-the-authenticated-user~~
+
+**Since version 1.7.0**, it is possible to enter authentication information at control level (e.g. for private repositories), or at global level. The global token will be used by all Github calls unless the control already has authentication.
 If this limit is applied by the GitHub service, the server logs will show this error :
 
 ```json
