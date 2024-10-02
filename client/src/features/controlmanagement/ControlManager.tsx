@@ -10,7 +10,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hook";
 import { ScrapProduction } from "../../components/ScrapProduction";
 import {
   ErrorServer,
-  UptoDateOrNotState,
   UptodateForm,
   UptodateFormFields,
 } from "../../../../src/Global.types";
@@ -29,6 +28,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { StepperStep } from "../../components/StepperStep";
 import { INITIALIZED_TOAST } from "../../../../src/Constants";
 import { useIntl } from "react-intl";
+import { Dialog } from "../../components/Dialog";
+import { ResultCompare } from "../../components/ResultCompare";
 
 export const ControlManager = () => {
   const dispatch = useAppDispatch();
@@ -46,13 +47,15 @@ export const ControlManager = () => {
    */
   const [steps, setSteps] = useState<StepType[]>([
     { label: intl.formatMessage({ id: "Service to be monitored" }) },
-    { label: intl.formatMessage({ id: "Github repository" }) },
+    { label: intl.formatMessage({ id: "Git repository" }) },
     { label: intl.formatMessage({ id: "Action to perform" }) },
     { label: intl.formatMessage({ id: "Summary" }) },
   ]);
 
   const [stepActive, setStepActive] = useState<number>(0);
-
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [uptodateFormWithFreshCompare, setUptodateFormWithFreshCompare] =
+    useState<UptodateForm>();
   /**
    * production server to test
    */
@@ -77,7 +80,7 @@ export const ControlManager = () => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `ControlManager: ${servererror.error}}`,
           })
         );
       }
@@ -170,7 +173,11 @@ export const ControlManager = () => {
     return await new Promise((resolv, reject) => {
       dispatch(
         mytinydcUPDONApi.endpoints.getScrapUrl.initiate(
-          { url: url, headerkey: headerkey, headervalue: headervalue },
+          {
+            url: url,
+            headerkey: headerkey,
+            headervalue: headervalue,
+          },
           {
             forceRefetch: true,
           }
@@ -193,7 +200,9 @@ export const ControlManager = () => {
    */
   const handleOnSave = async () => {
     return new Promise((resolv, reject) => {
-      dispatch(mytinydcUPDONApi.endpoints.postCheck.initiate(uptodateForm))
+      dispatch(
+        mytinydcUPDONApi.endpoints.postUptodateForm.initiate(uptodateForm)
+      )
         .unwrap()
         .then((response) => {
           const control = response?.control as UptodateForm;
@@ -226,26 +235,31 @@ export const ControlManager = () => {
    * ask server to compare
    * @returns
    */
-  const handleOnCompare = async (): Promise<UptoDateOrNotState> => {
-    return new Promise((resolv, reject) => {
-      if (uptodateForm.uuid) {
-        dispatch(
-          mytinydcUPDONApi.endpoints.getCompare.initiate(uptodateForm.uuid, {
-            forceRefetch: true,
-          })
-        )
-          .unwrap()
-          .then((response) => {
-            resolv(response);
-          })
-          .catch((error: FetchBaseQueryError) => {
-            dispatchServerError(error);
-            reject(error.data);
-          });
-      } else {
-        reject(new Error("uuid not provided"));
-      }
-    });
+  const handleOnCompare = () => {
+    if (uptodateForm.uuid) {
+      dispatch(
+        mytinydcUPDONApi.endpoints.putCompare.initiate(uptodateForm.uuid)
+      )
+        .unwrap()
+        .then((response) => {
+          const newUptodateFrom = { ...uptodateForm };
+          newUptodateFrom.compareResult = response;
+          setUptodateFormWithFreshCompare(newUptodateFrom);
+          setIsDialogVisible(true);
+        })
+        .catch((error: FetchBaseQueryError) => {
+          dispatchServerError(error);
+        });
+    } else {
+      dispatch(
+        showServiceMessage({
+          ...INITIALIZED_TOAST,
+          severity: "error",
+          sticky: true,
+          detail: intl.formatMessage({ id: "uuid not provided" }),
+        })
+      );
+    }
   };
 
   /**
@@ -330,11 +344,21 @@ export const ControlManager = () => {
         <Summary
           uptodateForm={uptodateForm}
           onSave={handleOnSave}
-          onCompare={handleOnCompare}
+          handleOnCompare={handleOnCompare}
           isRecordable={isRecordable}
           isChangesOnModel={isChangesOnModel}
         />
       </StepperStep>
+      {uptodateFormWithFreshCompare ? (
+        <Dialog
+          visible={isDialogVisible}
+          onHide={() => setIsDialogVisible(false)}
+          header={intl.formatMessage({ id: "Action" })}
+          closeButton
+        >
+          <ResultCompare control={uptodateFormWithFreshCompare} />
+        </Dialog>
+      ) : null}
     </div>
   );
 };

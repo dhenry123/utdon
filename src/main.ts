@@ -38,6 +38,13 @@ import { patchV1_3_0To1_4_0 as patchDbTo1_4_0 } from "./lib/PatchVersion";
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";
 
+// // NodeJS 21 @todo impossible to implement and dont want to add nodes-fetch
+// const agent = new https.Agent({
+//   rejectUnauthorized: false, // This option disables certificate validation
+// });
+// needed if url to scrap is https with self-signed certificates
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 // logs
 const { combine, timestamp, json } = winston.format;
 const logger = winston.createLogger({
@@ -189,9 +196,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (auth.isAuthenticated(req)) {
     return next(null);
   } else {
-    return next(
-      new Error(`${SERVER_ERROR_USER_IS_NOT_AUTHENTIFIED}-RemoteIp:[${req.ip}]`)
-    );
+    return next(new Error(SERVER_ERROR_USER_IS_NOT_AUTHENTIFIED));
   }
 });
 
@@ -219,14 +224,12 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   if (error && typeof error === "object") {
     logger.error({
       srcFile: __filename,
-      triggered: "app.use(err... object)",
       errorToString: error.toString(),
       stack: JSON.stringify(error.stack),
     });
   } else {
     logger.error({
       srcFile: __filename,
-      triggered: "app.use(err... string)",
       errorToString: error,
       stack: "not available - error is not an Error Object",
     });

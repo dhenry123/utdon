@@ -6,6 +6,7 @@
 import { useNavigate } from "react-router-dom";
 import {
   mytinydcUPDONApi,
+  useGetAuthTokenQuery,
   useGetUserLoginQuery,
 } from "../api/mytinydcUPDONApi";
 import { useIntl } from "react-intl";
@@ -21,9 +22,15 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ErrorServer } from "../../../src/Global.types";
 import { showServiceMessage } from "../app/serviceMessageSlice";
 import { APPLICATION_VERSION, INITIALIZED_TOAST } from "../../../src/Constants";
-import { setIsAdmin, setRefetchuptodateForm } from "../app/contextSlice";
+import {
+  setAuthToken,
+  setDisplayControlsAsList,
+  setIsAdmin,
+  setRefetchuptodateForm,
+} from "../app/contextSlice";
 import { UserManager } from "../features/usermanager/UserManager.tsx";
 import { Search } from "./Search.tsx";
+import { GlobalGithubToken } from "./GlobalGithubToken.tsx";
 
 export const Header = () => {
   const intl = useIntl();
@@ -39,11 +46,22 @@ export const Header = () => {
 
   const searchString = useAppSelector((state) => state.context.search);
 
+  const displayControlsAsList = useAppSelector(
+    (state) => state.context.displayControlsType
+  );
+
+  const { data: authToken } = useGetAuthTokenQuery(null);
+
   /**
    * Used for server errors (api entrypoint call)
    * @param error
    * @returns
    */
+
+  useEffect(() => {
+    if (authToken) dispatch(setAuthToken(authToken));
+  }, [authToken]);
+
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error && error.data) {
       const servererror = error.data as ErrorServer;
@@ -53,7 +71,7 @@ export const Header = () => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `Header: ${servererror.error}}`,
           })
         );
       }
@@ -62,16 +80,11 @@ export const Header = () => {
   };
 
   const handleOnLogout = () => {
-    dispatch(
-      mytinydcUPDONApi.endpoints.getUserLogout.initiate(null, {
-        forceRefetch: true,
-      })
-    ).then(() => {
-      // cache behavior uneexpected !!!
-      // dispatch(mytinydcUPDONApi.util.resetApiState());
-      // dispatch(mytinydcUPDONApi.util.invalidateTags(["Controls"]));
-      return navigate("/login");
-    });
+    dispatch(mytinydcUPDONApi.endpoints.getUserLogout.initiate(null)).then(
+      () => {
+        return navigate("/login");
+      }
+    );
   };
 
   const handleOnNavigateToApiDoc = () => {
@@ -90,25 +103,73 @@ export const Header = () => {
     setIsDialogVisible(true);
   };
 
+  const handleOnSetGlobalGithubToken = (token: string) => {
+    if (token) {
+      dispatch(
+        mytinydcUPDONApi.endpoints.pubGlobalgithubtoken.initiate({ token })
+      )
+        .unwrap()
+        .then((response) => {
+          if (response === "OK") {
+            setIsDialogVisible(false);
+            dispatch(
+              showServiceMessage({
+                ...INITIALIZED_TOAST,
+                severity: "info",
+                sticky: true,
+                detail: intl.formatMessage({
+                  id: "The global Github token has been updated",
+                }),
+              })
+            );
+          }
+        })
+        .catch((error: FetchBaseQueryError) => {
+          dispatch(
+            showServiceMessage({
+              ...INITIALIZED_TOAST,
+              severity: "error",
+              sticky: true,
+              detail: error.data ? error.data : "unknown error",
+            })
+          );
+        });
+    }
+  };
+
+  const displayDialogGlobalGithubToken = () => {
+    setDialogHeader(intl.formatMessage({ id: "Global Github token" }));
+    setDialogContent(
+      <GlobalGithubToken
+        onHide={() => setIsDialogVisible(false)}
+        handleOnPost={handleOnSetGlobalGithubToken}
+      />
+    );
+    setIsDialogVisible(true);
+  };
+
+  const toggleListTable = () => {
+    dispatch(
+      setDisplayControlsAsList(
+        displayControlsAsList === "cards" ? "table" : "cards"
+      )
+    );
+  };
+
   const displayDialogCurlCommands = () => {
-    dispatch(mytinydcUPDONApi.endpoints.getBearer.initiate(null))
-      .unwrap()
-      .then((response) => {
-        setDialogHeader(
-          intl.formatMessage({ id: "Curl commands for all controls" })
-        );
-        setDialogContent(
-          <CurlCommands
-            uptodateForm={"all"}
-            userAuthBearer={response.bearer}
-            onClose={() => setIsDialogVisible(false)}
-          />
-        );
-        setIsDialogVisible(true);
-      })
-      .catch((error: FetchBaseQueryError) => {
-        dispatchServerError(error);
-      });
+    if (authToken) {
+      setDialogHeader(
+        intl.formatMessage({ id: "Curl commands for all controls" })
+      );
+      setDialogContent(
+        <CurlCommands
+          uptodateForm={"all"}
+          userAuthToken={authToken}
+          onClose={() => setIsDialogVisible(false)}
+        />
+      );
+      setIsDialogVisible(true);
+    }
   };
 
   const displayDialogUsersManager = () => {
@@ -197,13 +258,20 @@ export const Header = () => {
         <div className="flexPushLeft logout">
           <div className="manager">
             {isAdmin ? (
-              <ButtonGeneric
-                onClick={displayDialogUsersManager}
-                icon={"users"}
-                title={intl.formatMessage({ id: "Users manager" })}
-              />
-            ) : null}
+              <>
+                <ButtonGeneric
+                  onClick={displayDialogUsersManager}
+                  icon={"users"}
+                  title={intl.formatMessage({ id: "Users manager" })}
+                />
 
+                <ButtonGeneric
+                  icon={"brand-github"}
+                  title={intl.formatMessage({ id: "Global Github token" })}
+                  onClick={displayDialogGlobalGithubToken}
+                />
+              </>
+            ) : null}
             <ButtonGeneric
               icon={"key"}
               title={intl.formatMessage({ id: "Change you password" })}
@@ -211,7 +279,19 @@ export const Header = () => {
             />
           </div>
           <ButtonGeneric
-            icon={"ti ti-logout"}
+            icon={`${
+              displayControlsAsList === "cards" ? "article" : "border-all"
+            }`}
+            title={intl.formatMessage({
+              id:
+                displayControlsAsList === "cards"
+                  ? "Display in table format"
+                  : "Display in card format",
+            })}
+            onClick={toggleListTable}
+          />
+          <ButtonGeneric
+            icon={"logout"}
             title={`${intl.formatMessage({ id: "Logout" })}: ${
               userInfo && userInfo.login ? userInfo.login : ""
             }`}

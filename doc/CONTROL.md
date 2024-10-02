@@ -11,7 +11,24 @@ Donnez un nom à votre contrôle, le nom de l'application par exemple, vous pouv
 Première difficulté, récupérer la version de production, la manière de récupérer cette information peut-être indiquée dans la documentation de l'application, ce n'est souvent pas le cas. Chercher par vous-même... il existe souvent une entrypoint api, du genre "[URL de l'application]/version" ou "[URL de l'application]/api/v1/version"... qui retourne du texte ou un format JSON. La version peut aussi être incluse dans la page de login. Selon le type de réponse, vous utiliserez les filtres proposés ou bien
 créez le votre.
 
+### Valeur fixe
+
+**Implémenté dans la version 1.7.0**, cette méthode permet de résoudre deux problèmes:
+
+- Certaines applications ne proposent pas de point d'entrée pour obtenir leur version (ex: pgAdmin4).
+- Lorsque vous voulez suivre un projet que vous n'hébergez pas.
+
+Il suffit d'entrer une valeur fixe, la comparaison se fera par rapport à cette valeur et il n'y aura pas d'appel réseau pour résoudre la version de production.
+
+### Entête HTTP
+
+Cette zone permet d'entrer les paramètres d'authentification (header http clé/valeur).
+
+Voir la documentation de l'application concernée, généralement le nom de l'attribut est "Autorization", et la valeur est directement le token d'accès ou bien le token précédé du terme "Bearer[espace] token".
+
 ### Filtres (RegExp ou JmesPath)
+
+Ce sont les filtres que vous souhaitez appliquer pour obtenir une valeur comparable à la version disponible sur le dépôt git.
 
 #### Text/Html/Xml (RegExp)
 
@@ -64,20 +81,30 @@ L'expression Jmespath sera : 'join('.',\*)' ==> 1.89.0
 
 ## Récupération de la dernière release disponible sur GitHub
 
-J'ai simplifié, vous coller l'url du dépôt de l'application, l'outil se charge d'interroger l'API github en qui concerne les "tags de release", puis vous appliquez le filtre désiré.
+**A partir de la version 1.7.0**, les dépôt de **type Gitea** (Codeberg est compatible) sont supportés.
 
-**ATTENTION**: Le service Github applique une politique de "rate-limit" concernant l'utilisation de ses API. Pour l'instant, ce produit n'a pas été prévu pour s'authentifier aux API GITHUB, par conséquent, Github applique la politique la plus restrictive, à savoir et à cette date : 60 appels par heure.
+Coller simplement l'url du dépôt de l'application, UTDON se charge d'interroger le point d'entrée API qui renvoie les "tags de release", puis vous appliquez le filtre désiré.
 
-Voir la document GitHub :
+~~**ATTENTION**: Le service Github applique une politique de "rate-limit" concernant l'utilisation de ses API. Pour l'instant, ce produit n'a pas été prévu pour s'authentifier aux API GITHUB, par conséquent, Github applique la politique la plus restrictive, à savoir et à cette date : 60 appels par heure.~~
 
-- FR : https://docs.github.com/fr/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28
-- EN : https://docs.github.com/en/rest/rate-limit/rate-limit?apiVersion=2022-11-28#get-rate-limit-status-for-the-authenticated-user
+~~Voir la document GitHub :~~
+
+- ~~FR : https://docs.github.com/fr/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28~~
+- EN : ~~https://docs.github.com/en/rest/rate-limit/rate-limit?apiVersion=2022-11-28#get-rate-limit-status-for-the-authenticated-user~~
+
+**Depuis la version 1.7.0**, il est possible d'entrer les informations d'authentifications au niveau du contrôle (par exemple pour les dépôt privés), ou bien au niveau global. Le token global sera utilisé par tous les appels Github sauf si le contrôle dipose déjà d'une authentification.
 
 En cas d'application de cette limite par le service GitHub, les logs du serveur indiqueront cette erreur :
 
 ```json
 {"level":"error","message":{"errorToString":"Error: An error has occured: 403"
 ```
+
+### Entête HTTP
+
+Cette zone permet d'entrer les paramètres d'authentification (header http clé/valeur).
+
+Pour Github, la clé est "Autorization", la valeur commence par "Bearer[espace]" et votre token d'accès github. Pour les autres forges, voir leur documentation.
 
 ### Filtres (RegExp)
 

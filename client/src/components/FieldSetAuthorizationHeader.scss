@@ -1,6 +1,6 @@
 @import "../app/css/root.scss";
 .FieldSetAuthorizationHeader {
-  .authBearer {
+  .authToken {
     padding: $padding-default;
     position: relative;
     border: $border-default;
@@ -9,7 +9,7 @@
       position: absolute;
       top: 2px;
       right: 2px;
-      border-radius: 100%;
+      border-radius: $border-radius-round;
       background-color: $color-error;
       color: $color-text-secondary;
       padding: 0.3rem;

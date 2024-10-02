@@ -65,6 +65,8 @@ export const ScrapProduction = ({
   const [scrapContent, setScrapContent] = useState<string | null>("");
   useState<ScrapType>("json");
   const [productionVersion, setProductionVersion] = useState("");
+  const [disableGetVersionWithUrl, setDisableGetVersionWithUrl] =
+    useState(false);
   const scrapTypeOptions: SelectOptionType[] = [
     { value: "json", label: SCRAPTYPEOPTIONJSON },
     { value: "text", label: SCRAPTYPEOPTIONTEXT },
@@ -153,7 +155,20 @@ export const ScrapProduction = ({
 
   useEffect(() => {
     setScrapContent("");
+    if (
+      !activeUptodateForm.urlProduction ||
+      !activeUptodateForm.urlProduction.trim()
+    )
+      setDisableGetVersionWithUrl(false);
   }, [activeUptodateForm.urlProduction]);
+
+  useEffect(() => {
+    if (activeUptodateForm.fixed && activeUptodateForm.fixed.trim()) {
+      setDisableGetVersionWithUrl(true);
+    } else {
+      setDisableGetVersionWithUrl(false);
+    }
+  }, [activeUptodateForm.fixed]);
 
   useEffect(() => {
     if (!isUninitialized) refetch();
@@ -181,22 +196,59 @@ export const ScrapProduction = ({
   return (
     <div className={`ScrapProduction`}>
       <Block>
-        <FieldSet legend={intl.formatMessage({ id: "Logo" })}>
+        <FieldSet className="flogo" legend={intl.formatMessage({ id: "Logo" })}>
           <ImageUploader
             image={activeUptodateForm.logo || ""}
             onError={displayError}
             onChange={(value: string) => handleOnChange("logo", value)}
           />
         </FieldSet>
-        <FieldSet
-          className="name"
-          legend={intl.formatMessage({ id: "Give the control name" })}
-        >
-          <InputGeneric
-            value={activeUptodateForm.name}
-            onChange={(value: string) => handleOnChange("name", value)}
-          />
-        </FieldSet>
+        <div className="nameandfixed">
+          <FieldSet
+            className="name"
+            legend={intl.formatMessage({ id: "Give the control name" })}
+          >
+            <InputGeneric
+              value={activeUptodateForm.name}
+              onChange={(value: string) => handleOnChange("name", value)}
+            />
+          </FieldSet>
+          <FieldSet
+            className="name"
+            legend={intl.formatMessage({
+              id: "Fixed version",
+            })}
+            toolTipContent={`${intl.formatMessage({
+              id: "If you specify a fixed value, the comparison will be based on this value",
+            })}
+                    ${intl.formatMessage({ id: "Use cases" })}:
+                    - ${intl.formatMessage({
+                      id: "Allows comparison with the Git repository of an application that does not provide an API entry point",
+                    })}.
+                    - ${intl.formatMessage({
+                      id: "You just want to track the progress of a project hosted on a Git repository",
+                    })}.
+                    `}
+          >
+            <InputGeneric
+              value={activeUptodateForm.fixed || ""}
+              onChange={(value: string) => handleOnChange("fixed", value)}
+              disabled={
+                !(
+                  !activeUptodateForm.urlProduction ||
+                  !activeUptodateForm.urlProduction.trim()
+                )
+              }
+              title={
+                !disableGetVersionWithUrl
+                  ? `${intl.formatMessage({
+                      id: "This component is deactivated because a production url has been entered",
+                    })}.`
+                  : ""
+              }
+            />
+          </FieldSet>
+        </div>
         <FieldSet
           legend={intl.formatMessage({ id: "Url of the application to check" })}
           className="url"
@@ -205,46 +257,33 @@ export const ScrapProduction = ({
             className=""
             value={activeUptodateForm.urlProduction}
             onChange={(value: string) => handleOnChange("urlProduction", value)}
+            disabled={disableGetVersionWithUrl}
+            title={
+              disableGetVersionWithUrl
+                ? `${intl.formatMessage({
+                    id: "This component is deactivated because a fixed version has been specified",
+                  })}.`
+                : ""
+            }
           />
           <HttpHeader
+            headerkeyField="headerkey"
+            headervalueField="headervalue"
             handleOnChange={handleOnChange}
             headerkey={activeUptodateForm.headerkey}
             headervalue={activeUptodateForm.headervalue}
+            disabled={disableGetVersionWithUrl}
           />
         </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Get Content" })}
+        <ButtonGeneric
           className="getcontent"
-        >
-          <ButtonGeneric
-            label={intl.formatMessage({ id: "Start" })}
-            onClick={handleGetProductionContent}
-            icon="download"
-            disabled={activeUptodateForm.urlProduction === ""}
-          />
-        </FieldSet>
-        <FieldSet
-          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
-          className="groups"
-        >
-          {!isError ? (
-            <MultiSelect
-              options={
-                groupsFromServer ? buidMultiSelectGroups(groupsFromServer) : []
-              }
-              value={
-                activeUptodateForm.groups &&
-                activeUptodateForm.groups.length > 0
-                  ? buidMultiSelectGroups(activeUptodateForm.groups)
-                  : []
-              }
-              onChange={(values: Option[]) => handleOnChangeGroups(values)}
-              labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
-            />
-          ) : (
-            <div>{error.toString()}</div>
-          )}
-        </FieldSet>
+          label={intl.formatMessage({ id: "Get Content" })}
+          onClick={handleGetProductionContent}
+          icon="download"
+          disabled={
+            activeUptodateForm.urlProduction === "" || disableGetVersionWithUrl
+          }
+        />
       </Block>
       <Block>
         <FieldSet
@@ -269,6 +308,7 @@ export const ScrapProduction = ({
               setScrapContent("");
               handleOnChange("scrapTypeProduction", value as ScrapType);
             }}
+            disabled={disableGetVersionWithUrl}
           />
         </FieldSet>
         {activeUptodateForm.scrapTypeProduction === "text" ? (
@@ -287,6 +327,7 @@ export const ScrapProduction = ({
               defaultOptionLabel={intl.formatMessage({
                 id: "Choose a proposal",
               })}
+              disabled={disableGetVersionWithUrl}
             />
           </div>
         ) : (
@@ -300,6 +341,7 @@ export const ScrapProduction = ({
               defaultOptionLabel={intl.formatMessage({
                 id: "Choose a proposal",
               })}
+              disabled={disableGetVersionWithUrl}
             />
             <div>
               <a href="https://jmespath.org/tutorial.html" target="_jmespath">
@@ -317,6 +359,7 @@ export const ScrapProduction = ({
           <InputGeneric
             value={activeUptodateForm.exprProduction}
             onChange={(value) => handleOnChangeExpr(value)}
+            disabled={disableGetVersionWithUrl}
           />
         </FieldSet>
         <FieldSet
@@ -332,20 +375,49 @@ export const ScrapProduction = ({
                   }))}
           </div>
         </FieldSet>
-        <FieldSet legend={intl.formatMessage({ id: "Next step" })}>
+      </Block>
+      <Block className={"filter"}>
+        <FieldSet
+          legend={intl.formatMessage({ id: "Authorized for group(s)" })}
+          className="groups"
+        >
+          {!isError ? (
+            <MultiSelect
+              options={
+                groupsFromServer ? buidMultiSelectGroups(groupsFromServer) : []
+              }
+              value={
+                activeUptodateForm.groups &&
+                activeUptodateForm.groups.length > 0
+                  ? buidMultiSelectGroups(activeUptodateForm.groups)
+                  : []
+              }
+              onChange={(values: Option[]) => handleOnChangeGroups(values)}
+              labelledBy={intl.formatMessage({ id: "Includes in group(s)" })}
+            />
+          ) : (
+            <div>{error.toString()}</div>
+          )}
+        </FieldSet>
+        <div className="nextstep">
           <ButtonGeneric
+            icon="arrow-right"
             className="success"
             onClick={() => onDone(true)}
-            label={intl.formatMessage({ id: "Next" })}
+            label={`${intl.formatMessage({ id: "Next step" })}`}
             disabled={
-              !productionVersion ||
+              activeUptodateForm.groups.length === 0 ||
               !activeUptodateForm.name ||
-              !activeUptodateForm.urlProduction ||
-              !activeUptodateForm.exprProduction ||
-              activeUptodateForm.groups.length === 0
+              (!disableGetVersionWithUrl &&
+                (!productionVersion ||
+                  !activeUptodateForm.urlProduction ||
+                  !activeUptodateForm.exprProduction)) ||
+              (disableGetVersionWithUrl &&
+                !activeUptodateForm.fixed &&
+                !activeUptodateForm.fixed?.trim())
             }
           />
-        </FieldSet>
+        </div>
       </Block>
     </div>
   );

@@ -27,9 +27,16 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
   args: {
     data: { ...STORYBOOK_UPTODATEFORM },
-    userAuthBearer: "xxxxx",
+
     handleOnDelete: () => {},
     handleOnCompare: () => {},
     handleOnPause: () => {},
+    handleOnEdit: () => {},
+    handleOnCurlCommands: () => {},
+    setConfirmDeleteIsVisible: () => {},
+    confirmDeleteIsVisible: false,
+    setIsDialogCompareVisible: () => {},
+    setResultCompare: () => {},
+    handleOnDuplicate: () => {},
   },
 };

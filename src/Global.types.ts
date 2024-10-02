@@ -3,8 +3,8 @@
  * @license AGPL3
  */
 
-export type productionHttpHeaderType = {
-  productionhttpheader: string;
+export type scrapUrlHeaderType = {
+  scrapUrlHeader: string;
 };
 
 export type HTTPMethods = "GET" | "POST" | "PUT" | "DELETE";
@@ -16,18 +16,29 @@ export type GithubReleaseTagModel = {
   [key: string]: unknown;
 };
 
+export type GiteaReleaseTagModel = {
+  tag_name: string;
+  [key: string]: unknown;
+};
+
+export type TypeGitRepo = "gitea" | "github";
+
 export type ScrapType = "json" | "text";
 
 export type UptodateForm = {
   uuid: string;
   name: string;
+  fixed?: string;
   logo?: string;
   urlProduction: string;
   headerkey: string;
   headervalue: string;
+  headerkeyGit: string;
+  headervalueGit: string;
   scrapTypeProduction: ScrapType;
   exprProduction: string;
   urlGitHub: string;
+  typeRepo: string;
   exprGithub: string;
   urlCronJobMonitoring: string;
   httpMethodCronJobMonitoring: HTTPMethods;
@@ -58,7 +69,10 @@ export type UptodateFormFields =
   | "isPause"
   | "groups"
   | "headerkey"
-  | "headervalue";
+  | "headervalue"
+  | "headerkeyGit"
+  | "headervalueGit"
+  | "fixed";
 
 export type ApiResponseType = {
   data?: JSON;
@@ -83,20 +97,24 @@ export type ActionCiCdType = {
   uuid: string;
 };
 
+export type DisplayControlsType = "table" | "cards";
+
 export type contextSliceType = {
   // French is default language
   language: { locale: string; lang: JSONLang };
   application: {
     name: string;
     applicationtitle: string;
-    copyrightts: string;
+    copyright: string;
     licence: string;
   };
   uptodateForm: UptodateForm;
   refetchuptodateForm: boolean;
   isAdmin: boolean;
   search: string;
+  displayControlsType: DisplayControlsType;
   isLoaderShip: boolean;
+  authToken: string;
 };
 
 export type ToastSeverityType = "info" | "error" | "warn" | "success";
@@ -212,3 +230,27 @@ export type UserDescriptionType = {
   uuid: string;
   groups: string[];
 };
+
+export interface OptionsLogType {
+  message?: string;
+  scrapResponse?: string;
+  uuid?: string;
+  urlCICD?: string;
+  gitAuthenticationProvided?: boolean;
+  productionAuthenticationProvided?: boolean;
+  newUser?: string;
+  userDeleted?: string;
+  userUpdated?: string;
+  userLogout?: string;
+}
+export interface logInfo extends OptionsLogType {
+  userId: string;
+  userLogin: string;
+  apiPath: string;
+  apiMethod: string;
+  ipAddr: string | undefined;
+}
+
+export interface logError extends logInfo {
+  error: string;
+}

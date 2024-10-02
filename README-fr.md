@@ -9,9 +9,9 @@ Vos applications FOSS (Free and open-source software) en production, sont-elles 
 UTDON est né d'un shell qui compare :
 
 - la version d'une application en cours d'exécution (production)
-- à la dernière version disponible (dépôt GITHUB).
+- à la dernière version disponible (dépôt GITHUB ou compatible Gitea).
 
-N'ayant que des applications dont le dépôt des sources est situé sur "GitHub", UTDON ne fonctionne pour l'instant qu'avec GitHub.
+N'ayant que des applications dont le dépôt des sources est situé sur "GitHub" ou "CodeBerg", **UTDON ne fonctionne** pour l'instant qu'avec **GitHub** et des **dépôts compatibles "Gitea"**.
 
 ![dashboard](./doc/assets/utdon-dashboard-mytinydc.com.png)
 
@@ -20,7 +20,9 @@ N'ayant que des applications dont le dépôt des sources est situé sur "GitHub"
 - Surveillance par UI.
 - Surveillance par appel API.
 - Surveillance par appel API et mise à jour d'un service de monitoring (type ping).
-- Appel API pour déclencher la mise à jour par une action sur la chaine CI/CD.
+- Appel API de la chaîne CI/CD pour déclencher le processus de mise à jour de l'application.
+- Surveillance d'applications qui ne proposent pas de point d'entrée API permettant d'obtenir la version.
+- Authentification possible pour Github, dépôts compatibles Gitea, et applications (parfois nécessaire pour obtenir la version).
 
 ## Versioning UTDON
 
@@ -58,6 +60,7 @@ lr(last release)
 cp(compare)
 res(result as JSON)
 mps(monitoring ping service)
+cicd(CI/CD)
 s-->|call|ag
 ag-->|apply expression and get|lr
 s-->|call|ps
@@ -68,13 +71,14 @@ s-->cp
 cp-->|give|res
 res-->|update internal state|s
 s-->|update|mps
+s-->|call|cicd
 ```
 
 ## Stack
 
 - Nodejs
 - React/Redux
-- Base de données JSON : Situées en RAM, si vous remplacer les fichiers en cours d'exécution, ceci n'aura aucun effet. Le contenu des bases est enregistré après chaque modification et lorsque le service reçoit le signal SGINT | SIGTERM | SIGUSR2.
+- Bases de données JSON : Situées en RAM, si vous remplacer les fichiers en cours d'exécution, ceci n'aura aucun effet. Le contenu des bases est enregistré après chaque modification et lorsque le service reçoit le signal SGINT | SIGTERM | SIGUSR2.
 - Filtres RegExp et Jmespath pour Json.
 - Swagger.
 
@@ -88,10 +92,11 @@ Ne jamais exposer UTDON directement sur internet (utilisez un VPN si nécessaire
 
 Le contenu des deux bases de données est chiffré partiellement :
 
-- user.json: Le mot de passe de l'administrateur (non réversible) et le jeton d'authentification (réversible)
+- user.json: Le mot de passe (non réversible) et le jeton d'authentification (réversible) des utilisateurs
 - database.json:
   - Les chaînes d'authentification pour les "urls" de monitoring et de la chaine CI/CD (réversibles).
-  - HTTP header associé au processus de "production scrap".
+  - les "HTTP header" (production et dépôt git) associés au processus de "production scrap".
+- globalGithubToken: jeton d'authentification Github global (réversible)
 
 ### Si vous avez perdu le mot de passe admin
 
@@ -101,10 +106,22 @@ Arréter le service, supprimer le fichier "user.json", puis redémarrer. Connect
 
 Les sessions sont gérées en RAM, un simple redémarrage du service réinitialise l'intégralité des sessions.
 
+### Logs
+
+Les logs sont limités au strict nécessaire pour éviter le stockage inutile:
+
+- [x] Connexion utilisateur
+- [x] Déconnexion utilisateur
+- [x] Ajout d'un contrôle
+- [x] suppression d'un contrôle
+- [x] Modification d'un contrôle
+- [x] Exécution d'une comparaison
+- [x] Appel dernière comparaison
+- [x] Exécution d'un appel externe du service ping (monitoring externe)
+- [x] Exécution d'un appel externe de la chaîne CI/CD
+
 ## Roadmap
 
-- Authentification Github pour supprimer la barrière "rate-limit".
-- Dupliquer un contrôle.
 - Ajout d'un token "readonly" par utilisateur pour utilisation à partir d'une chaîne CI/CD
 - Stockage S3.
 - Entrypoint API metrics.
@@ -113,6 +130,8 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 ## Crédits
 
 - image de la page de connexion: générée par l'AI <https://www.artguru.ai/fr/>
+
+- Icons: <https://tabler.io/icons>
 
 - Radioactive button : <https://zurb.com/playground/radioactive-buttons>
 
@@ -124,4 +143,6 @@ Les sessions sont gérées en RAM, un simple redémarrage du service réinitiali
 
 ## Si vous appréciez cette application
 
-Donnez lui une étoile...
+**Donnez lui une étoile...**
+
+## [CHANGELOG](./Change.log.fr.md)

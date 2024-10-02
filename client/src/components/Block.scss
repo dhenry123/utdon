@@ -12,5 +12,6 @@
 @media (prefers-color-scheme: dark) {
   .Block {
     box-shadow: $boxshadow-default-dark;
+    border: $border-default-dark;
   }
 }

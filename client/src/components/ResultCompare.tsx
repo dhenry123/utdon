@@ -11,7 +11,6 @@ import {
   ActionCiCdType,
   ActionStatusType,
   ErrorServer,
-  UptoDateOrNotState,
   UptodateForm,
 } from "../../../src/Global.types";
 import ButtonGeneric from "./ButtonGeneric";
@@ -24,15 +23,17 @@ import { useNavigate } from "react-router-dom";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { useState } from "react";
-import { INITIALIZED_TOAST } from "../../../src/Constants";
+import {
+  INITIALIZED_TOAST,
+  TOAST_DEFAULT_LIFETIME,
+} from "../../../src/Constants";
 import { getRelativeTime } from "../helpers/DateHelper";
 
 interface ResultCompareProps {
   control: UptodateForm;
-  result: UptoDateOrNotState;
 }
 
-export const ResultCompare = ({ result, control }: ResultCompareProps) => {
+export const ResultCompare = ({ control }: ResultCompareProps) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
 
@@ -50,7 +51,7 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
           ...INITIALIZED_TOAST,
           severity: "error",
           sticky: true,
-          detail: servererror.error,
+          detail: `ResultCompare: ${servererror.error}}`,
         })
       );
       if (error.status === 401) return navigate("/login");
@@ -85,14 +86,13 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: severity,
-            life: 30000,
+            life: TOAST_DEFAULT_LIFETIME,
             summary: summary,
             detail: message,
           })
         );
       })
       .catch((error: FetchBaseQueryError) => {
-        console.log(error);
         dispatchServerError(error);
       });
   };
@@ -117,7 +117,7 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: "success",
-            sticky: true,
+            sticky: false,
             detail:
               intl.formatMessage({
                 id: "The status has been sent to the monitoring service",
@@ -132,7 +132,7 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
 
   return (
     <div className={`ResultCompare`}>
-      {result ? (
+      {control.compareResult ? (
         <>
           <div className="summary">
             <FieldSet legend={intl.formatMessage({ id: "Name" })}>
@@ -143,17 +143,12 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
               url={control.urlProduction}
             />
             <FieldSetClickableUrl
-              legend={intl.formatMessage({ id: "GitHub repository url" })}
+              legend={intl.formatMessage({ id: "Git repository url" })}
               url={control.urlGitHub}
             ></FieldSetClickableUrl>
             {control.compareResult && control.compareResult.ts ? (
               <FieldSet legend={intl.formatMessage({ id: "Execution date" })}>
-                <>
-                  {getRelativeTime(
-                    result.ts ? result.ts : control.compareResult.ts,
-                    intl
-                  )}
-                </>
+                <>{getRelativeTime(control.compareResult.ts, intl)}</>
               </FieldSet>
             ) : (
               <></>
@@ -163,8 +158,8 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
             <div>
               <FieldSet legend={intl.formatMessage({ id: "Badge" })}>
                 <Badge
-                  isSuccess={result.state}
-                  isWarning={!result.strictlyEqual}
+                  isSuccess={control.compareResult.state}
+                  isWarning={!control.compareResult.strictlyEqual}
                 />
               </FieldSet>
               <FieldSet
@@ -172,16 +167,17 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
                   id: "Latest available version detected",
                 })}
               >
-                <div>{result.githubLatestRelease}</div>
+                <div>{control.compareResult.githubLatestRelease}</div>
               </FieldSet>
               <FieldSet
                 legend={intl.formatMessage({ id: "Your production version" })}
               >
-                <div>{result.productionVersion}</div>
+                <div>{control.compareResult.productionVersion}</div>
               </FieldSet>
             </div>
             <div>
-              {result.state && !result.strictlyEqual ? (
+              {control.compareResult.state &&
+              !control.compareResult.strictlyEqual ? (
                 <FieldSet
                   legend={intl.formatMessage({ id: "Warning" })}
                   className="warning"
@@ -191,17 +187,19 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
                       id: "This result may be a false positive",
                     })}{" "}
                     :
-                    {result.githubLatestReleaseIncludesProductionVersion ? (
+                    {control.compareResult
+                      .githubLatestReleaseIncludesProductionVersion ? (
                       <div className="label">
                         {intl.formatMessage({
                           id: "The latest Github Release tag includes your production version",
                         })}
                       </div>
                     ) : null}
-                    {result.productionVersionIncludesGithubLatestRelease ? (
+                    {control.compareResult
+                      .productionVersionIncludesGithubLatestRelease ? (
                       <div className="label">
                         {intl.formatMessage({
-                          id: "Your production version includes the latest Github Release tag",
+                          id: "Your production version includes the latest git Release tag",
                         })}
                       </div>
                     ) : null}
@@ -220,12 +218,12 @@ export const ResultCompare = ({ result, control }: ResultCompareProps) => {
                   id: "Send status to monitoring service",
                 })}
                 onClick={() => {
-                  if (control.uuid) {
+                  if (control.uuid && control.compareResult) {
                     handleSendStateExternalMonitoring(
                       control.uuid,
-                      result.state,
-                      result.productionVersion,
-                      result.githubLatestRelease
+                      control.compareResult.state,
+                      control.compareResult.productionVersion,
+                      control.compareResult.githubLatestRelease
                     );
                   }
                 }}

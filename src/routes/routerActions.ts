@@ -13,6 +13,12 @@ import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database";
 import { scrapUrl, getUpToDateOrNotState } from "../lib/Features";
 import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
 import { SessionExt } from "../ServerTypes";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+import {
+  getGlobalGithubToken,
+  setControlGlobalGithubToken,
+} from "../lib/GlobalGithubToken";
+
 const routerActions = express.Router();
 
 const updateExternalStatus = (
@@ -37,7 +43,7 @@ const updateExternalStatus = (
 /**
  * Call up the comparison method and can update the monitoring status: 'all' is accepted
  */
-routerActions.get(
+routerActions.put(
   "/action/compare/:controlUuid/:setStatus",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -64,9 +70,19 @@ routerActions.get(
         } else {
           finalRecords = record;
         }
-        for (const item of finalRecords) {
+
+        const globalGithubToken = getGlobalGithubToken();
+
+        for (let item of finalRecords) {
+          req.app.get("LOGGER").info(
+            getLogObjectInfo(req, {
+              uuid: item.uuid,
+              gitAuthenticationProvided: item.headerkeyGit ? true : false,
+              productionAuthenticationProvided: item.headerkey ? true : false,
+            })
+          );
+          item = setControlGlobalGithubToken({ ...item }, globalGithubToken);
           // get state
-          //console.log(item);
           await getUpToDateOrNotState(item)
             .then(async (compareResult) => {
               // Update dbRecord
@@ -91,10 +107,12 @@ routerActions.get(
                           urlCronJobMonitoringWithPayload: `${item.urlCronJobMonitoring}/${payload}`,
                           urlCronJobMonitoringWithPayloadResponse: response,
                         };
-                      req.app.get("LOGGER").info({
-                        ...finalResponse,
-                        action: "send state to external monitoring",
-                      });
+                      req.app.get("LOGGER").info(
+                        getLogObjectInfo(req, {
+                          scrapResponse: response,
+                          uuid: item.uuid,
+                        })
+                      );
                       finalResponseArray.push(finalResponse);
                     })
                     .catch((error: Error) => {
@@ -109,10 +127,11 @@ routerActions.get(
                     uuid: item.uuid,
                     error: message,
                   };
-                  req.app.get("LOGGER").info({
-                    ...item,
-                    action: message,
-                  });
+                  req.app.get("LOGGER").error(
+                    getLogObjectError(req, message, {
+                      uuid: item.uuid,
+                    })
+                  );
                   finalResponseArray.push({ ...finalResponse });
                 }
               } else {
@@ -141,10 +160,9 @@ routerActions.get(
                     };
                   })
                   .catch((error: Error) => {
-                    req.app.get("LOGGER").error({
-                      ...item,
-                      action: error.toString(),
-                    });
+                    req.app
+                      .get("LOGGER")
+                      .error(getLogObjectError(req, error.toString()));
                   });
               }
               finalResponseArray.push(itemResponse);
@@ -164,11 +182,14 @@ routerActions.get(
           res.status(500).json(finalResponse);
         }
       } else {
-        req.app.get("LOGGER").error(UUIDNOTFOUND);
+        req.app.get("LOGGER").error(
+          getLogObjectError(req, UUIDNOTFOUND, {
+            uuid: req.params.controlUuid,
+          })
+        );
         res.status(404).json({ error: UUIDNOTFOUND });
       }
     } catch (error: unknown) {
-      console.log(error);
       next(error);
     }
   }
@@ -198,24 +219,29 @@ routerActions.put(
             `Authorization:${record.urlCICDAuth}`
           )
             .then((response) => {
-              req.app.get("LOGGER").info({
-                action: "call CI/CD",
-                uuid: req.body.uuid,
-                url: record.urlCICD,
-                httpmethod: record.httpMethodCICD,
-                response: response,
-              });
+              req.app.get("LOGGER").info(
+                getLogObjectInfo(req, {
+                  uuid: req.body.uuid,
+                  urlCICD: record.urlCICD,
+                  scrapResponse: response,
+                })
+              );
               res.status(200).send(response);
             })
             .catch((error: Error) => {
               next(error);
             });
         } else {
-          req.app.get("LOGGER").error(UUIDNOTFOUND);
-          res.status(404).json({ error: UUIDNOTFOUND });
+          const message = `${UUIDNOTFOUND} or no urlCICD`;
+          req.app.get("LOGGER").error(
+            getLogObjectError(req, message, {
+              uuid: req.body.uuid,
+            })
+          );
+          res.status(404).json({ error: message });
         }
       } else {
-        req.app.get("LOGGER").error(UUIDNOTPROVIDED);
+        req.app.get("LOGGER").error(getLogObjectError(req, UUIDNOTPROVIDED));
         res.status(500).json({ error: UUIDNOTPROVIDED });
       }
     } catch (error: unknown) {
@@ -251,18 +277,18 @@ routerActions.put(
                 urlCronJobMonitoringWithPayload: `${record.urlCronJobMonitoring}/${payload}`,
                 urlCronJobMonitoringWithPayloadResponse: response,
               };
-              req.app.get("LOGGER").info({
-                ...finalResponse,
-                action: "send state to external monitoring",
-                response: response,
-              });
+              req.app.get("LOGGER").info(
+                getLogObjectInfo(req, {
+                  scrapResponse: JSON.stringify(finalResponse),
+                })
+              );
               res.status(200).send(response);
             })
             .catch((error: Error) => {
               next(error);
             });
         } else {
-          req.app.get("LOGGER").error(UUIDNOTFOUND);
+          req.app.get("LOGGER").error(getLogObjectError(req, UUIDNOTFOUND));
           res.status(404).json({ error: UUIDNOTFOUND });
         }
       }
@@ -289,15 +315,19 @@ routerActions.get(
         req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
       )) as UptodateForm;
+      req.app
+        .get("LOGGER")
+        .info(getLogObjectInfo(req, { uuid: req.params.controlUuid }));
       if (record) {
         if (record.compareResult?.githubLatestRelease) {
           res.status(200).json(record.compareResult?.githubLatestRelease);
         } else {
-          req.app.get("LOGGER").error("githubLatestRelease is empty");
-          res.status(404).json({ error: "githubLatestRelease is empty" });
+          const message = "githubLatestRelease is empty";
+          req.app.get("LOGGER").error(getLogObjectError(req, message));
+          res.status(404).json({ error: message });
         }
       } else {
-        req.app.get("LOGGER").error(UUIDNOTFOUND);
+        req.app.get("LOGGER").error(getLogObjectError(req, UUIDNOTFOUND));
         res.status(404).json({ error: UUIDNOTFOUND });
       }
     } catch (error: unknown) {

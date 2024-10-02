@@ -6,6 +6,10 @@
 import express, { NextFunction, Request, Response } from "express";
 import { scrapUrl } from "../lib/Features";
 import { APPLICATION_VERSION } from "../Constants";
+import {
+  getGlobalGithubToken,
+  getHeaderGlobalGithubToken,
+} from "../lib/GlobalGithubToken";
 const routerCore = express.Router();
 
 /**
@@ -15,11 +19,12 @@ routerCore.get(
   "/scrap/:url",
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.params.url !== undefined) {
-      await scrapUrl(
+      const header = getHeaderGlobalGithubToken(
         req.params.url,
-        "GET",
-        req.headers.productionhttpheader as string
-      )
+        req.headers.scrapurlheader as string,
+        getGlobalGithubToken()
+      );
+      await scrapUrl(req.params.url, "GET", header)
         .then((data: string) => {
           // Warn Reduxtoolkit expect text so data will always be type = string
           res.status(200).send(data);

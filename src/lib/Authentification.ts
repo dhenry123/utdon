@@ -362,7 +362,6 @@ export class Authentification {
         // if new password and its confirmation match
         if (changepassword.newPassword === changepassword.newConfirmPassword) {
           // if so, find the uid of the user we want to change the password
-          // console.log(changepassword.login);
           const uid = this.usersgroups.users.findIndex(
             (u) => u.login === userLogin
           );

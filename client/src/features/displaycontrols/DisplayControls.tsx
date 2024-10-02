@@ -26,8 +26,6 @@ import { useNavigate } from "react-router-dom";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import {
   INITIALIZED_TOAST,
-  INITIALIZED_UPTODATEFORM,
-  INPROGRESS_UPTODATEORNOTSTATE,
   INTIALIZED_CONTROL_TO_PAUSE,
 } from "../../../../src/Constants";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -35,6 +33,12 @@ import {
   setIsLoaderShip,
   setRefetchuptodateForm,
 } from "../../app/contextSlice";
+import { Badge } from "../../components/Badge";
+import { ControlGroupButtons } from "../../components/ControlGroupButtons";
+import { CurlCommands } from "../curlcommands/CurlCommands";
+import { getRelativeTime } from "../../helpers/DateHelper";
+import { UrlLinkButtons } from "../../components/UrlLinkButtons";
+import { DisplayVersions } from "../../components/DisplayVersions";
 
 export const DisplayControls = () => {
   const intl = useIntl();
@@ -46,25 +50,38 @@ export const DisplayControls = () => {
     (state) => state.context.refetchuptodateForm
   );
 
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
-
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-
-  const [resultCompare, setResultCompare] = useState(
-    INPROGRESS_UPTODATEORNOTSTATE
-  );
-
   const [uuidToPause, setUuidToPause] = useState<ControlToPause>(
     INTIALIZED_CONTROL_TO_PAUSE
   );
 
-  const [checkInProgress, setcheckInProgress] = useState(
-    INITIALIZED_UPTODATEFORM
-  );
-
-  const [userAuthBearer, setuserAuthBearer] = useState("");
+  const authToken = useAppSelector((state) => state.context.authToken);
 
   const searchString = useAppSelector((state) => state.context.search);
+  const displayControlsAsList = useAppSelector(
+    (state) => state.context.displayControlsType
+  );
+
+  // Dialogs & Confirms
+  // control to manage with dialog or confirm
+  const [controlToManage, setControlToManage] = useState<UptodateForm | null>(
+    null
+  );
+  // To display curl commands
+  const [isDialogCurlCommandsVisible, setIsDialogCurlCommandsVisible] =
+    useState(false);
+  const [isDialogCompareVisible, setIsDialogCompareVisible] = useState(false);
+  //Confirms
+  // delete control
+  const [isConfirmDialogDeleteVisible, setIsConfirmDialogDeleteVisible] =
+    useState(false);
+  // duplicate control
+  const [isConfirmDialogDuplicateVisible, setIsConfirmDialogDuplicateVisible] =
+    useState(false);
+  // disable action control
+  const [
+    isConfirmDialogDisableActionsVisible,
+    setIsConfirmDialogDisableActionsVisible,
+  ] = useState(false);
 
   const {
     data,
@@ -84,36 +101,19 @@ export const DisplayControls = () => {
   const dispatchServerError = (error: FetchBaseQueryError) => {
     if (error) {
       const servererror = error.data as ErrorServer;
-      if (servererror.error) {
+      if (servererror.error && error.status !== 401) {
         dispatch(
           showServiceMessage({
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `DisplayControl ${servererror.error}}`,
           })
         );
       }
       if (error.status === 401) return navigate("/login");
     }
   };
-
-  useEffect(() => {
-    //Reload
-    refetch();
-    // get auth bearer
-    if (!userAuthBearer) {
-      dispatch(mytinydcUPDONApi.endpoints.getBearer.initiate(null))
-        .unwrap()
-        .then((response) => {
-          setuserAuthBearer(response.bearer);
-        })
-        .catch((error) => {
-          dispatchServerError(error);
-        });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (isError && ErrorOnFetch) {
@@ -132,12 +132,20 @@ export const DisplayControls = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetchAskedFromOtherComponent]);
 
-  const handleOnDelete = async (uuid: string) => {
-    await dispatch(mytinydcUPDONApi.endpoints.deleteCheck.initiate(uuid))
+  const handleOnCurlCommands = (uptodateForm: UptodateForm) => {
+    setControlToManage(uptodateForm);
+    setIsDialogCurlCommandsVisible(true);
+  };
+
+  const handleOnConfirmDelete = async () => {
+    if (!controlToManage) return;
+    await dispatch(
+      mytinydcUPDONApi.endpoints.deleteCheck.initiate(controlToManage.uuid)
+    )
       .unwrap()
       .then((response) => {
-        refetch();
-        if (response.uuid === uuid) {
+        if (response.uuid === controlToManage.uuid) {
+          setControlToManage(null);
           dispatch(
             showServiceMessage({
               ...INITIALIZED_TOAST,
@@ -145,7 +153,7 @@ export const DisplayControls = () => {
               detail:
                 intl.formatMessage({
                   id: intl.formatMessage({ id: "Control has been deleted" }),
-                }) + `: ${uuid}`,
+                }) + `: ${controlToManage.uuid}`,
             })
           );
         } else {
@@ -166,21 +174,17 @@ export const DisplayControls = () => {
       });
   };
 
-  const handleOnCompare = async (control: UptodateForm) => {
-    if (control.uuid) {
+  const handleOnCompare = async (uptodateForm: UptodateForm) => {
+    if (uptodateForm.uuid) {
+      setControlToManage(uptodateForm);
       dispatch(setIsLoaderShip(true));
       await dispatch(
-        mytinydcUPDONApi.endpoints.getCompare.initiate(control.uuid, {
-          forceRefetch: true,
-        })
+        mytinydcUPDONApi.endpoints.putCompare.initiate(uptodateForm.uuid)
       )
         .unwrap()
         .then((response) => {
           if (response) {
-            setIsDialogVisible(true);
-            setResultCompare(response);
-            setcheckInProgress(control);
-            refetch();
+            setIsDialogCompareVisible(true);
           }
         })
         .catch((error: FetchBaseQueryError) => {
@@ -195,6 +199,7 @@ export const DisplayControls = () => {
       dispatch(
         showServiceMessage({
           ...INITIALIZED_TOAST,
+          severity: "error",
           sticky: true,
           detail: intl.formatMessage({ id: "uuid not provided" }),
         })
@@ -202,18 +207,24 @@ export const DisplayControls = () => {
     }
   };
 
+  const handleOnDisplayLatestCompare = (uptodateForm: UptodateForm) => {
+    setControlToManage(uptodateForm);
+    setIsDialogCompareVisible(true);
+  };
+
   const handleOnPause = async (
     event: ChangeEvent<HTMLInputElement>,
-    uuid: string
+    uptodateForm: UptodateForm
   ) => {
-    if (uuid) {
+    if (uptodateForm.uuid) {
+      setControlToManage(uptodateForm);
       const controlToPause: ControlToPause = {
-        uuid: uuid,
+        uuid: uptodateForm.uuid,
         state: event.target.checked,
       };
       setUuidToPause(controlToPause);
       if (event.target.checked) {
-        setIsConfirmVisible(true);
+        setIsConfirmDialogDisableActionsVisible(true);
       } else {
         // update to false if opposite
         handleUpdatePauseStatus(controlToPause);
@@ -231,68 +242,282 @@ export const DisplayControls = () => {
           ...controlData[0],
           isPause: uuidToPause.state,
         };
-        dispatch(mytinydcUPDONApi.endpoints.postCheck.initiate(dataToUpdate))
+        dispatch(
+          mytinydcUPDONApi.endpoints.postUptodateForm.initiate(dataToUpdate)
+        )
           .unwrap()
-          .then(() => {
-            refetch();
-          })
           .catch((error: FetchBaseQueryError) => {
             dispatchServerError(error);
           });
       }
     }
-    setIsConfirmVisible(false);
+    setIsConfirmDialogDisableActionsVisible(false);
     setUuidToPause(INTIALIZED_CONTROL_TO_PAUSE);
+  };
+
+  const handleOnDuplicate = (uptodateForm: UptodateForm) => {
+    setControlToManage(uptodateForm);
+    setIsConfirmDialogDuplicateVisible(true);
+  };
+
+  const handleOnDelete = async (uptodateForm: UptodateForm) => {
+    setControlToManage(uptodateForm);
+    setIsConfirmDialogDeleteVisible(true);
+  };
+
+  const handleOnEdit = (uptodateForm: UptodateForm) => {
+    return navigate(`/ui/editcontrol/${uptodateForm.uuid}`);
+  };
+
+  const handleOnConfirmDuplicate = () => {
+    if (!controlToManage) return;
+    const constrolToDuplicate = controlToManage as UptodateForm;
+    dispatch(
+      mytinydcUPDONApi.endpoints.postUptodateForm.initiate({
+        ...constrolToDuplicate,
+        name: `${constrolToDuplicate.name} (copy)`,
+        uuid: "",
+        compareResult: null,
+      })
+    )
+      .unwrap()
+      .then((response) => {
+        const control = response?.control as UptodateForm;
+        setControlToManage(null);
+        if (control.uuid) {
+          handleOnEdit(control);
+        } else {
+          throw new Error(
+            intl.formatMessage({
+              id: "Unexpected error after duplicating a control",
+            })
+          );
+        }
+      })
+      .catch((error: FetchBaseQueryError) => {
+        dispatchServerError(error);
+      });
+  };
+
+  const isMatchString = (item: UptodateForm): boolean => {
+    if (
+      searchString &&
+      !item.name.match(new RegExp(searchString, "i")) &&
+      !item.uuid.match(new RegExp(searchString, "i"))
+    ) {
+      return false;
+    }
+    return true;
   };
 
   return (
     <div className={`DisplayControls`}>
       {isSuccess ? (
         <>
-          {/* <div className="filters">Filter on :</div> */}
-          <div className="list">
-            {data.map((item: UptodateForm) => {
-              if (
-                searchString &&
-                !item.name.match(new RegExp(searchString, "i"))
-              )
-                return null;
-              return (
-                <Control
-                  handleOnDelete={handleOnDelete}
-                  handleOnCompare={handleOnCompare}
-                  key={item.uuid}
-                  data={item}
-                  userAuthBearer={userAuthBearer}
-                  handleOnPause={handleOnPause}
-                />
-              );
-            })}
-          </div>
+          {displayControlsAsList === "cards" ? (
+            <div className="list">
+              {data.map((item: UptodateForm) => {
+                if (!isMatchString(item)) {
+                  return null;
+                }
+                return (
+                  <Control
+                    key={item.uuid}
+                    data={item}
+                    handleOnDuplicate={handleOnDuplicate}
+                    handleOnDelete={handleOnDelete}
+                    handleOnEdit={handleOnEdit}
+                    handleOnCompare={handleOnCompare}
+                    handleOnDisplayLatestCompare={handleOnDisplayLatestCompare}
+                    handleOnPause={handleOnPause}
+                    handleOnCurlCommands={handleOnCurlCommands}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <div className="table-container">
+              <div className={`flex-table flex-header `} role="rowgroup">
+                <div className="flex-row first" role="columnheader"></div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Name" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Uuid" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Groups" })}
+                </div>
+                <div className="flex-row" role="columnheader"></div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Production version" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "Release on Git" })}
+                </div>
+                <div className="flex-row" role="columnheader">
+                  {intl.formatMessage({ id: "State" })}
+                </div>
+              </div>
+              {data.map((item: UptodateForm) => {
+                if (!isMatchString(item)) return null;
+                return (
+                  <div
+                    key={`control${item.uuid}`}
+                    className={`flex-table row`}
+                    role="rowgroup"
+                  >
+                    <div className="flex-row  first" role="cell">
+                      {item.logo ? (
+                        <img
+                          className="image"
+                          src={item.logo}
+                          alt={`logo app ${item.name}`}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                    <div className={`flex-row name`} role="cell">
+                      <div className="name">{item.name}</div>
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      <div className="uuid">{item.uuid}</div>
+                    </div>
+                    <div
+                      className={`flex-row`}
+                      role="cell"
+                      title={`${intl.formatMessage({
+                        id: "Groups",
+                      })}: ${item.groups.join(" ")}`}
+                    >
+                      <div className="groups">{item.groups.join(" ")}</div>
+                    </div>
+                    <div className={`flex-row`} role="cell">
+                      <ControlGroupButtons
+                        data={item}
+                        handleOnDuplicate={handleOnDuplicate}
+                        handleOnDelete={handleOnDelete}
+                        handleOnEdit={handleOnEdit}
+                        handleOnCompare={handleOnCompare}
+                        handleOnPause={handleOnPause}
+                        handleOnCurlCommands={handleOnCurlCommands}
+                      />
+                    </div>
+                    <div className={`flex-row `} role="cell">
+                      {item.fixed ? (
+                        <div className="fixedversion">
+                          <label>
+                            {intl.formatMessage({ id: "Fixed version" })}
+                          </label>
+                          <label>{item.fixed}</label>
+                        </div>
+                      ) : (
+                        <UrlLinkButtons url={item.urlProduction} />
+                      )}
+                    </div>
+                    <div className={`flex-row urlGitHub`} role="cell">
+                      <UrlLinkButtons url={item.urlGitHub} />
+                    </div>
+                    <div className={`flex-row state`} role="cell">
+                      {item.compareResult && item.compareResult.ts ? (
+                        <div className="statecontent">
+                          <Badge
+                            isSuccess={item.compareResult.state}
+                            isWarning={!item.compareResult.strictlyEqual}
+                            onClick={() => {
+                              handleOnDisplayLatestCompare(item);
+                            }}
+                            title={getRelativeTime(item.compareResult.ts, intl)}
+                          />
+                          <DisplayVersions data={item} />
+                        </div>
+                      ) : (
+                        <Badge
+                          noState={true}
+                          isSuccess={false}
+                          title={intl.formatMessage({ id: "Start comparison" })}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       ) : isError ? (
         <div>Error</div>
       ) : null}
-      <Dialog
-        visible={isDialogVisible}
-        onHide={() => setIsDialogVisible(false)}
-        header={intl.formatMessage({ id: "Comparison result" })}
-        closeButton
-        footerClose
-      >
-        <ResultCompare
-          result={resultCompare ? resultCompare : INPROGRESS_UPTODATEORNOTSTATE}
-          control={checkInProgress}
-        />
-      </Dialog>
-      <ConfirmDialog
-        message={`${intl.formatMessage({
-          id: "Are you sure you want to pause this control",
-        })}?`}
-        visible={isConfirmVisible}
-        onCancel={() => setIsConfirmVisible(false)}
-        onConfirm={() => handleUpdatePauseStatus(uuidToPause)}
-      />
+      {/* control management display and confirm, available only if controlToManage is set */}
+      {controlToManage ? (
+        <>
+          {/* Dialog */}
+          <Dialog
+            visible={isDialogCurlCommandsVisible}
+            onHide={() => setIsDialogCurlCommandsVisible(false)}
+            header={intl.formatMessage({
+              id: "Curl commands for this control",
+            })}
+            closeButton
+          >
+            <CurlCommands
+              uptodateForm={controlToManage as UptodateForm}
+              onClose={() => setIsDialogCurlCommandsVisible(false)}
+              userAuthToken={authToken}
+            />
+          </Dialog>
+          {/* Duplicate */}
+          <Dialog
+            visible={isDialogCompareVisible}
+            onHide={() => setIsDialogCompareVisible(false)}
+            header={intl.formatMessage({ id: "Comparison result" })}
+            closeButton
+            footerClose
+          >
+            {/* get Fresh data */}
+            <ResultCompare
+              control={
+                data &&
+                (data as UptodateForm[]).filter(
+                  (item) => item.uuid === controlToManage.uuid
+                )[0]
+              }
+            />
+          </Dialog>
+          {/* ConfirmDialogs */}
+          <ConfirmDialog
+            visible={isConfirmDialogDeleteVisible}
+            message={`${intl.formatMessage({
+              id: "Are you sure to delete this control",
+            })} (${controlToManage.uuid}) ?`}
+            onConfirm={() => {
+              setIsConfirmDialogDeleteVisible(false);
+              handleOnConfirmDelete();
+            }}
+            onCancel={() => setIsConfirmDialogDeleteVisible(false)}
+          />
+          <ConfirmDialog
+            visible={isConfirmDialogDuplicateVisible}
+            message={`${intl.formatMessage({
+              id: "Are you sure to duplicate this control",
+            })} (${(controlToManage as UptodateForm).uuid}) ?`}
+            onConfirm={() => {
+              setIsConfirmDialogDuplicateVisible(false);
+              handleOnConfirmDuplicate();
+            }}
+            onCancel={() => setIsConfirmDialogDuplicateVisible(false)}
+          />
+          <ConfirmDialog
+            visible={isConfirmDialogDisableActionsVisible}
+            message={`${intl.formatMessage({
+              id: "Are you sure you want to disable actions for this control",
+            })}: ${uuidToPause.uuid} ?`}
+            onCancel={() => setIsConfirmDialogDisableActionsVisible(false)}
+            onConfirm={() => handleUpdatePauseStatus(uuidToPause)}
+          />
+        </>
+      ) : null}
     </div>
   );
 };

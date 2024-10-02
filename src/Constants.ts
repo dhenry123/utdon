@@ -25,7 +25,7 @@ export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   urlProduction: "",
 };
 
-export const APPLICATION_VERSION = "1.6.0";
+export const APPLICATION_VERSION = "1.7.0";
 
 // routes which dont need authentication to be served
 // firsts are UI routes
@@ -95,6 +95,8 @@ export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   urlProduction: "",
   headerkey: "",
   headervalue: "",
+  headerkeyGit: "",
+  headervalueGit: "",
   scrapTypeProduction: "json",
   exprProduction: "join('.',*)",
   urlGitHub: "",
@@ -111,6 +113,7 @@ export const INITIALIZED_UPTODATEFORM: UptodateForm = {
   isPause: false,
   compareResult: null,
   groups: [],
+  typeRepo: "github",
 };
 
 export const HTTP_METHOD_ENUM: SelectOptionType[] = [

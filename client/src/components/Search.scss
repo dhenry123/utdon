@@ -5,12 +5,16 @@ $searchbuttonsize: 2rem;
   display: flex;
   flex-direction: row;
   column-gap: 0.2rem;
-
-  border: 1px solid #8c6cb1;
-  border-radius: 6px;
+  width: 20%;
+  border: $border-search;
+  border-radius: $border-radius-default;
   padding: 0 0.2rem;
+  @media (prefers-color-scheme: dark) {
+    border: $border-search-dark;
+  }
   .inputgeneric {
     border: none;
+    width: 100%;
   }
   .inputgeneric:focus {
     outline: none;
@@ -22,7 +26,10 @@ $searchbuttonsize: 2rem;
     background-color: transparent;
     i {
       font-size: 1rem;
-      color: #f2598b;
+      color: $button-search-color;
+      @media (prefers-color-scheme: dark) {
+        color: $button-search-color-dark;
+      }
     }
   }
 }

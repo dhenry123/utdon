@@ -5,6 +5,7 @@
 
 import "./FieldSetClickableUrl.scss";
 import { FieldSet, FieldSetProps } from "./FieldSet";
+import { UrlOpener } from "./UrlOpener";
 
 interface FieldSetClickableUrlProps extends FieldSetProps {
   url: string;
@@ -19,18 +20,7 @@ export const FieldSetClickableUrl = ({
       }`}
       legend={props.legend}
     >
-      <a
-        href={props.url}
-        title={props.url}
-        target={`_${props.url
-          .replace(
-            /^(?:https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/?\n]+\.+[^:/?\n]+)/,
-            "$1"
-          )
-          .replace(/\.+/g, "_")}`}
-      >
-        {props.url}
-      </a>
+      <UrlOpener url={props.url} />
     </FieldSet>
   );
 };

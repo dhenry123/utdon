@@ -28,7 +28,7 @@ export const OneControl: Story = {
     apiEntrypoint: "/api/v1/action/compare/xxxx/0",
     method: "GET",
     commandTitle: "test",
-    userAuthBearer: "xxxx",
+    userAuthToken: "xxxx",
   },
 };
 
@@ -37,6 +37,6 @@ export const AllControl: Story = {
     apiEntrypoint: "/api/v1/action/compare/all/0",
     method: "GET",
     commandTitle: "test",
-    userAuthBearer: "xxxx",
+    userAuthToken: "xxxx",
   },
 };

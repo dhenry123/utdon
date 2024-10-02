@@ -6,7 +6,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import languageFr from "../../../locales/fr.json";
 import { INITIALIZED_UPTODATEFORM } from "../../../src/Constants";
-import { contextSliceType } from "../../../src/Global.types";
+import {
+  contextSliceType,
+  DisplayControlsType,
+} from "../../../src/Global.types";
 
 const initialState: contextSliceType = {
   // French is default language
@@ -14,7 +17,7 @@ const initialState: contextSliceType = {
   application: {
     name: "UTdOn",
     applicationtitle: "UtDon",
-    copyrightts: "December 2023",
+    copyright: "December 2023",
     licence: "AGPL-3.0",
   },
   uptodateForm: INITIALIZED_UPTODATEFORM,
@@ -22,6 +25,10 @@ const initialState: contextSliceType = {
   isAdmin: false,
   search: "",
   isLoaderShip: false,
+  displayControlsType: localStorage.getItem(
+    "displayControlsAsList"
+  ) as DisplayControlsType,
+  authToken: "",
 };
 
 export const contextSlice = createSlice({
@@ -63,6 +70,13 @@ export const contextSlice = createSlice({
     setIsLoaderShip(state, value) {
       state.isLoaderShip = value.payload;
     },
+    setDisplayControlsAsList(state, value) {
+      localStorage.setItem("displayControlsAsList", value.payload);
+      state.displayControlsType = value.payload;
+    },
+    setAuthToken(state, value) {
+      state.authToken = value.payload;
+    },
   },
 });
 
@@ -76,5 +90,7 @@ export const {
   setIsAdmin,
   setSearch,
   setIsLoaderShip,
+  setDisplayControlsAsList,
+  setAuthToken,
 } = contextSlice.actions;
 export default contextSlice.reducer;

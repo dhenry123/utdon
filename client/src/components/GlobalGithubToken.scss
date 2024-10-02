@@ -1,0 +1,53 @@
+@import "../app/css/root.scss";
+.GlobalGithubToken {
+  align-self: center;
+  justify-self: center;
+  width: 40vw;
+  &.Block {
+    display: flex;
+    flex-direction: column;
+    .groupButtons {
+      margin: $margin-default;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      column-gap: $columngap-default;
+    }
+    .githubtoken {
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: left;
+        column-gap: $columngap-default;
+        .explain {
+          width: 100%;
+          padding: 0.5rem;
+          display: flex;
+          flex-direction: column;
+        }
+        .input {
+          display: flex;
+          flex-direction: row;
+          width: 75%;
+          justify-items: center;
+          align-items: center;
+          column-gap: $columngap-default;
+          .inputgeneric {
+            width: auto;
+            flex-grow: 1;
+          }
+          .ButtonGeneric {
+            border-radius: $border-radius-round;
+            width: 2rem;
+            height: 2rem;
+            i {
+              font-size: 1rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

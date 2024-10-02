@@ -13,11 +13,17 @@ interface HttpHeaderProps {
   handleOnChange: (key: UptodateFormFields, value: string | string[]) => void;
   headerkey: string;
   headervalue: string;
+  headerkeyField: UptodateFormFields;
+  headervalueField: UptodateFormFields;
+  disabled?: boolean;
 }
 export const HttpHeader = ({
   handleOnChange,
+  headerkeyField,
+  headervalueField,
   headerkey,
   headervalue,
+  disabled,
 }: HttpHeaderProps) => {
   const intl = useIntl();
 
@@ -30,20 +36,23 @@ export const HttpHeader = ({
       })}
               ${intl.formatMessage({ id: "eg" })}:
               - ${intl.formatMessage({
-                id: "Attribut: Authorization ; value: Bearer myauthtoken",
+                id: "Attribute: Authorization ; value: Bearer myauthtoken",
               })}
               - ${intl.formatMessage({
-                id: "Attribut: X-Auth ; value: myauthtoken",
+                id: "Attribute: X-Auth ; value: myauthtoken",
               })}
-
+              - ${intl.formatMessage({
+                id: "For Github => Attribute: Authorization ; value: Bearer [your github token]",
+              })} (${intl.formatMessage({ id: "Bearer is important" })})
               `}
     >
       <InputGeneric
         className="headerhttpkey"
         value={headerkey}
-        placeholder={intl.formatMessage({ id: "HTTP header attribut" })}
+        placeholder={intl.formatMessage({ id: "HTTP header attribute" })}
         title={intl.formatMessage({ id: "HTTP header attribut" })}
-        onChange={(value: string) => handleOnChange("headerkey", value)}
+        onChange={(value: string) => handleOnChange(headerkeyField, value)}
+        disabled={disabled}
       />
       <InputGeneric
         className="headerhttpvalue"
@@ -54,7 +63,8 @@ export const HttpHeader = ({
           id: "HTTP header attribute value",
         })}
         value={headervalue}
-        onChange={(value: string) => handleOnChange("headervalue", value)}
+        onChange={(value: string) => handleOnChange(headervalueField, value)}
+        disabled={disabled}
       />
     </FieldSet>
   );

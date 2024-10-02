@@ -9,7 +9,7 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: "NewComponent/HttpHeader",
+  title: "UI/HttpHeader",
   component: HttpHeader,
   decorators: [withRouter],
   parameters: {
@@ -46,6 +46,8 @@ export const Primary: Story = {
     handleOnChange: () => {},
     headerkey: "",
     headervalue: "",
+    headerkeyField: "exprGithub",
+    headervalueField: "exprGithub",
   },
   // if you need to get a specific render see SelectArs component...
   // render: (args) => Component(args),

@@ -21,7 +21,7 @@ interface FieldSetApiEntrypointProps {
   method: string;
   commandTitle: string;
   body?: string;
-  userAuthBearer: string;
+  userAuthToken: string;
 }
 export const FieldSetApiEntrypoint = ({
   className,
@@ -29,7 +29,7 @@ export const FieldSetApiEntrypoint = ({
   method,
   commandTitle,
   body,
-  userAuthBearer,
+  userAuthToken,
 }: FieldSetApiEntrypointProps) => {
   const intl = useIntl();
 
@@ -82,7 +82,7 @@ export const FieldSetApiEntrypoint = ({
         <div className="command" ref={divRef}>
           {`curl -s ${kParameter ? "-k" : ""} ${
             method && method !== "GET" ? `-X ${method}` : ""
-          } ${userAuthBearer ? `-H "Authorization: ${userAuthBearer}"` : ""} ${
+          } ${userAuthToken ? `-H "Authorization: ${userAuthToken}"` : ""} ${
             body ? `-H "Content-Type: application/json" --data '${body}'` : ""
           } ${url}`}
         </div>
@@ -93,7 +93,7 @@ export const FieldSetApiEntrypoint = ({
           title={intl.formatMessage({ id: "Copy command to the clipboard" })}
         />
       </div>
-      {/* // only if https, is certificate self-signed ?? */}
+      {/* if this server use https protocol with self-signed certificate, curl needs -k */}
       {window.location.protocol === "https:" ? (
         <CheckBox
           onChange={(event) => {
@@ -105,7 +105,7 @@ export const FieldSetApiEntrypoint = ({
             }, 50);
           }}
           label={intl.formatMessage({
-            id: "This secure connection use a self signed certificate",
+            id: "The https connection to the 'Utdon' server uses a self-signed certificate",
           })}
           checked={isChecked}
         />

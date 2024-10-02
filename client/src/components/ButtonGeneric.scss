@@ -18,21 +18,21 @@
   }
   &.disabled,
   &:disabled > .label {
-    background-color: $color-warning !important;
+    background-color: $background-color-warning !important;
     color: $color-text-secondary !important;
     &:hover {
       cursor: not-allowed;
     }
   }
   &.round {
-    border-radius: 100%;
+    border-radius: $border-radius-round;
   }
   &.success {
     background-color: $color-success;
     color: $color-text-secondary;
   }
   &.warning {
-    background-color: $color-warning;
+    background-color: $background-color-warning;
     color: $color-text-secondary;
   }
 }
@@ -40,5 +40,5 @@
   cursor: pointer;
 }
 .ButtonGeneric:focus {
-  border-color: red;
+  border-color: $button-generic-border-color-focus;
 }

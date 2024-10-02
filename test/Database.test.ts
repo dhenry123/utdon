@@ -30,6 +30,8 @@ const control: UptodateForm = {
   urlProduction: "https://xxxxxxxx",
   headerkey: "",
   headervalue: "",
+  headerkeyGit: "",
+  headervalueGit: "",
   scrapTypeProduction: "json",
   exprProduction: "join('.',*)",
   urlGitHub: "https://xxxxxxxxx",
@@ -44,6 +46,7 @@ const control: UptodateForm = {
   compareResult: null,
   uuid: "",
   groups: ["admin"],
+  typeRepo: "github",
 };
 
 // Special transport - For testing: error has been flushed by winston

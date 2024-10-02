@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { DisplayControls } from "./DisplayControls";
+import { UrlLinkButtons } from "./UrlLinkButtons";
 import {
   reactRouterParameters,
   withRouter,
 } from "storybook-addon-remix-react-router";
 
 const meta = {
-  title: "Features/DisplayControls",
-  component: DisplayControls,
+  title: "UI/UrlLinkButtons",
+  component: UrlLinkButtons,
   decorators: [withRouter],
   parameters: {
     layout: "fullscreen",
@@ -18,11 +18,13 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {},
-} satisfies Meta<typeof DisplayControls>;
+} satisfies Meta<typeof UrlLinkButtons>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
-  args: {},
+  args: {
+    url: "https://github.com/dhenry123/utdon",
+  },
 };

@@ -98,6 +98,8 @@ describe("Features", () => {
       urlProduction: "https://demo.immich.app/api/server-info/version",
       headerkey: "",
       headervalue: "",
+      headerkeyGit: "",
+      headervalueGit: "",
       scrapTypeProduction: "json",
       exprProduction: "{prefix: 'v',test:join('.',*)}|join('',*)",
       urlGitHub: "https://github.com/immich-app/immich",
@@ -114,6 +116,7 @@ describe("Features", () => {
       isPause: true,
       compareResult: null,
       groups: [],
+      typeRepo: "github",
     })
       .then((result) => {
         return result;

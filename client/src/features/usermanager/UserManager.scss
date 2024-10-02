@@ -2,11 +2,6 @@
 
 $usermanagerbuttonsize: 2rem;
 .UserManager {
-  $color-border: #303030;
-  @media (prefers-color-scheme: dark) {
-    $color-border: #e0e0e0;
-  }
-
   .title {
     display: flex;
     flex-direction: row;
@@ -18,11 +13,27 @@ $usermanagerbuttonsize: 2rem;
       padding-top: 0;
     }
     .ButtonGeneric {
-      border-radius: 100%;
+      border-radius: $border-radius-round;
       width: $usermanagerbuttonsize;
       height: $usermanagerbuttonsize;
       i {
         font-size: 1rem;
+      }
+    }
+  }
+  .Block {
+    .dropdown-container {
+      @media (prefers-color-scheme: dark) {
+        border: $border-default-dark;
+        background-color: $background-color-dark;
+        color: $color-text-primary-dark;
+      }
+      .dropdown-content * {
+        @media (prefers-color-scheme: dark) {
+          background-color: $background-color-dark;
+          color: $color-text-primary-dark;
+          border: none;
+        }
       }
     }
   }
@@ -51,7 +62,10 @@ $usermanagerbuttonsize: 2rem;
     width: 100%;
     button {
       background-color: transparent !important;
-      color: white !important;
+      color: $color-text-secondary !important;
+    }
+    @media (prefers-color-scheme: dark) {
+      color: $color-text-primary-dark !important;
     }
   }
   .flex-table {
@@ -60,23 +74,27 @@ $usermanagerbuttonsize: 2rem;
     grid-template-rows: 100% auto;
     transition: 0.5s;
     &:first-of-type .flex-row {
-      background: $table-header;
+      background: transparent;
       color: $font-color-header;
     }
     &.row {
       min-height: 3rem;
       &:hover {
-        background: #dbdbdb;
-        border-radius: 6px;
-        button {
-          background-color: transparent !important;
-          color: rgb(114, 114, 114) !important;
-          &:hover {
-            color: $color-warning !important;
-          }
-        }
+        background: $userManager-row-hover-background;
+        border-radius: $border-radius-default;
         @media (prefers-color-scheme: dark) {
           color: $color-text-primary;
+          background: $userManager-row-hover-background-dark;
+        }
+        button {
+          background-color: transparent !important;
+          color: $color-text-secondary !important;
+          @media (prefers-color-scheme: dark) {
+            color: $color-text-primary-dark !important;
+          }
+          &:hover {
+            color: $palette-theme-origin-color-12 !important;
+          }
         }
       }
       .groups {

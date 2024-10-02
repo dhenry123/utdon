@@ -14,7 +14,6 @@ WORKDIR /app
 
 # Server
 COPY ./src/ ./src/
-RUN rm -f ./genSwaggerJson.ts
 COPY ./openapi.yaml .
 COPY ./package.json .
 COPY ./locales ./locales

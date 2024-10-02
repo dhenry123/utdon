@@ -6,11 +6,26 @@
   row-gap: $rowgap-default;
   padding: $padding-default;
   width: 100%;
+  .nameandfixed {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    margin-right: 2rem;
+    .FieldSet {
+      width: 100% !important;
+    }
+  }
   .Block {
     flex-wrap: wrap;
-    align-items: stretch;
+    align-items: center;
+    .FieldSet {
+      align-self: flex-start;
+    }
     &.filter {
       flex-direction: row;
+    }
+    .flogo {
+      align-self: center;
     }
     .expression {
       flex-grow: 1;
@@ -32,16 +47,43 @@
       .inputgeneric {
         width: 90%;
       }
-      width: 25%;
     }
     .getcontent {
+      margin: 0 8px;
+      width: 10rem;
+      word-wrap: break-word;
+    }
+    .nextstep {
       display: flex;
       flex-direction: row;
       width: max-content;
-      align-items: flex-start;
+      align-self: center;
+      flex-grow: 1;
+      justify-content: right;
+      .ButtonGeneric {
+        width: max-content;
+        margin: 0 8px;
+      }
     }
     .groups {
       min-width: 15rem;
+      .dropdown-container {
+        border: $border-default;
+        color: $color-text-primary;
+        @media (prefers-color-scheme: dark) {
+          border: $border-default-dark;
+          background-color: $background-color-dark;
+          color: $color-text-primary-dark;
+        }
+        .dropdown-content * {
+          color: $color-text-primary;
+          @media (prefers-color-scheme: dark) {
+            background-color: $background-color-dark;
+            color: $color-text-primary-dark;
+            border: none;
+          }
+        }
+      }
     }
     .content {
       width: 100%;
@@ -55,7 +97,8 @@
         overflow-y: auto;
 
         @media (prefers-color-scheme: dark) {
-          color: $text-dark;
+          color: $color-text-primary-dark;
+          border: $border-default-dark;
         }
       }
     }

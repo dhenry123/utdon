@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import {
   INITIALIZED_NEWUSER,
   INITIALIZED_TOAST,
+  TOAST_DEFAULT_LIFETIME,
 } from "../../../../src/Constants";
 import {
   ErrorServer,
@@ -91,7 +92,9 @@ export const UserManager = () => {
             ...INITIALIZED_TOAST,
             severity: "error",
             sticky: true,
-            detail: intl.formatMessage({ id: servererror.error }),
+            detail: `UserManager: ${intl.formatMessage({
+              id: servererror.error,
+            })}`,
           })
         );
       }
@@ -186,7 +189,7 @@ export const UserManager = () => {
         detail: `${intl.formatMessage({
           id: `You can assign a new password, or groups to the selected user`,
         })}: ${user.login}`,
-        life: 8000,
+        life: TOAST_DEFAULT_LIFETIME,
       })
     );
   };
@@ -268,6 +271,7 @@ export const UserManager = () => {
               value={formData.login}
               onChange={(value) => handleOnChange("login", value)}
               autoComplete="off"
+              disabled={editMode}
             />
           </FieldSet>
           <FieldSet

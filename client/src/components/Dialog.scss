@@ -21,35 +21,36 @@
     z-index: 11;
     .modal-content {
       position: relative;
-      background-color: white;
+      background-color: $background-color;
       border-radius: $border-radius-default;
       margin: auto;
       padding: $padding-default;
       width: max-content;
-      max-width: 90vw;
+      width: auto;
+      max-width: 80vw;
       -webkit-animation-name: animatetop;
       -webkit-animation-duration: 0.4s;
       animation-name: animatetop;
       animation-duration: 0.4s;
-      max-height: 94vh;
+      max-height: 90vh;
       overflow-y: auto;
-
+      border: $border-default;
       @media (prefers-color-scheme: dark) {
-        background-color: $background-dark;
-        color: $text-dark;
+        background-color: $background-color-dark;
+        color: $color-text-primary-dark;
+        border: $border-default-dark;
       }
 
       .modal-header {
         padding: 0 0.5rem;
         border-radius: $border-radius-default $border-radius-default 0 0;
-        background-color: $dialog-header-background-color;
         color: $dialog-header-color;
         display: flex;
         align-items: start;
         min-width: 30vw;
         @media (prefers-color-scheme: dark) {
-          background-color: $background-dark;
-          color: $text-dark;
+          background-color: $background-color-dark;
+          color: $color-text-primary-dark;
         }
         h2 {
           text-transform: none;
@@ -67,7 +68,7 @@
           background-color: $dialog-header-button-background-color;
           color: $dialog-header-button-color;
           border: none;
-          border-radius: 100%;
+          border-radius: $border-radius-round;
           .ti {
             font-size: 0.7rem;
           }

@@ -6,6 +6,7 @@ import {
   withRouter,
 } from "storybook-addon-remix-react-router";
 import { useState } from "react";
+import React from "react";
 
 const meta = {
   title: "Components/Input/ImageUploader",

@@ -1,24 +1,61 @@
-// colors
-$color-text-primary: #363535;
-$color-text-secondary: #ebebeb;
-$color-primary-focus: #5096c5;
-$color-primary-box-shadow: #e7e4e4;
-$color-dark-box-shadow: #515151;
-$color-success: #653799;
-$color-error: #f5637e;
-$color-warning: #ef145c;
-$color-info: #5b5de9;
-$color-placeholder: #7c7a7a;
+// colors palette - theme original
+$palette-theme-origin-color-1: #656565;
+$palette-theme-origin-color-2: #8c6cb1;
+$palette-theme-origin-color-3: #f8a6c1;
+$palette-theme-origin-color-4: #f2598b;
+$palette-theme-origin-color-5: #0d1117;
+$palette-theme-origin-color-6: #cfcfcf;
+$palette-theme-origin-color-7: #5096c5;
+$palette-theme-origin-color-8: #e7e4e4;
+$palette-theme-origin-color-9: #515151;
+$palette-theme-origin-color-10: #653799;
+$palette-theme-origin-color-11: #f5637e;
+$palette-theme-origin-color-12: #ef145c;
+$palette-theme-origin-color-13: #5b5de9;
+$palette-theme-origin-color-14: #7c7a7a;
+$palette-theme-origin-color-15: #008000;
+$palette-theme-origin-color-16: #ff0000;
+$palette-theme-origin-color-17: #ffa500;
+$palette-theme-origin-color-18: #615f5f;
+$palette-theme-origin-color-19: #f2598b;
+$palette-theme-origin-color-20: #fcf6f6;
+$palette-theme-origin-color-21: #e7dfdf;
+$palette-theme-origin-color-22: #d6d5d5;
+$palette-theme-origin-color-23: #dbdbdb;
+$palette-theme-origin-color-24: #00000014;
+$palette-theme-origin-color-25: #fffafa;
+$palette-theme-origin-color-26: #424242;
+$palette-theme-origin-color-27: #ebebeb;
+$palette-theme-origin-color-28: #f7f5f5;
+$palette-theme-origin-color-29: #1c1c1c;
+$palette-theme-origin-color-30: #f7cf87;
 
-$badge-color-success: #008000;
-$badge-color-error: #ff0000;
-$badge-color-warning: #ffa500;
+$color-text-primary: $palette-theme-origin-color-5;
+$color-text-primary-dark: $palette-theme-origin-color-6;
+
+$color-text-secondary: $palette-theme-origin-color-6;
+$color-text-secondary-dark: $palette-theme-origin-color-5;
+
+$color-primary-focus: $palette-theme-origin-color-7;
+
+$color-primary-box-shadow: $palette-theme-origin-color-8;
+$color-primary-box-shadow-dark: $palette-theme-origin-color-9;
+
+$color-success: $palette-theme-origin-color-10;
+$color-error: $palette-theme-origin-color-11;
+$color-error-dark: $palette-theme-origin-color-11;
+
+$color-info: $palette-theme-origin-color-13;
+$color-placeholder: $palette-theme-origin-color-14;
 
 $button-generic-background-color: $color-text-secondary;
 $button-generic-color: $color-text-primary;
 
-$background-dark: $color-text-primary;
-$text-dark: $color-text-secondary;
+$background-color: $palette-theme-origin-color-25;
+$background-color-dark: $palette-theme-origin-color-5;
+$background-color-warning: $palette-theme-origin-color-12;
+$background-color-controls-table: $palette-theme-origin-color-28;
+$background-color-controls-table-dark: $palette-theme-origin-color-29;
 
 // padding - margin
 $padding-default: 0.5rem 0.5rem;
@@ -31,14 +68,48 @@ $rowgap-default: 1rem;
 $columngap-default: 1rem;
 
 // borders
-$border-radius-default: 2px;
-$border-radius-button: 2px;
-$border-default: 1px solid #fcf6f6;
-$badge-component-border-radius: 4px;
+$border-radius-default: 4px;
+$border-radius-button: 4px;
+$border-radius-control: 10px;
+$border-radius-badge: 4px;
+$border-radius-round: 100%;
+$border-radius-toast: 8px;
 
-// shadows
+$border-color: $palette-theme-origin-color-20;
+$border-color-dark: $palette-theme-origin-color-26;
+$border-color-search: $palette-theme-origin-color-2;
+$border-color-search-dark: $palette-theme-origin-color-2;
+$border-default: 1px solid $border-color;
+$border-default-dark: 1px solid $border-color-dark;
+$border-dashed: 1px dashed $border-color;
+$border-dashed-dark: 1px dashed $border-color-dark;
+$border-search: 1px solid $border-color-search;
+$border-search-dark: 1px solid $border-color-search-dark;
+
+// Badges
+$badge-background-color: $palette-theme-origin-color-18;
+$badge-background-color-success: $palette-theme-origin-color-15;
+$badge-color-success: $palette-theme-origin-color-25;
+$badge-color-success-dark: $palette-theme-origin-color-27;
+$badge-background-color-error: $palette-theme-origin-color-16;
+$badge-color-error: $palette-theme-origin-color-25;
+$badge-color-error-dark: $palette-theme-origin-color-27;
+$badge-background-color-warning: $palette-theme-origin-color-17;
+$badge-color-warning: $palette-theme-origin-color-27;
+$badge-color-warning-dark: $palette-theme-origin-color-27;
+
+$badge-background-color-nostate: $palette-theme-origin-color-30;
+$badge-color-nostate: $palette-theme-origin-color-18;
+$badge-color-nostate-dark: $palette-theme-origin-color-27;
+
+$badge-label-color: $palette-theme-origin-color-27;
+$badge-label-color-dark: $palette-theme-origin-color-27;
+
+// box-shadow
 $boxshadow-default: 4px 4px 10px 2px $color-primary-box-shadow;
-$boxshadow-default-dark: 4px 4px 10px 2px $color-dark-box-shadow;
+$boxshadow-default-dark: none;
+$boxshadow-toast: 3px 1px 3px 1px $color-primary-box-shadow;
+$boxshadow-toast-dark: none;
 
 // inputs
 $input-outline-default: 1px solid $color-primary-focus;
@@ -46,7 +117,6 @@ $input-outline-default: 1px solid $color-primary-focus;
 // Toast
 $toast-border-size: 6px;
 $toast-border-type: solid;
-$toast-border-radius: 6px;
 $toast-color-info: $color-info;
 $toast-color-border-info: $toast-border-size $toast-border-type
   $toast-color-info;
@@ -56,16 +126,17 @@ $toast-color-border-success: $toast-border-size $toast-border-type
 $toast-color-error: $color-error;
 $toast-color-border-error: $toast-border-size $toast-border-type
   $toast-color-error;
-$toast-color-warn: $color-warning;
+$toast-color-warn: $palette-theme-origin-color-12;
 $toast-color-border-warn: $toast-border-size $toast-border-type
   $toast-color-warn;
+$toatst-color-detail: $palette-theme-origin-color-1;
+$toatst-color-button: $palette-theme-origin-color-1;
 
 // Dialog
-$dialog-color-background: black;
+$dialog-color-background: $palette-theme-origin-color-5;
 $dialog-opacity: 0.5;
-$dialog-background-color: white;
-$dialog-header-background-color: white;
-$dialog-header-color: #615f5f;
+$dialog-background-color: $palette-theme-origin-color-6;
+$dialog-header-color: $palette-theme-origin-color-18;
 $dialog-header-button-background-color: $color-text-secondary;
 $dialog-header-button-color: $color-text-primary;
 
@@ -76,21 +147,35 @@ $app-logo-height: $app-logo-width;
 $form-scrap-content-height: 10vh;
 
 // flex tables
-$table-header: transparent;
 $font-color-header: $color-text-primary;
-.logo {
-  cursor: pointer;
-  width: 180px;
-  height: 50px;
-  align-self: flex-start;
-  background-image: url("/assets/MytinyDC_logo-brand-full.png");
-  background-repeat: no-repeat;
 
-  @media (prefers-color-scheme: dark) {
-    background-image: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
-    background-size: 180px 50px;
-  }
-}
+//button
+$button-search-color: $palette-theme-origin-color-19;
+$button-search-color-dark: $palette-theme-origin-color-19;
+$button-generic-border-color-focus: $palette-theme-origin-color-16;
+
+//stepper
+$stepper-background-color: $palette-theme-origin-color-21;
+$stepper-background-color-dark: $palette-theme-origin-color-21;
+
+//toast
+
+//UserManager
+$userManager-row-hover-background: $palette-theme-origin-color-23;
+$userManager-row-hover-background-dark: $palette-theme-origin-color-23;
+
+//loadership
+$loadership-background-color: $palette-theme-origin-color-10;
+
+//Summary
+$sumury-keyframes-greenPulse-color-1: $palette-theme-origin-color-2;
+$sumury-keyframes-greenPulse-color-2: $palette-theme-origin-color-3;
+$sumury-keyframes-greenPulse-color-3: $palette-theme-origin-color-4;
+
+//logo
+
+$logo-background-image: url("/assets/MytinyDC_logo-brand-full.png");
+$logo-background-image-dark: url("/assets/MytinyDC_logo-brand-full-darkmode.png");
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -99,7 +184,7 @@ $font-color-header: $color-text-primary;
 
   color-scheme: light dark;
   color: $color-text-primary;
-  background-color: white;
+  background-color: $background-color;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -113,7 +198,10 @@ body,
 #root {
   width: 100vw;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: $background-color;
+  @media (prefers-color-scheme: dark) {
+    background-color: $background-color-dark;
+  }
 }
 body {
   margin: 0;
@@ -131,23 +219,21 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  background-color: inherit;
 }
 
-// dark mode
+legend,
+h1,
+h2,
+h3 {
+  color: $color-text-primary;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    color: $text-dark;
-    background-color: $background-dark;
-  }
-
-  .main {
-    background-color: $background-dark;
-  }
-
   legend,
   h1,
-  h2 {
-    color: $text-dark;
+  h2,
+  h3 {
+    color: $color-text-primary-dark;
   }
 }

@@ -3,7 +3,7 @@
  * @license AGPL3
  */
 
-import { getLatestRelease } from "./helperGithub";
+import { getLatestRelease, getTypeGitRepo } from "./helperGitRepository";
 import { filterJson, filterText } from "./helperProdVersionReader";
 import { HTTPMethods, UptoDateOrNotState, UptodateForm } from "../Global.types";
 
@@ -13,11 +13,6 @@ export const scrapUrl = async (
   customHttpHeader?: string
 ): Promise<string> => {
   let authHeader: RequestInit = { method: method };
-
-  // // NodeJS 21 @todo impossible to implement and dont want to add nodes-fetch
-  // const agent = new https.Agent({
-  //   rejectUnauthorized: false, // This option disables certificate validation
-  // });
   const header = new Headers();
   if (customHttpHeader) {
     const split = customHttpHeader.split(":");
@@ -26,7 +21,7 @@ export const scrapUrl = async (
       authHeader = { ...authHeader, headers: header };
     }
   }
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
   const content = await fetch(`${url}`, { ...authHeader }).then(
     async (response) => {
       if (!response.ok) {
@@ -38,7 +33,6 @@ export const scrapUrl = async (
       return text;
     }
   );
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "1";
   return content;
 };
 
@@ -95,24 +89,36 @@ export const getUpToDateOrNotState = async (
   // eslint-disable-next-line no-async-promise-executor
   return await new Promise(async (resolv, reject) => {
     try {
-      // Getting production version
-      const productionVersion = await scrapUrl(
-        record.urlProduction,
-        "GET",
-        record.headerkey ? `${record.headerkey}:${record.headervalue}` : ""
-      )
-        .then(async (output) => {
-          let version = "";
-          if (record.scrapTypeProduction === "json") {
-            version = filterJson(output as string, record.exprProduction || "");
-          } else if (record.scrapTypeProduction === "text") {
-            version = filterText(output as string, record.exprProduction || "");
-          }
-          return version;
-        })
-        .catch((error: Error) => {
-          reject(new Error(`${error.toString()}-${record.urlProduction}`));
-        });
+      let productionVersion: string | void = "";
+      // fixed version
+      if (record.fixed) {
+        productionVersion = record.fixed;
+      } else {
+        // Getting production version
+        productionVersion = await scrapUrl(
+          record.urlProduction,
+          "GET",
+          record.headerkey ? `${record.headerkey}:${record.headervalue}` : ""
+        )
+          .then(async (output) => {
+            let version = "";
+            if (record.scrapTypeProduction === "json") {
+              version = filterJson(
+                output as string,
+                record.exprProduction || ""
+              );
+            } else if (record.scrapTypeProduction === "text") {
+              version = filterText(
+                output as string,
+                record.exprProduction || ""
+              );
+            }
+            return version;
+          })
+          .catch((error: Error) => {
+            reject(new Error(`${error.toString()}-${record.urlProduction}`));
+          });
+      }
       if (!productionVersion) {
         reject(
           new Error(
@@ -123,7 +129,11 @@ export const getUpToDateOrNotState = async (
       // Getting Github version
       const githubVersion = await getLatestRelease(
         record.urlGitHub,
-        record.exprGithub
+        getTypeGitRepo(record.urlGitHub),
+        record.exprGithub,
+        record.headerkeyGit
+          ? `${record.headerkeyGit}:${record.headervalueGit}`
+          : ""
       )
         .then((latest) => {
           return latest;

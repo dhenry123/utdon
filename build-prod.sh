@@ -2,11 +2,14 @@
 # @author DHENRY for mytinydc.com
 # @license AGPL3
 
+set -e
+
 source .envlocaldev
 # login to github
 echo $CR_PAT | sudo docker login ghcr.io -u $USERNAME --password-stdin
 
 # Prepare buildx multiarch
+sudo docker buildx rm multiarch
 sudo docker buildx create --name multiarch --use
 
 # jq is needed

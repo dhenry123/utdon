@@ -67,7 +67,9 @@ export const ActionsSettings = ({
             onChange={(value) =>
               handleOnChange("urlCronJobMonitoringAuth", value)
             }
-            placeholder={`xxxxxxx`}
+            placeholder={intl.formatMessage({
+              id: "Value for Autorization header attribut (eg: Bearer yourtoken)",
+            })}
           />
         </FieldSet>
       </Block>
@@ -103,16 +105,19 @@ export const ActionsSettings = ({
             className=""
             value={activeUptodateForm.urlCICDAuth}
             onChange={(value) => handleOnChange("urlCICDAuth", value)}
-            placeholder={`xxxxxxx`}
+            placeholder={intl.formatMessage({
+              id: "Value for Autorization header attribut (eg: Bearer yourtoken)",
+            })}
           />
         </FieldSet>
-        <FieldSet legend={intl.formatMessage({ id: "Next step" })}>
+        <div className="nextstep">
           <ButtonGeneric
+            icon="arrow-right"
             className="success"
             onClick={() => onDone(true)}
-            label={intl.formatMessage({ id: "Next" })}
+            label={intl.formatMessage({ id: "Next step" })}
           />
-        </FieldSet>
+        </div>
       </Block>
     </div>
   );

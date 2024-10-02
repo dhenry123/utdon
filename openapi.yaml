@@ -26,6 +26,11 @@ components:
         - POST
         - PUT
         - DELETE
+    TypeGitRepo:
+      type: string
+      enum:
+        - github
+        - gitea
     UptoDateOrNotState:
       type: object
       properties:
@@ -57,22 +62,29 @@ components:
         ts:
           type: number
           description: Execution timestamp
+
     UptodateForm:
       type: object
       description: control record
       properties:
-        uuid:
-          type: string
-          description: control uniq id
-        name:
-          type: string
-          description: name of control
-        logo:
-          type: string
-          description: base64 html logo src
         urlProduction:
           type: string
           description: url of the production application to be verified
+        headerkey:
+          type: string
+          description: "Scrap production: Header key"
+        headervalue:
+          type: string
+          description: "Scrap production: Header value"
+        headerkeyGit:
+          type: string
+          description: "Scrap git repo: Header key"
+        headervalueGit:
+          type: string
+          description: "Scrap git repo: Header value"
+        typeRepo:
+          $ref: "#/components/schemas/TypeGitRepo"
+          description: "Type of git repository"
         scrapTypeProduction:
           type: string
           description: type of content
@@ -81,7 +93,7 @@ components:
           description: Expression to apply to get the version
         urlGitHub:
           type: string
-          description: url of the github repository
+          description: url of the git repository
         exprGithub:
           type: string
           description: Expression to apply to get the version
@@ -103,6 +115,15 @@ components:
         urlCICDAuth:
           type: string
           description: Api Key to provide to call url of the CI/CD
+        name:
+          type: string
+          description: name of control
+        logo:
+          type: string
+          description: base64 html logo src
+        uuid:
+          type: string
+          description: control uniq id
         isPause:
           type: boolean
           description: When calling compare API if paused, this control will not be included in the process
@@ -118,7 +139,7 @@ servers:
   - url: /api/v1
 paths:
   /action/compare/{controlUuid}/{setStatus}:
-    get:
+    put:
       summary: Call up the comparison method and can update the monitoring status
       description: Call up the comparison method and can update the monitoring status
       security:

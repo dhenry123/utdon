@@ -17,7 +17,14 @@ export const mytinydcUPDONApi = createApi({
   // Query service name
   reducerPath: "api",
   // tag types
-  tagTypes: ["User", "Users", "Groups", "Controls"],
+  tagTypes: [
+    "User",
+    "Users",
+    "Groups",
+    "Controls",
+    "AuthToken",
+    "GlobalGithubToken",
+  ],
   // Url Base API
   baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
@@ -27,17 +34,21 @@ export const mytinydcUPDONApi = createApi({
         url: `/userlogin`,
         body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User", "Controls", "AuthToken"],
     }),
-    getUserIsAuthenticated: builder.query({
+    getUserIsAuthenticated: builder.mutation({
       query: () => ({
+        method: "GET",
         url: `/isauthenticated/`,
       }),
+      invalidatesTags: ["User", "Controls", "AuthToken", "GlobalGithubToken"],
     }),
-    getUserLogout: builder.query({
+    getUserLogout: builder.mutation({
       query: () => ({
+        method: "GET",
         url: `/userlogout`,
       }),
+      invalidatesTags: ["User", "Controls", "AuthToken", "GlobalGithubToken"],
     }),
     getScrapUrl: builder.query({
       query: (data: {
@@ -58,17 +69,20 @@ export const mytinydcUPDONApi = createApi({
               responseHandler: (response) => response.text(),
             },
     }),
-    postCheck: builder.mutation({
-      query: (checkData: UptodateForm) => ({
+    postUptodateForm: builder.mutation({
+      query: (uptodateFormData: UptodateForm) => ({
         method: "POST",
         url: `/control`,
-        body: checkData,
+        body: uptodateFormData,
       }),
+      invalidatesTags: ["Controls"],
     }),
-    getCompare: builder.query({
+    putCompare: builder.mutation({
       query: (uuid: string) => ({
         url: `/action/compare/${encodeURIComponent(uuid)}/0`,
+        method: "PUT",
       }),
+      invalidatesTags: ["Controls"],
     }),
     getControl: builder.query({
       query: (uuidOrAll: string) => ({
@@ -81,6 +95,7 @@ export const mytinydcUPDONApi = createApi({
         method: "DELETE",
         url: `/control/${uuid}`,
       }),
+      invalidatesTags: ["Controls"],
     }),
     sendStateExternalMonitoring: builder.mutation({
       query: (data: ActionStatusType) => ({
@@ -105,17 +120,19 @@ export const mytinydcUPDONApi = createApi({
         body: data,
       }),
     }),
-    getBearer: builder.mutation({
+    getAuthToken: builder.query({
       query: () => ({
         method: "GET",
-        url: `/bearer/`,
+        url: `/authtoken/`,
       }),
+      providesTags: ["AuthToken"],
     }),
-    putBearer: builder.mutation({
+    putAuthToken: builder.mutation({
       query: () => ({
         method: "PUT",
-        url: `/bearer/`,
+        url: `/authtoken/`,
       }),
+      invalidatesTags: ["AuthToken"],
     }),
     getUsers: builder.query({
       query: () => ({
@@ -172,6 +189,20 @@ export const mytinydcUPDONApi = createApi({
         url: `/userGroups/`,
       }),
     }),
+    pubGlobalgithubtoken: builder.mutation({
+      query: (data: { token: string }) => ({
+        method: "PUT",
+        url: `/globalgithubtoken/`,
+        body: data,
+      }),
+      invalidatesTags: ["GlobalGithubToken"],
+    }),
+    getGlobalgithubtoken: builder.query({
+      query: () => ({
+        url: `/globalgithubtoken/`,
+      }),
+      providesTags: ["GlobalGithubToken"],
+    }),
   }),
 });
 
@@ -181,4 +212,6 @@ export const {
   useGetUsersQuery,
   useGetUserLoginQuery,
   useGetGroupsQuery,
+  useGetAuthTokenQuery,
+  useGetGlobalgithubtokenQuery,
 } = mytinydcUPDONApi;
