@@ -47,7 +47,7 @@ export const ControlManager = () => {
    */
   const [steps, setSteps] = useState<StepType[]>([
     { label: intl.formatMessage({ id: "Service to be monitored" }) },
-    { label: intl.formatMessage({ id: "Github repository" }) },
+    { label: intl.formatMessage({ id: "Git repository" }) },
     { label: intl.formatMessage({ id: "Action to perform" }) },
     { label: intl.formatMessage({ id: "Summary" }) },
   ]);

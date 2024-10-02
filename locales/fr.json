@@ -131,7 +131,7 @@
   "Action": "Action",
   "Exclude prefix and keep x.y & x.y.z": "Exclure le prefixe & garder x.y & x.y.z",
   "Service to be monitored": "Service à contrôler",
-  "Github repository": "Dépôt Github",
+  "Git repository": "Dépôt git",
   "Action to perform": "Action à effectuer",
   "API Documentation": "Documentation API",
   "API entry point for the github version of the latest comparison": "Point d'entrée de l'API pour obtenir la version github de la dernière comparaison",
