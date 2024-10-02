@@ -2,11 +2,14 @@
 # @author DHENRY for mytinydc.com
 # @license AGPL3
 
+set -e
+
 source .envlocaldev
 # login to github
 echo $CR_PAT | sudo docker login ghcr.io -u $USERNAME --password-stdin
 
 # Prepare buildx multiarch
+sudo docker buildx rm multiarch
 sudo docker buildx create --name multiarch --use
 
 # jq is needed
@@ -19,4 +22,4 @@ NOCACHE="--no-cache"
 PLATFORM="--platform=linux/arm64,linux/amd64"
 TAG=$(jq '.version' package.json | sed -E 's/^"|"$//g')
 PROGRESS="--progress plain"
-sudo docker buildx build --load $PROGRESS $NOCACHE $PLATFORM -t ghcr.io/$USERNAME/utdon:$TAG -f Dockerfile .
+sudo docker buildx build --push $PROGRESS $NOCACHE $PLATFORM -t ghcr.io/$USERNAME/utdon:$TAG -f Dockerfile .
