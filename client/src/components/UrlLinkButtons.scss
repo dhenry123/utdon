@@ -1,13 +1,13 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .UrlLinkButtons {
   display: flex;
   width: 100%;
   flex-direction: row;
   align-items: center;
   justify-content: left;
-  column-gap: $columngap-default;
+  column-gap: root.$columngap-default;
   .ButtonGeneric {
-    border-radius: $border-radius-round;
+    border-radius: root.$border-radius-round;
   }
   .urlhidden {
     display: none;

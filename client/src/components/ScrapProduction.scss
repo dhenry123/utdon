@@ -1,10 +1,10 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .ScrapProduction {
   display: flex;
   flex-direction: column;
-  row-gap: $rowgap-default;
-  padding: $padding-default;
+  row-gap: root.$rowgap-default;
+  padding: root.$padding-default;
   width: 100%;
   .nameandfixed {
     display: flex;
@@ -68,18 +68,18 @@
     .groups {
       min-width: 15rem;
       .dropdown-container {
-        border: $border-default;
-        color: $color-text-primary;
+        border: root.$border-default;
+        color: root.$color-text-primary;
         @media (prefers-color-scheme: dark) {
-          border: $border-default-dark;
-          background-color: $background-color-dark;
-          color: $color-text-primary-dark;
+          border: root.$border-default-dark;
+          background-color: root.$background-color-dark;
+          color: root.$color-text-primary-dark;
         }
         .dropdown-content * {
-          color: $color-text-primary;
+          color: root.$color-text-primary;
           @media (prefers-color-scheme: dark) {
-            background-color: $background-color-dark;
-            color: $color-text-primary-dark;
+            background-color: root.$background-color-dark;
+            color: root.$color-text-primary-dark;
             border: none;
           }
         }
@@ -88,17 +88,17 @@
     .content {
       width: 100%;
       .scrapContent {
-        border: $border-default;
-        border-radius: $border-radius-default;
+        border: root.$border-default;
+        border-radius: root.$border-radius-default;
         width: 100%;
-        height: $form-scrap-content-height;
-        padding: $padding-default;
+        height: root.$form-scrap-content-height;
+        padding: root.$padding-default;
         overflow-x: hidden;
         overflow-y: auto;
 
         @media (prefers-color-scheme: dark) {
-          color: $color-text-primary-dark;
-          border: $border-default-dark;
+          color: root.$color-text-primary-dark;
+          border: root.$border-default-dark;
         }
       }
     }
@@ -106,10 +106,10 @@
       max-width: 19rem;
       font-weight: bold;
       .error {
-        color: $color-error;
+        color: root.$color-error;
       }
       .success {
-        color: $color-success;
+        color: root.$color-success;
       }
     }
   }

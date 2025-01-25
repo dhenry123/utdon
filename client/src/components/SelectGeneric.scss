@@ -1,15 +1,15 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .SelectGeneric {
   padding: 0.5rem 0.5rem;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s,
     box-shadow 0.2s;
   appearance: none;
-  border-radius: $border-radius-default;
-  border: $border-default;
+  border-radius: root.$border-radius-default;
+  border: root.$border-default;
   @media (prefers-color-scheme: dark) {
-    border: $border-default-dark;
+    border: root.$border-default-dark;
   }
   &:focus {
-    outline: $input-outline-default;
+    outline: root.$input-outline-default;
   }
 }

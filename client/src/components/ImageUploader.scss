@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .ImageUploader {
   .inputUploadNative {
@@ -6,12 +6,12 @@
   }
   .dragDropButtonContainer {
     position: relative;
-    width: $app-logo-width;
-    height: $app-logo-height;
+    width: root.$app-logo-width;
+    height: root.$app-logo-height;
   }
   .imagePpreview {
-    width: $app-logo-width;
-    height: $app-logo-height;
+    width: root.$app-logo-width;
+    height: root.$app-logo-height;
     background-color: transparent;
     position: absolute;
     top: 0;
@@ -23,16 +23,16 @@
     }
   }
   .dragDropButton {
-    width: $app-logo-width;
-    height: $app-logo-height;
+    width: root.$app-logo-width;
+    height: root.$app-logo-height;
     background-color: transparent;
     position: absolute;
-    border: $border-dashed;
+    border: root.$border-dashed;
     top: 0;
     left: 0;
     z-index: 1;
     @media (prefers-color-scheme: dark) {
-      border: $border-dashed-dark;
+      border: root.$border-dashed-dark;
     }
     .upload-button {
       cursor: pointer;
@@ -42,17 +42,17 @@
       border: none;
       font-family: "Oswald", sans-serif;
       background-color: transparent;
-      width: $app-logo-width;
-      height: $app-logo-height;
+      width: root.$app-logo-width;
+      height: root.$app-logo-height;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .upload-button:hover {
-      background-color: $background-color;
+      background-color: root.$background-color;
       font-weight: bold;
       opacity: 0.6;
       @media (prefers-color-scheme: dark) {
-        background-color: $background-color-dark;
+        background-color: root.$background-color-dark;
       }
     }
   }

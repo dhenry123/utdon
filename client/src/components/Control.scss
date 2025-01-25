@@ -1,8 +1,8 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .Control {
   display: flex;
   flex-direction: column;
-  border-radius: $border-radius-control;
+  border-radius: root.$border-radius-control;
   padding: 1rem;
   width: 20vw;
   .identity {
@@ -46,7 +46,7 @@
     .details {
       display: flex;
       align-items: center;
-      column-gap: $columngap-default;
+      column-gap: root.$columngap-default;
       .Badge:hover {
         cursor: pointer;
       }

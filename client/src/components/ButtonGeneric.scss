@@ -1,9 +1,9 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .ButtonGeneric {
-  background-color: $button-generic-background-color;
-  color: $button-generic-color;
-  border-radius: $border-radius-button;
+  background-color: root.$button-generic-background-color;
+  color: root.$button-generic-color;
+  border-radius: root.$border-radius-button;
   border: none;
   padding: 0.5rem;
   font-weight: bold;
@@ -18,27 +18,27 @@
   }
   &.disabled,
   &:disabled > .label {
-    background-color: $background-color-warning !important;
-    color: $color-text-secondary !important;
+    background-color: root.$background-color-warning !important;
+    color: root.$color-text-secondary !important;
     &:hover {
       cursor: not-allowed;
     }
   }
   &.round {
-    border-radius: $border-radius-round;
+    border-radius: root.$border-radius-round;
   }
   &.success {
-    background-color: $color-success;
-    color: $color-text-secondary;
+    background-color: root.$color-success;
+    color: root.$color-text-secondary;
   }
   &.warning {
-    background-color: $background-color-warning;
-    color: $color-text-secondary;
+    background-color: root.$background-color-warning;
+    color: root.$color-text-secondary;
   }
 }
 .ButtonGeneric:hover {
   cursor: pointer;
 }
 .ButtonGeneric:focus {
-  border-color: $button-generic-border-color-focus;
+  border-color: root.$button-generic-border-color-focus;
 }

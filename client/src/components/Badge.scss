@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .Badge {
   display: flex;
@@ -8,53 +8,53 @@
   height: 2rem;
   min-width: 9rem;
   .label {
-    background-color: $badge-background-color;
-    color: $badge-label-color;
-    padding: $padding-badge;
+    background-color: root.$badge-background-color;
+    color: root.$badge-label-color;
+    padding: root.$padding-badge;
     text-transform: lowercase;
     height: inherit;
     width: max-content;
-    border-radius: $border-radius-badge 0 0 $border-radius-badge;
+    border-radius: root.$border-radius-badge 0 0 root.$border-radius-badge;
     display: flex;
     align-items: center;
     @media (prefers-color-scheme: dark) {
-      color: $badge-label-color-dark;
+      color: root.$badge-label-color-dark;
     }
   }
   .value {
-    padding: $padding-badge;
-    border-radius: 0 $border-radius-badge $border-radius-badge 0;
+    padding: root.$padding-badge;
+    border-radius: 0 root.$border-radius-badge root.$border-radius-badge 0;
     font-weight: bold;
     height: inherit;
     width: 100%;
     display: flex;
     align-items: center;
     &.uptodate {
-      background-color: $badge-background-color-success;
-      color: $badge-color-success;
+      background-color: root.$badge-background-color-success;
+      color: root.$badge-color-success;
       @media (prefers-color-scheme: dark) {
-        color: $badge-color-success-dark;
+        color: root.$badge-color-success-dark;
       }
     }
     &.toupdate {
-      background-color: $badge-background-color-error;
-      color: $badge-color-error;
+      background-color: root.$badge-background-color-error;
+      color: root.$badge-color-error;
       @media (prefers-color-scheme: dark) {
-        color: $badge-color-error-dark;
+        color: root.$badge-color-error-dark;
       }
     }
     &.uptodatewithwarn {
-      background-color: $badge-background-color-warning;
-      color: $badge-color-warning;
+      background-color: root.$badge-background-color-warning;
+      color: root.$badge-color-warning;
       @media (prefers-color-scheme: dark) {
-        color: $badge-color-warning-dark;
+        color: root.$badge-color-warning-dark;
       }
     }
     &.nostate {
-      background-color: $badge-background-color-nostate;
-      color: $badge-color-nostate;
+      background-color: root.$badge-background-color-nostate;
+      color: root.$badge-color-nostate;
       @media (prefers-color-scheme: dark) {
-        color: $badge-color-nostate-dark;
+        color: root.$badge-color-nostate-dark;
       }
     }
   }

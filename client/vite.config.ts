@@ -20,4 +20,12 @@ export default defineConfig({
   build: {
     manifest: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: "modern-compiler",
+        silenceDeprecations: ["legacy-js-api"],
+      },
+    },
+  },
 });

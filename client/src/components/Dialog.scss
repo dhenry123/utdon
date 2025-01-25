@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .Dialog {
   // inspired from https://www.w3schools.com/howto/howto_css_modals.asp
   .modal-common {
@@ -9,8 +9,8 @@
     width: 100%;
     height: 100%;
     &.modal {
-      opacity: $dialog-opacity;
-      background-color: $dialog-color-background;
+      opacity: root.$dialog-opacity;
+      background-color: root.$dialog-color-background;
     }
   }
   .modal-container {
@@ -21,10 +21,10 @@
     z-index: 11;
     .modal-content {
       position: relative;
-      background-color: $background-color;
-      border-radius: $border-radius-default;
+      background-color: root.$background-color;
+      border-radius: root.$border-radius-default;
       margin: auto;
-      padding: $padding-default;
+      padding: root.$padding-default;
       width: max-content;
       width: auto;
       max-width: 80vw;
@@ -34,23 +34,23 @@
       animation-duration: 0.4s;
       max-height: 90vh;
       overflow-y: auto;
-      border: $border-default;
+      border: root.$border-default;
       @media (prefers-color-scheme: dark) {
-        background-color: $background-color-dark;
-        color: $color-text-primary-dark;
-        border: $border-default-dark;
+        background-color: root.$background-color-dark;
+        color: root.$color-text-primary-dark;
+        border: root.$border-default-dark;
       }
 
       .modal-header {
         padding: 0 0.5rem;
-        border-radius: $border-radius-default $border-radius-default 0 0;
-        color: $dialog-header-color;
+        border-radius: root.$border-radius-default root.$border-radius-default 0 0;
+        color: root.$dialog-header-color;
         display: flex;
         align-items: start;
         min-width: 30vw;
         @media (prefers-color-scheme: dark) {
-          background-color: $background-color-dark;
-          color: $color-text-primary-dark;
+          background-color: root.$background-color-dark;
+          color: root.$color-text-primary-dark;
         }
         h2 {
           text-transform: none;
@@ -65,10 +65,10 @@
           height: 0.6rem;
           margin-top: 0;
           justify-content: center;
-          background-color: $dialog-header-button-background-color;
-          color: $dialog-header-button-color;
+          background-color: root.$dialog-header-button-background-color;
+          color: root.$dialog-header-button-color;
           border: none;
-          border-radius: $border-radius-round;
+          border-radius: root.$border-radius-round;
           .ti {
             font-size: 0.7rem;
           }
@@ -78,13 +78,13 @@
         }
       }
       .modal-body {
-        border-radius: 0 0 $border-radius-default $border-radius-default;
+        border-radius: 0 0 root.$border-radius-default root.$border-radius-default;
       }
       .modal-footer {
         display: flex;
         justify-content: center;
-        margin: $margin-default;
-        padding: $padding-default;
+        margin: root.$margin-default;
+        padding: root.$padding-default;
       }
     }
   }

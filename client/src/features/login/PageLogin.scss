@@ -1,4 +1,4 @@
-@import "../../app/css/root.scss";
+@use "../../app/css/root.scss";
 .PageLogin {
   margin-top: 0 !important;
   height: inherit;
@@ -9,16 +9,16 @@
   justify-content: center;
 
   @media (prefers-color-scheme: dark) {
-    color: $color-text-primary-dark;
+    color: root.$color-text-primary-dark;
   }
 
   .container {
-    border: $border-default;
+    border: root.$border-default;
     padding: 2rem;
     .logo {
       width: 100%;
       flex-grow: 0;
-      margin: $margin-default;
+      margin: root.$margin-default;
     }
     .login {
       display: flex;
@@ -35,8 +35,8 @@
         .title {
           font-size: 2.5rem;
           line-height: 7rem;
-          padding: $padding-default;
-          color: $color-text-primary;
+          padding: root.$padding-default;
+          color: root.$color-text-primary;
           font-weight: bold;
           text-align: center;
           // transform: rotate(-10deg); /* Rotate the text by 45 degrees */
@@ -44,17 +44,17 @@
           transform-origin: 0 0; /* Set the rotation origin to the top-left corner */
           margin: 5rem 5rem;
           @media (prefers-color-scheme: dark) {
-            color: $palette-theme-origin-color-26;
+            color: root.$palette-theme-origin-color-26;
           }
         }
       }
     }
     @media (prefers-color-scheme: dark) {
-      border: 1px solid $palette-theme-origin-color-29;
+      border: 1px solid root.$palette-theme-origin-color-29;
     }
   }
   .bottom {
-    margin: $margin-default;
+    margin: root.$margin-default;
   }
   a:link {
     text-decoration: none !important;

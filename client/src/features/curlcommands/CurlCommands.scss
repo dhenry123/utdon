@@ -1,4 +1,4 @@
-@import "../../app/css/root.scss";
+@use "../../app/css/root.scss";
 .CurlCommands {
   display: flex;
   flex-direction: column;
@@ -9,12 +9,12 @@
   .name {
     div {
       font-weight: bold;
-      color: $color-error;
+      color: root.$color-error;
     }
   }
   .closeButton {
     align-self: center;
     justify-self: center;
-    padding: $padding-default;
+    padding: root.$padding-default;
   }
 }

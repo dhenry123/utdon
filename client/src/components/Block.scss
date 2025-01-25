@@ -1,17 +1,17 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .Block {
   min-width: 256px;
   display: flex;
   flex-direction: row;
-  box-shadow: $boxshadow-default;
-  padding: $padding-default;
-  margin: $margin-default;
-  border: $border-default;
+  box-shadow: root.$boxshadow-default;
+  padding: root.$padding-default;
+  margin: root.$margin-default;
+  border: root.$border-default;
 }
 
 @media (prefers-color-scheme: dark) {
   .Block {
-    box-shadow: $boxshadow-default-dark;
-    border: $border-default-dark;
+    box-shadow: root.$boxshadow-default-dark;
+    border: root.$border-default-dark;
   }
 }

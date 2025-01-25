@@ -1,10 +1,10 @@
-@import "../../app/css/root.scss";
+@use "../../app/css/root.scss";
 
 .ErrorInRouter {
-  color: $color-text-primary;
-  margin: $margin-default;
+  color: root.$color-text-primary;
+  margin: root.$margin-default;
   a,
   a:visited {
-    color: $color-text-primary;
+    color: root.$color-text-primary;
   }
 }

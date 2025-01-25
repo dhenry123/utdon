@@ -1,8 +1,8 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .CheckBox {
   display: flex;
   color: inherit;
   @media (prefers-color-scheme: dark) {
-    color: $color-text-primary-dark;
+    color: root.$color-text-primary-dark;
   }
 }
