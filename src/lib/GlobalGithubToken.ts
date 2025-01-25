@@ -42,6 +42,7 @@ export const setControlGlobalGithubToken = (
       ...record,
       headerkeyGit: "Authorization",
       headervalueGit: `Bearer ${globalGithubToken}`, // see github document authentication
+      authGlobale: true,
     };
   }
   return record;

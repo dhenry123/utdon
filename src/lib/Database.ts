@@ -271,7 +271,7 @@ export const dbUpdateRecord = (
   if (!data.uuid) return "";
   const idxOf = db.map((item) => item.uuid).indexOf(data.uuid);
   if (idxOf > -1) {
-    db[idxOf] = {
+    data = {
       ...data,
       urlCICDAuth: Authentification.dataEncrypt(
         data.urlCICDAuth,
@@ -289,15 +289,23 @@ export const dbUpdateRecord = (
         data.headervalue,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
-      headerkeyGit: Authentification.dataEncrypt(
-        data.headerkeyGit,
-        process.env.DATABASE_ENCRYPT_SECRET
-      ),
-      headervalueGit: Authentification.dataEncrypt(
-        data.headervalueGit,
-        process.env.DATABASE_ENCRYPT_SECRET
-      ),
+      // if record altered setControlGlobalGithubToken, original values were empty, keep this state
+      headerkeyGit: data.authGlobale
+        ? ""
+        : Authentification.dataEncrypt(
+            data.headerkeyGit,
+            process.env.DATABASE_ENCRYPT_SECRET
+          ),
+      headervalueGit: data.authGlobale
+        ? ""
+        : Authentification.dataEncrypt(
+            data.headervalueGit,
+            process.env.DATABASE_ENCRYPT_SECRET
+          ),
     };
+    // console.log(data)
+    db[idxOf] = data;
+
     return data.uuid;
   }
   return "";

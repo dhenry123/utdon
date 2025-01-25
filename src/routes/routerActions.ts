@@ -85,7 +85,6 @@ routerActions.put(
           // get state
           await getUpToDateOrNotState(item)
             .then(async (compareResult) => {
-              // Update dbRecord
               dbUpdateRecord(req.app.get("DB"), {
                 ...item,
                 compareResult: compareResult,

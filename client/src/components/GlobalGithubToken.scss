@@ -37,6 +37,9 @@
           .inputgeneric {
             width: auto;
             flex-grow: 1;
+            &.framed {
+              border-color: red;
+            }
           }
           .ButtonGeneric {
             border-radius: root.$border-radius-round;

@@ -69,6 +69,7 @@ export const GlobalGithubToken = ({
         </div>
         <div className="input">
           <InputGeneric
+            className="framed"
             value={globalGithubToken}
             onChange={(value: string) => setGlobalGithubToken(value)}
             type={inputType}
