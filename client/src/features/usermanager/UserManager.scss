@@ -1,4 +1,4 @@
-@import "../../app/css/root.scss";
+@use "../../app/css/root.scss";
 
 $usermanagerbuttonsize: 2rem;
 .UserManager {
@@ -13,7 +13,7 @@ $usermanagerbuttonsize: 2rem;
       padding-top: 0;
     }
     .ButtonGeneric {
-      border-radius: $border-radius-round;
+      border-radius: root.$border-radius-round;
       width: $usermanagerbuttonsize;
       height: $usermanagerbuttonsize;
       i {
@@ -24,14 +24,14 @@ $usermanagerbuttonsize: 2rem;
   .Block {
     .dropdown-container {
       @media (prefers-color-scheme: dark) {
-        border: $border-default-dark;
-        background-color: $background-color-dark;
-        color: $color-text-primary-dark;
+        border: root.$border-default-dark;
+        background-color: root.$background-color-dark;
+        color: root.$color-text-primary-dark;
       }
       .dropdown-content * {
         @media (prefers-color-scheme: dark) {
-          background-color: $background-color-dark;
-          color: $color-text-primary-dark;
+          background-color: root.$background-color-dark;
+          color: root.$color-text-primary-dark;
           border: none;
         }
       }
@@ -62,10 +62,10 @@ $usermanagerbuttonsize: 2rem;
     width: 100%;
     button {
       background-color: transparent !important;
-      color: $color-text-secondary !important;
+      color: root.$color-text-secondary !important;
     }
     @media (prefers-color-scheme: dark) {
-      color: $color-text-primary-dark !important;
+      color: root.$color-text-primary-dark !important;
     }
   }
   .flex-table {
@@ -75,25 +75,25 @@ $usermanagerbuttonsize: 2rem;
     transition: 0.5s;
     &:first-of-type .flex-row {
       background: transparent;
-      color: $font-color-header;
+      color: root.$font-color-header;
     }
     &.row {
       min-height: 3rem;
       &:hover {
-        background: $userManager-row-hover-background;
-        border-radius: $border-radius-default;
+        background: root.$userManager-row-hover-background;
+        border-radius: root.$border-radius-default;
         @media (prefers-color-scheme: dark) {
-          color: $color-text-primary;
-          background: $userManager-row-hover-background-dark;
+          color: root.$color-text-primary;
+          background: root.$userManager-row-hover-background-dark;
         }
         button {
           background-color: transparent !important;
-          color: $color-text-secondary !important;
+          color: root.$color-text-secondary !important;
           @media (prefers-color-scheme: dark) {
-            color: $color-text-primary-dark !important;
+            color: root.$color-text-primary-dark !important;
           }
           &:hover {
-            color: $palette-theme-origin-color-12 !important;
+            color: root.$palette-theme-origin-color-12 !important;
           }
         }
       }

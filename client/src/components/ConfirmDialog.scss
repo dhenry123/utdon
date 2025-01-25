@@ -1,15 +1,15 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .ConfirmDialog {
   display: flex;
   flex-direction: column;
   .message {
-    padding: $padding-default;
-    margin: $margin-default;
+    padding: root.$padding-default;
+    margin: root.$margin-default;
   }
   .groupButtons {
     display: flex;
     flex-direction: row !important;
-    column-gap: $columngap-default;
+    column-gap: root.$columngap-default;
     justify-content: center;
   }
 }

@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 $searchbuttonsize: 2rem;
 .Search {
   margin-left: 2rem;
@@ -6,11 +6,11 @@ $searchbuttonsize: 2rem;
   flex-direction: row;
   column-gap: 0.2rem;
   width: 20%;
-  border: $border-search;
-  border-radius: $border-radius-default;
+  border: root.$border-search;
+  border-radius: root.$border-radius-default;
   padding: 0 0.2rem;
   @media (prefers-color-scheme: dark) {
-    border: $border-search-dark;
+    border: root.$border-search-dark;
   }
   .inputgeneric {
     border: none;
@@ -26,9 +26,9 @@ $searchbuttonsize: 2rem;
     background-color: transparent;
     i {
       font-size: 1rem;
-      color: $button-search-color;
+      color: root.$button-search-color;
       @media (prefers-color-scheme: dark) {
-        color: $button-search-color-dark;
+        color: root.$button-search-color-dark;
       }
     }
   }

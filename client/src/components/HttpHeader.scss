@@ -1,11 +1,11 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .HttpHeader {
   .content {
     display: flex;
     flex-direction: row;
     column-gap: 1rem;
     .inputgeneric::placeholder {
-      color: $color-placeholder;
+      color: root.$color-placeholder;
       font-weight: bold;
       font-size: 0.7rem;
     }

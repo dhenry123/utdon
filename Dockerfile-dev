@@ -5,7 +5,7 @@ ARG RUNASUSER="utdon"
 ARG RUNASUSERID="1001"
 ARG RUNASGROUP="1001"
 
-FROM node:20.10.0-alpine3.19 as base
+FROM node:20.10.0-alpine3.19 AS base
 
 # build
 FROM base AS builder

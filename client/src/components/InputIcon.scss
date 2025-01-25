@@ -1,8 +1,8 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .InputIcon {
   display: flex;
   flex-direction: row;
   column-gap: 0.5rem;
   align-items: center;
-  margin: $margin-default;
+  margin: root.$margin-default;
 }

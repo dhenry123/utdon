@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .containertoast {
   height: max-content;
@@ -16,43 +16,43 @@
     font-size: 14px;
     width: 100%;
     padding: 0;
-    background-color: $background-color;
-    border-radius: $border-radius-toast;
+    background-color: root.$background-color;
+    border-radius: root.$border-radius-toast;
     display: flex;
-    box-shadow: $boxshadow-toast;
+    box-shadow: root.$boxshadow-toast;
     overflow: hidden;
     justify-content: space-between;
     @media (prefers-color-scheme: dark) {
-      background-color: $background-color-dark;
-      box-shadow: $boxshadow-toast-dark;
-      border: 1px solid $palette-theme-origin-color-9;
+      background-color: root.$background-color-dark;
+      box-shadow: root.$boxshadow-toast-dark;
+      border: 1px solid root.$palette-theme-origin-color-9;
     }
 
     p {
       margin: 0.3rem 0 0.3rem 0;
     }
     &.info {
-      border-left: $toast-color-border-info;
+      border-left: root.$toast-color-border-info;
       i {
-        color: $toast-color-info;
+        color: root.$toast-color-info;
       }
     }
     &.success {
-      border-left: $toast-color-border-success;
+      border-left: root.$toast-color-border-success;
       i {
-        color: $toast-color-success;
+        color: root.$toast-color-success;
       }
     }
     &.warn {
-      border-left: $toast-color-border-warn;
+      border-left: root.$toast-color-border-warn;
       i {
-        color: $toast-color-warn;
+        color: root.$toast-color-warn;
       }
     }
     &.error {
-      border-left: $toast-color-border-error;
+      border-left: root.$toast-color-border-error;
       i {
-        color: $toast-color-error;
+        color: root.$toast-color-error;
       }
     }
     .toast:not(:last-child) {
@@ -70,21 +70,21 @@
     .container-2 {
       overflow: auto;
       .summary {
-        color: $color-text-primary;
+        color: root.$color-text-primary;
         font-weight: 600;
         font-size: 0.9rem;
         @media (prefers-color-scheme: dark) {
-          color: $palette-theme-origin-color-6;
+          color: root.$palette-theme-origin-color-6;
         }
       }
       .detail {
         font-size: 0.7rem;
         font-weight: 400;
-        color: $toatst-color-detail;
-        padding: $padding-default;
+        color: root.$toatst-color-detail;
+        padding: root.$padding-default;
         overflow: auto;
         @media (prefers-color-scheme: dark) {
-          color: $palette-theme-origin-color-6;
+          color: root.$palette-theme-origin-color-6;
         }
       }
     }
@@ -96,7 +96,7 @@
       align-self: flex-start;
       background-color: transparent;
       font-size: 1.5rem;
-      color: $toatst-color-button;
+      color: root.$toatst-color-button;
       line-height: 0;
       border: none;
       cursor: pointer;

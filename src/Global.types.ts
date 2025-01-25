@@ -35,6 +35,8 @@ export type UptodateForm = {
   headervalue: string;
   headerkeyGit: string;
   headervalueGit: string;
+  // when auth header set from github globale token
+  authGlobale?: boolean;
   scrapTypeProduction: ScrapType;
   exprProduction: string;
   urlGitHub: string;

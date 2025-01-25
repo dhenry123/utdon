@@ -1,10 +1,10 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .Summary {
   display: flex;
   flex-direction: column;
-  row-gap: $rowgap-default;
-  padding: $padding-default;
+  row-gap: root.$rowgap-default;
+  padding: root.$padding-default;
   width: 100%;
   .Block {
     .Block {
@@ -21,8 +21,8 @@
       }
     }
     &.save {
-      row-gap: $rowgap-default;
-      column-gap: $columngap-default;
+      row-gap: root.$rowgap-default;
+      column-gap: root.$columngap-default;
       align-items: center;
       justify-content: center;
     }
@@ -34,21 +34,21 @@
       animation-name: greenPulse;
       animation-duration: 3s;
       animation-iteration-count: infinite;
-      color: $color-text-secondary;
+      color: root.$color-text-secondary;
     }
   }
 }
 @keyframes greenPulse {
   from {
-    background-color: $sumury-keyframes-greenPulse-color-1;
-    -webkit-box-shadow: 0 0 9px $sumury-keyframes-greenPulse-color-1;
+    background-color: root.$sumury-keyframes-greenPulse-color-1;
+    -webkit-box-shadow: 0 0 9px root.$sumury-keyframes-greenPulse-color-1;
   }
   50% {
-    background-color: $sumury-keyframes-greenPulse-color-2;
-    -webkit-box-shadow: 0 0 10px $sumury-keyframes-greenPulse-color-2;
+    background-color: root.$sumury-keyframes-greenPulse-color-2;
+    -webkit-box-shadow: 0 0 10px root.$sumury-keyframes-greenPulse-color-2;
   }
   to {
-    background-color: $sumury-keyframes-greenPulse-color-3;
-    -webkit-box-shadow: 0 0 9px $sumury-keyframes-greenPulse-color-3;
+    background-color: root.$sumury-keyframes-greenPulse-color-3;
+    -webkit-box-shadow: 0 0 9px root.$sumury-keyframes-greenPulse-color-3;
   }
 }

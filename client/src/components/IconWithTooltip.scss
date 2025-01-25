@@ -1,25 +1,25 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .IconWithTooltip {
   .tooltip {
     position: absolute;
     z-index: 9999; /* Set a high z-index value */
-    background-color: $background-color;
-    border: $border-default;
+    background-color: root.$background-color;
+    border: root.$border-default;
     padding: 5px;
-    border-radius: $border-radius-default;
-    box-shadow: $boxshadow-default;
+    border-radius: root.$border-radius-default;
+    box-shadow: root.$boxshadow-default;
     display: flex;
     flex-direction: column;
     @media (prefers-color-scheme: dark) {
-      background-color: $background-color-dark;
-      border: $border-default-dark;
+      background-color: root.$background-color-dark;
+      border: root.$border-default-dark;
     }
     .tooltiptitle {
-      border-bottom: $border-default;
+      border-bottom: root.$border-default;
       margin: 0.5rem;
       align-self: center;
       @media (prefers-color-scheme: dark) {
-        border-bottom: $border-default-dark;
+        border-bottom: root.$border-default-dark;
       }
     }
     .tooltipbody {
@@ -29,6 +29,6 @@
   }
   i {
     font-size: 1.2rem;
-    color: $color-info;
+    color: root.$color-info;
   }
 }

@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .GlobalGithubToken {
   align-self: center;
   justify-self: center;
@@ -7,12 +7,12 @@
     display: flex;
     flex-direction: column;
     .groupButtons {
-      margin: $margin-default;
+      margin: root.$margin-default;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      column-gap: $columngap-default;
+      column-gap: root.$columngap-default;
     }
     .githubtoken {
       .content {
@@ -20,7 +20,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: left;
-        column-gap: $columngap-default;
+        column-gap: root.$columngap-default;
         .explain {
           width: 100%;
           padding: 0.5rem;
@@ -33,13 +33,16 @@
           width: 75%;
           justify-items: center;
           align-items: center;
-          column-gap: $columngap-default;
+          column-gap: root.$columngap-default;
           .inputgeneric {
             width: auto;
             flex-grow: 1;
+            &.framed {
+              border-color: red;
+            }
           }
           .ButtonGeneric {
-            border-radius: $border-radius-round;
+            border-radius: root.$border-radius-round;
             width: 2rem;
             height: 2rem;
             i {

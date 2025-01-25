@@ -1,10 +1,10 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .ResultCompare {
   display: flex;
-  row-gap: $rowgap-default;
+  row-gap: root.$rowgap-default;
   .warning {
     font-weight: bold;
-    color: $color-error;
+    color: root.$color-error;
   }
   .operation {
     height: max-content;

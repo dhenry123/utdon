@@ -1,14 +1,14 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .FieldSetApiEntrypoint {
   .curltitle {
     font-weight: bold;
-    margin-top: $margin-default;
+    margin-top: root.$margin-default;
   }
   .curlcommand {
-    padding: $padding-default;
+    padding: root.$padding-default;
     position: relative;
     min-height: 3rem;
-    border: $border-default;
+    border: root.$border-default;
     .command {
       margin-top: 1rem;
       padding: 0;
@@ -17,9 +17,9 @@
       position: absolute;
       top: 2px;
       right: 2px;
-      border-radius: $border-radius-round;
-      background-color: $color-error;
-      color: $color-text-secondary;
+      border-radius: root.$border-radius-round;
+      background-color: root.$color-error;
+      color: root.$color-text-secondary;
       padding: 0.3rem;
       .ti {
         font-size: 0.8rem;

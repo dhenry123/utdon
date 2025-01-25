@@ -1,4 +1,4 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .FieldSet {
   // important to use ellipsis
   min-width: 0;
@@ -17,7 +17,7 @@
     justify-content: center;
 
     @media (prefers-color-scheme: dark) {
-      color: $color-text-primary-dark;
+      color: root.$color-text-primary-dark;
     }
   }
 }

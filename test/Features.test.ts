@@ -95,7 +95,7 @@ describe("Features", () => {
   test("getUpToDateOrNotState - Work only if demo immich website is up - no actions", async () => {
     const name = "Demo Immich";
     const content = await getUpToDateOrNotState({
-      urlProduction: "https://demo.immich.app/api/server-info/version",
+      urlProduction: "https://demo.immich.app/api/server/version",
       headerkey: "",
       headervalue: "",
       headerkeyGit: "",

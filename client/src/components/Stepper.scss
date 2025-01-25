@@ -1,65 +1,65 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .Stepper {
   display: flex;
   flex-direction: column;
   height: 100%;
-  row-gap: $rowgap-default;
-  padding: $padding-default;
+  row-gap: root.$rowgap-default;
+  padding: root.$padding-default;
   .step {
     max-width: 4vw;
     align-self: center;
     justify-self: center;
     display: flex;
     flex-direction: column;
-    row-gap: $rowgap-default;
+    row-gap: root.$rowgap-default;
     .separator {
       align-self: center;
       min-height: 3rem;
       width: 0.5rem;
-      border-radius: $border-radius-default $border-radius-default
-        $border-radius-round $border-radius-round;
-      background-color: $stepper-background-color;
-      box-shadow: $boxshadow-default;
+      border-radius: root.$border-radius-default root.$border-radius-default
+        root.$border-radius-round root.$border-radius-round;
+      background-color: root.$stepper-background-color;
+      box-shadow: root.$boxshadow-default;
       @media (prefers-color-scheme: dark) {
-        background-color: $stepper-background-color-dark;
-        box-shadow: $boxshadow-default-dark;
+        background-color: root.$stepper-background-color-dark;
+        box-shadow: root.$boxshadow-default-dark;
       }
       &.done {
-        background-color: $color-success;
+        background-color: root.$color-success;
       }
     }
     .button {
-      border-radius: $border-radius-round;
+      border-radius: root.$border-radius-round;
       border: 0;
       width: 3rem;
       height: 3rem;
       align-self: center;
-      background-color: $color-text-secondary;
-      box-shadow: $boxshadow-default;
+      background-color: root.$color-text-secondary;
+      box-shadow: root.$boxshadow-default;
       @media (prefers-color-scheme: dark) {
-        box-shadow: $boxshadow-default-dark;
+        box-shadow: root.$boxshadow-default-dark;
       }
       i {
         margin: auto;
         font-size: 1.5rem;
       }
       &.done {
-        background-color: $color-success;
-        color: $color-text-secondary;
+        background-color: root.$color-success;
+        color: root.$color-text-secondary;
         @media (prefers-color-scheme: dark) {
-          color: $color-text-secondary-dark;
+          color: root.$color-text-secondary-dark;
         }
       }
       &.undone {
-        color: $color-text-primary;
+        color: root.$color-text-primary;
       }
       &.active {
-        background-color: $color-error;
-        color: $color-text-secondary;
+        background-color: root.$color-error;
+        color: root.$color-text-secondary;
         @media (prefers-color-scheme: dark) {
-          color: $color-text-secondary-dark;
-          background-color: $color-error-dark;
+          color: root.$color-text-secondary-dark;
+          background-color: root.$color-error-dark;
         }
       }
     }
@@ -71,7 +71,7 @@
       width: 100%;
     }
     &.done {
-      background-color: $color-success;
+      background-color: root.$color-success;
     }
   }
 }

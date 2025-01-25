@@ -1,17 +1,17 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 .FieldSetAuthorizationHeader {
   .authToken {
-    padding: $padding-default;
+    padding: root.$padding-default;
     position: relative;
-    border: $border-default;
+    border: root.$border-default;
 
     .copyToClipboard {
       position: absolute;
       top: 2px;
       right: 2px;
-      border-radius: $border-radius-round;
-      background-color: $color-error;
-      color: $color-text-secondary;
+      border-radius: root.$border-radius-round;
+      background-color: root.$color-error;
+      color: root.$color-text-secondary;
       padding: 0.3rem;
       .ti {
         font-size: 0.8rem;

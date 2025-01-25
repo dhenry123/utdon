@@ -1,10 +1,10 @@
-@import "../app/css/root.scss";
+@use "../app/css/root.scss";
 
 .LoginBlock {
   display: flex;
   flex-direction: column;
-  row-gap: $rowgap-default;
-  column-gap: $columngap-default;
+  row-gap: root.$rowgap-default;
+  column-gap: root.$columngap-default;
   max-width: 35vw;
   align-items: center;
 }
