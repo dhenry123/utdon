@@ -50,7 +50,6 @@ export class Authentification {
       // save
       this.initDatabaseUsers(data);
       data = { users: [{ ...data }] };
-      // data = this.loadUsersFromDatabase();
       console.log(
         "[INFO] PR#15: The user database has been converted into a multi-administrator database."
       );

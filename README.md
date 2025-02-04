@@ -127,7 +127,7 @@ Logs are kept to a minimum to avoid unnecessary storage:
 - Add one "readonly" token per user for use from a CI/CD chain.
 - S3 storage.
 - Entrypoint API metrics.
-- LDAP authentication.
+- ~~LDAP authentication~~.
 
 ## Credits
 

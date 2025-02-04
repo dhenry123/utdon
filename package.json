@@ -1,11 +1,13 @@
 {
   "name": "mytinydc-utdon",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Application for tracking obsolete FOSS applications - Server",
   "main": "main.ts",
   "scripts": {
     "startServer": "USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test environment=development nodemon -w src/ -e ts -L ./src/main.ts",
+    "startServerWithProxy": ". ./envProxy && HTTP_PROXY=\"${HTTP_PROXY}\" USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test environment=development nodemon -w src/ -e ts -L ./src/main.ts",
     "startServerProduction": "USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test nodemon -w src/ -e ts -L ./src/main.ts",
+    "startServerProductionWithProxy": ". ./envProxy && HTTP_PROXY=\"${HTTP_PROXY}\" USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test nodemon -w src/ -e ts -L ./src/main.ts",
     "build": "environment=production tsc",
     "preview": "node dist/main.js",
     "lint": "npx eslint ./src",
@@ -22,10 +24,13 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "@metrichor/jmespath": "^0.3.1",
+    "axios": "^1.7.9",
     "body-parser": "^1.20.2",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "helmet": "^7.2.0",
+    "http-proxy-agent": "^7.0.2",
+    "https-proxy-agent": "^7.0.6",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
     "winston": "^3.17.0",

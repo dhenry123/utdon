@@ -9,3 +9,4 @@ coverage/**
 .envlocaldev
 public
 src/data
+envProxy

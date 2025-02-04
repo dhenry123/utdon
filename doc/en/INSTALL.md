@@ -13,7 +13,7 @@ The appplication doesn't support "https", so you'll need to use this product beh
 
 ```
 # tag version
-tag="1.5.0"
+tag="1.9.0"
 # Which port do you expose the service on?
 port=3015
 # Generate secrets
@@ -46,3 +46,13 @@ sudo docker run -d -v $(pwd)/data:/app/data -p $port:3015 -e USER_ENCRYPT_SECRET
 # Follow output instructions
 
 ```
+
+## Corporate proxy
+
+If your organization implements a proxy (squid, traffic server,...), add the environment :
+
+- HTTP_PROXY="http://[ip or proxy hostname]:[port]” - ex : HTTP_PROXY="http://monproxy:3128”
+- By default, HTTPS connections use the contents of the HTTP_PROXY variable. If the proxy proposes an alternative URL for HTTPS connections :
+  - HTTPS_PROXY=https://monproxy:3128”
+- Supports exclusions :
+  - NO_PROXY: '\*.mytinydc.com,192.168.1.0/24,localhost,127.0.0.1'

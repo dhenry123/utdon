@@ -303,9 +303,7 @@ export const dbUpdateRecord = (
             process.env.DATABASE_ENCRYPT_SECRET
           ),
     };
-    // console.log(data)
     db[idxOf] = data;
-
     return data.uuid;
   }
   return "";

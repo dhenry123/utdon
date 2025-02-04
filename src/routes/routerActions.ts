@@ -10,7 +10,7 @@ import {
   UptodateForm,
 } from "../Global.types";
 import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database";
-import { scrapUrl, getUpToDateOrNotState } from "../lib/Features";
+
 import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
 import { SessionExt } from "../ServerTypes";
 import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
@@ -18,6 +18,10 @@ import {
   getGlobalGithubToken,
   setControlGlobalGithubToken,
 } from "../lib/GlobalGithubToken";
+import {
+  getUpToDateOrNotState,
+  scrapUrlThroughProxy,
+} from "../lib/scrapUrlServer";
 
 const routerActions = express.Router();
 
@@ -26,7 +30,7 @@ const updateExternalStatus = (
   state: "0" | "1"
 ): Promise<string> => {
   return new Promise((resolv, reject) => {
-    scrapUrl(
+    scrapUrlThroughProxy(
       `${control.urlCronJobMonitoring}/${state}`,
       control.httpMethodCronJobMonitoring,
       `Authorization:${control.urlCronJobMonitoringAuth}`
@@ -212,7 +216,7 @@ routerActions.put(
           req.app.get("LOGGER")
         );
         if (record && !Array.isArray(record) && record.urlCICD) {
-          await scrapUrl(
+          await scrapUrlThroughProxy(
             record.urlCICD,
             record.httpMethodCICD,
             `Authorization:${record.urlCICDAuth}`
@@ -266,7 +270,7 @@ routerActions.put(
         if (record && !Array.isArray(record) && record.urlCronJobMonitoring) {
           // status : 0 if if state == true |  1 if state == false
           const payload = req.body.state ? "0" : "1";
-          scrapUrl(
+          scrapUrlThroughProxy(
             `${record.urlCronJobMonitoring}/${payload}`,
             record.httpMethodCronJobMonitoring,
             `Authorization:${record.urlCronJobMonitoringAuth}`

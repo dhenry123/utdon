@@ -4,12 +4,12 @@
  */
 
 import express, { NextFunction, Request, Response } from "express";
-import { scrapUrl } from "../lib/Features";
 import { APPLICATION_VERSION } from "../Constants";
 import {
   getGlobalGithubToken,
   getHeaderGlobalGithubToken,
 } from "../lib/GlobalGithubToken";
+import { scrapUrlThroughProxy } from "../lib/scrapUrlServer";
 const routerCore = express.Router();
 
 /**
@@ -24,7 +24,7 @@ routerCore.get(
         req.headers.scrapurlheader as string,
         getGlobalGithubToken()
       );
-      await scrapUrl(req.params.url, "GET", header)
+      await scrapUrlThroughProxy(req.params.url, "GET", header)
         .then((data: string) => {
           // Warn Reduxtoolkit expect text so data will always be type = string
           res.status(200).send(data);

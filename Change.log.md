@@ -2,6 +2,11 @@
 
 # Changelogs
 
+# 1.9.0
+
+- Support Corporate proxy
+- Typo
+
 # 1.7.0
 
 - **BREAKING CHANGE**: Changed the HTTP method for API input to "compare". The original method was not appropriate, as the function called alters the data, so it has been replaced by "PUT". If you use utdon in a "cron" task with curl, add the parameter: '-X PUT'.
