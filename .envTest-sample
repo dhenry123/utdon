@@ -1,0 +1,6 @@
+# No ssl proxy - proxy use CONNECT method
+HTTP_PROXY="http://192.168.1.1:8080"
+HTTPS_PROXY="http://192.168.1.1:8080"
+# With ssl proxy CA certificate must be set && url proxy must start with https
+PROXYCA_CERT="LS0t...."
+INTSSLHTTPS_PROXY="https://proxy.mydomain:8083"

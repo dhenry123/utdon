@@ -10,6 +10,7 @@ import {
   getHeaderGlobalGithubToken,
 } from "../lib/GlobalGithubToken";
 import { scrapUrlThroughProxy } from "../lib/scrapUrlServer";
+import { InfosScrapConnection } from "../Global.types";
 const routerCore = express.Router();
 
 /**
@@ -25,9 +26,9 @@ routerCore.get(
         getGlobalGithubToken()
       );
       await scrapUrlThroughProxy(req.params.url, "GET", header)
-        .then((data: string) => {
+        .then((data: InfosScrapConnection) => {
           // Warn Reduxtoolkit expect text so data will always be type = string
-          res.status(200).send(data);
+          res.status(200).send(data.data);
         })
         .catch((error: Error) => {
           res

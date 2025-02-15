@@ -9,7 +9,10 @@ import {
   TypeGitRepo,
 } from "../Global.types";
 
-export const getGitUrlTagReleases = (gitRepoUrl: string, typeRepo: string) => {
+export const getGitUrlTagReleases = (
+  gitRepoUrl: string,
+  typeRepo: TypeGitRepo
+) => {
   if (typeRepo === "github") {
     const githubApiReleasesEntry = "https://api.github.com/repos";
     const regExpExtractDomain = "^https?:\\/\\/[^@\\/\n]+\\/";

@@ -9,7 +9,8 @@ import {
   getTypeGitRepo,
 } from "../src/lib/helperGitRepository";
 import crypto from "crypto";
-import { scrapUrl } from "../src/lib/Features";
+import { scrapUrlThroughProxy } from "../src/lib/scrapUrlServer";
+import { InfosScrapConnection, TypeGitRepo } from "../src/Global.types";
 
 describe("helperGitRepository", () => {
   test("getGitUrlTagReleases - github", () => {
@@ -47,31 +48,33 @@ describe("helperGitRepository", () => {
 
   test("scrap Github tags - url ok", async () => {
     const gitRepo = "https://github.com/dhenry123/utdon";
-    await scrapUrl(getGitUrlTagReleases(gitRepo, "github"), "GET").then(
-      (data: string) => {
-        expect(data).toBeDefined();
-        const json = JSON.parse(data);
-        expect(Array.isArray(json)).toBeTruthy();
-        expect(json.length).toBeGreaterThan(0);
-      }
-    );
+    await scrapUrlThroughProxy(
+      getGitUrlTagReleases(gitRepo, "github"),
+      "GET"
+    ).then((response: InfosScrapConnection) => {
+      expect(response).toBeDefined();
+      const json = JSON.parse(response.data);
+      expect(Array.isArray(json)).toBeTruthy();
+      expect(json.length).toBeGreaterThan(0);
+    });
   });
 
   test("scrap Gitea tags - url ok", async () => {
     const gitRepo = "https://codeberg.org/forgejo/forgejo";
-    await scrapUrl(getGitUrlTagReleases(gitRepo, "gitea"), "GET").then(
-      (data: string) => {
-        expect(data).toBeDefined();
-        const json = JSON.parse(data);
-        expect(Array.isArray(json)).toBeTruthy();
-        expect(json.length).toBeGreaterThan(0);
-      }
-    );
+    await scrapUrlThroughProxy(
+      getGitUrlTagReleases(gitRepo, "gitea"),
+      "GET"
+    ).then((response: InfosScrapConnection) => {
+      expect(response).toBeDefined();
+      const json = JSON.parse(response.data);
+      expect(Array.isArray(json)).toBeTruthy();
+      expect(json.length).toBeGreaterThan(0);
+    });
   });
 
   test("scrap Github tags - wrong url", async () => {
     const gitRepo = `https://github.com/${crypto.randomUUID()}/${crypto.randomUUID()}`;
-    await scrapUrl(getGitUrlTagReleases(gitRepo, "github"), "GET")
+    await scrapUrlThroughProxy(getGitUrlTagReleases(gitRepo, "github"), "GET")
       .then(() => {
         // unexpected
         expect(false).toBeTruthy();
@@ -83,7 +86,7 @@ describe("helperGitRepository", () => {
 
   test("scrap Gitea tags - wrong url", async () => {
     const gitRepo = `https://codeberg.org/${crypto.randomUUID()}/${crypto.randomUUID()}`;
-    await scrapUrl(getGitUrlTagReleases(gitRepo, "gitea"), "GET")
+    await scrapUrlThroughProxy(getGitUrlTagReleases(gitRepo, "gitea"), "GET")
       .then(() => {
         // unexpected
         expect(false).toBeTruthy();
@@ -95,23 +98,30 @@ describe("helperGitRepository", () => {
 
   test("getLatestRelease - utdon (github) ", async () => {
     const gitRepo = "https://github.com/dhenry123/utdon";
-    await getLatestRelease(gitRepo, "github", "^[0-9.]+$").then(
-      (data: string) => {
-        expect(data).toBeDefined();
-        expect(typeof data === "string").toBeTruthy();
-        expect(data.trim() !== "").toBeTruthy();
-      }
-    );
+    const typeRepo: TypeGitRepo = "github";
+    await scrapUrlThroughProxy(
+      getGitUrlTagReleases(gitRepo, typeRepo),
+      "GET"
+    ).then((response: InfosScrapConnection) => {
+      const data = getLatestRelease(typeRepo, response.data, "^[0-9.]+$");
+      // console.log(data);
+      expect(data).toBeDefined();
+      expect(typeof data === "string").toBeTruthy();
+      expect(data.trim() !== "").toBeTruthy();
+    });
   });
 
   test("getLatestRelease - forgejo (gitea) ", async () => {
     const gitRepo = "https://codeberg.org/forgejo/forgejo";
-    await getLatestRelease(gitRepo, "gitea", "^v[0-9.]+$").then(
-      (data: string) => {
-        expect(data).toBeDefined();
-        expect(typeof data === "string").toBeTruthy();
-        expect(data.trim() !== "").toBeTruthy();
-      }
-    );
+    const typeRepo: TypeGitRepo = "gitea";
+    await scrapUrlThroughProxy(
+      getGitUrlTagReleases(gitRepo, typeRepo),
+      "GET"
+    ).then((response: InfosScrapConnection) => {
+      const data = getLatestRelease(typeRepo, response.data, "^v[0-9.]+$");
+      expect(data).toBeDefined();
+      expect(typeof data === "string").toBeTruthy();
+      expect(data.trim() !== "").toBeTruthy();
+    });
   });
 });

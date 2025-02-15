@@ -1,10 +1,13 @@
-import axios from "axios";
 import {
   HTTPMethods,
+  InfosScrapConnection,
   JSONLang,
   UptodateForm,
   UptoDateOrNotState,
 } from "../Global.types";
+import https from "https";
+import http from "http";
+
 import { HttpProxyAgent } from "http-proxy-agent";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { compareVersion } from "./Features";
@@ -14,40 +17,108 @@ import {
   getTypeGitRepo,
 } from "./helperGitRepository";
 import { filterJson, filterText } from "./helperProdVersionReader";
+import { NODEJSVERSION } from "../Constants";
+
+export const isProxyRequired = (url: string, envNoProxy: string): boolean => {
+  if (!envNoProxy.trim()) return true;
+  // Split on , and " "
+  const items = envNoProxy.replace(/,/g, " ").split(" ");
+  const urlObject = new URL(url);
+  for (const item of items) {
+    if (!item.trim()) continue;
+    const regExp = new RegExp(item.trim().replace(/\*/g, ""));
+    if (regExp.test(urlObject.host)) {
+      return false;
+    }
+  }
+  return true;
+};
 
 export const scrapUrlThroughProxy = async (
   url: string,
-  method: HTTPMethods = "GET",
-  customHttpHeader?: string
-): Promise<string> => {
-  const headers: JSONLang = {};
-  if (customHttpHeader) {
-    const split = customHttpHeader.split(":");
-    if (split[1]) {
-      headers[split[0]] = split[1];
+  method: HTTPMethods,
+  customHttpHeader?: string,
+  httpProxy?: string,
+  httpsProxy?: string
+): Promise<InfosScrapConnection> => {
+  return new Promise((resolve, reject) => {
+    const httpRequestResponse: InfosScrapConnection = {
+      httpProxy: false,
+      httpsProxy: false,
+      data: "",
+    };
+    const headers: JSONLang = {
+      "User-Agent": `Node.js/${NODEJSVERSION} (Linux)`,
+    };
+    if (customHttpHeader) {
+      const split = customHttpHeader.split(":");
+      if (split[1]) {
+        headers[split[0]] = split[1];
+      }
     }
-  }
+    const urlToTest = new URL(url);
+    let caProxyCert;
+    if (process.env.PROXYCA_CERT) {
+      caProxyCert = Buffer.from(process.env.PROXYCA_CERT, "base64").toString(
+        "utf-8"
+      );
+    }
+    let agent;
+    if (httpsProxy && urlToTest.protocol === "https:") {
+      httpRequestResponse.httpsProxy = true;
+      agent = new HttpsProxyAgent(httpsProxy, {
+        rejectUnauthorized: true, // CA certificates must be provided - next line
+        ca: caProxyCert ? [caProxyCert] : undefined,
+      });
+    } else if (httpProxy && urlToTest.protocol === "http:") {
+      httpRequestResponse.httpProxy = true;
+      agent = new HttpProxyAgent(httpProxy);
+    }
+    const options = {
+      method: method ? method : "GET",
+      agent,
+      keepAlive: false,
+      headers: headers,
+    };
 
-  const options = {
-    method: method,
-    url: url,
-    headers,
-  };
-  if (process.env && process.env.HTTP_PROXY) {
-    const proxyUrlHttp = process.env.HTTP_PROXY;
-    const proxyUrlHttps = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
-    const response = await axios({
-      ...options,
-      httpAgent: new HttpProxyAgent(proxyUrlHttp),
-      httpsAgent: new HttpsProxyAgent(proxyUrlHttps),
+    let str = "";
+
+    const httpRequestHandler = (res: http.IncomingMessage) => {
+      res.on("data", function (chunk) {
+        str += chunk;
+      });
+      res.on("end", () => {
+        if (res.statusCode && (res.statusCode < 200 || res.statusCode >= 300)) {
+          reject(
+            new Error(
+              `Request failed with status code ${
+                res.statusCode
+              } - data received:\n${str.toString()}\n`
+            )
+          );
+          res.resume(); // Consume the response data to free up memory
+          return;
+        }
+        resolve({ ...httpRequestResponse, data: str.toString() });
+      });
+    };
+    let req;
+    if (urlToTest.protocol === "https:") {
+      req = https.request(url, options, (res) => {
+        httpRequestHandler(res);
+      });
+    } else {
+      req = http.request(url, options, (res) => {
+        httpRequestHandler(res);
+      });
+    }
+
+    req.on("error", (e) => {
+      reject(new Error(`Problem with request: ${e.message}`));
     });
-    // AS STRING important
-    return JSON.stringify(response.data);
-  } else {
-    const response = await axios(options);
-    // AS STRING important
-    return JSON.stringify(response.data);
-  }
+
+    req.end();
+  });
 };
 
 export const getUpToDateOrNotState = async (
@@ -71,12 +142,12 @@ export const getUpToDateOrNotState = async (
             let version = "";
             if (record.scrapTypeProduction === "json") {
               version = filterJson(
-                output as string,
+                output.data as string,
                 record.exprProduction || ""
               );
             } else if (record.scrapTypeProduction === "text") {
               version = filterText(
-                output as string,
+                output.data as string,
                 record.exprProduction || ""
               );
             }
@@ -104,10 +175,10 @@ export const getUpToDateOrNotState = async (
           ? `${record.headerkeyGit}:${record.headervalueGit}`
           : ""
       )
-        .then((releaseTags) => {
+        .then((response) => {
           const githubVersion = getLatestRelease(
             getTypeGitRepo(record.urlGitHub),
-            releaseTags,
+            response.data,
             record.exprGithub
           );
           // Compare versions

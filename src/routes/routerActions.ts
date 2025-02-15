@@ -226,7 +226,7 @@ routerActions.put(
                 getLogObjectInfo(req, {
                   uuid: req.body.uuid,
                   urlCICD: record.urlCICD,
-                  scrapResponse: response,
+                  scrapResponse: response.data,
                 })
               );
               res.status(200).send(response);

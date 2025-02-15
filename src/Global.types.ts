@@ -256,3 +256,9 @@ export interface logInfo extends OptionsLogType {
 export interface logError extends logInfo {
   error: string;
 }
+
+export type InfosScrapConnection = {
+  httpProxy: boolean;
+  httpsProxy: boolean;
+  data: string;
+};
