@@ -106,7 +106,7 @@ export const scrapUrlThroughProxy = async (
               } - data received:\n${str.toString()}\n`
             )
           );
-          res.resume(); // Consume the response data to free up memory
+          res.destroy();
           return;
         }
         resolve({ ...httpRequestResponse, data: str.toString() });
@@ -122,6 +122,11 @@ export const scrapUrlThroughProxy = async (
         httpRequestHandler(res);
       });
     }
+
+    req.on("timeout", function () {
+      reject(new Error(`timeout! ${options.timeout / 1000} seconds expired`));
+      req.destroy();
+    });
 
     req.on("error", (e) => {
       reject(new Error(`Problem with request: ${e.message}`));

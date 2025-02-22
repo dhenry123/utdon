@@ -12,6 +12,8 @@ import {
 import crypto from "crypto";
 import { scrapUrlThroughProxy } from "../src/lib/scrapUrlServer";
 import { InfosScrapConnection, TypeGitRepo } from "../src/Global.types";
+import http from "http";
+import { HTTPREQUESTTIMEOUT } from "../src/Constants";
 
 describe("helperGitRepository", () => {
   describe("getGitUrlTagReleases", () => {
@@ -76,6 +78,35 @@ describe("helperGitRepository", () => {
         expect(Array.isArray(json)).toBeTruthy();
         expect(json.length).toBeGreaterThan(0);
       });
+    });
+
+    test("scrap url - error timeout expired", async () => {
+      // Create server
+      const server = http.createServer((req, res) => {
+        // Simulate a delay (e.g., 10 seconds)
+        setTimeout(() => {
+          res.writeHead(200, { "Content-Type": "text/plain" });
+          res.end("Response after delay");
+        }, HTTPREQUESTTIMEOUT + 1000); // code HTTPREQUESTTIMEOUT value + 2000
+      });
+      // Start the server
+      const PORT = 27055;
+      server.listen(PORT, () => {
+        console.log(`Mock server is running at http://localhost:${PORT}`);
+      });
+      const gitRepo = `http://localhost:${PORT}`;
+      await scrapUrlThroughProxy(getGitUrlTagReleases(gitRepo, "gitea"), "GET")
+        .then((response: InfosScrapConnection) => {
+          console.log(response);
+          // not expected
+          expect(true).toBeFalsy();
+        })
+        .catch((error) => {
+          expect(error).toBeDefined();
+          expect((error as Error).toString()).toMatch(/timeout!/);
+          server.close();
+          return;
+        });
     });
 
     test("scrap Github tags - wrong url", async () => {
