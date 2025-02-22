@@ -6,6 +6,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import {
   ErrorServerJson,
+  InfosScrapConnection,
   UptoDateOrNotStateResponseMonitoring,
   UptodateForm,
 } from "../Global.types";
@@ -33,10 +34,12 @@ const updateExternalStatus = (
     scrapUrlThroughProxy(
       `${control.urlCronJobMonitoring}/${state}`,
       control.httpMethodCronJobMonitoring,
-      `Authorization:${control.urlCronJobMonitoringAuth}`
+      `Authorization:${control.urlCronJobMonitoringAuth}`,
+      process.env.HTTP_PROXY,
+      process.env.HTTPS_PROXY
     )
-      .then((response) => {
-        resolv(response.toString());
+      .then((response: InfosScrapConnection) => {
+        resolv(response.data);
       })
       .catch((error: Error) => {
         reject(error);
@@ -219,9 +222,11 @@ routerActions.put(
           await scrapUrlThroughProxy(
             record.urlCICD,
             record.httpMethodCICD,
-            `Authorization:${record.urlCICDAuth}`
+            `Authorization:${record.urlCICDAuth}`,
+            process.env.HTTP_PROXY,
+            process.env.HTTPS_PROXY
           )
-            .then((response) => {
+            .then((response: InfosScrapConnection) => {
               req.app.get("LOGGER").info(
                 getLogObjectInfo(req, {
                   uuid: req.body.uuid,
@@ -273,12 +278,14 @@ routerActions.put(
           scrapUrlThroughProxy(
             `${record.urlCronJobMonitoring}/${payload}`,
             record.httpMethodCronJobMonitoring,
-            `Authorization:${record.urlCronJobMonitoringAuth}`
+            `Authorization:${record.urlCronJobMonitoringAuth}`,
+            process.env.HTTP_PROXY,
+            process.env.HTTPS_PROXY
           )
-            .then((response) => {
+            .then((response: InfosScrapConnection) => {
               const finalResponse = {
                 urlCronJobMonitoringWithPayload: `${record.urlCronJobMonitoring}/${payload}`,
-                urlCronJobMonitoringWithPayloadResponse: response,
+                urlCronJobMonitoringWithPayloadResponse: response.data,
               };
               req.app.get("LOGGER").info(
                 getLogObjectInfo(req, {

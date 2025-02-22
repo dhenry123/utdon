@@ -72,8 +72,12 @@ export const getLatestRelease = (
           item as GiteaReleaseTagModel | GithubReleaseTagModel
         ) as string;
       });
+    // tags and filter to apply
     if (filtered.length > 0 && filtersName) {
       return filterAndReplace(filtersName, filtered);
+    } else if (filtered.length > 0 && !filtersName) {
+      //tags and no filter return the first
+      return filtered[0];
     }
   }
   // if Github change specifications ???? - hard to test

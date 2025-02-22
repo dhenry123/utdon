@@ -1,6 +1,16 @@
 # No ssl proxy - proxy use CONNECT method
+
 HTTP_PROXY="http://192.168.1.1:8080"
 HTTPS_PROXY="http://192.168.1.1:8080"
+
 # With ssl proxy CA certificate must be set && url proxy must start with https
-PROXYCA_CERT="LS0t...."
+
+# put ca cert in tests/cacerts/proxy.ca
+
+# value is adjusted to the production working directory
+
+PROXYCA_CERT="../test/cacerts/proxy.ca"
 INTSSLHTTPS_PROXY="https://proxy.mydomain:8083"
+GITHUBTOKEN="[your GitHub token]"
+
+HARCODEDGREP="[Words to search for]

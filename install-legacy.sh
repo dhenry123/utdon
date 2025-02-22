@@ -1,6 +1,12 @@
 #!/bin/bash
 installdir="/usr/local/utdon"
 service="utdon"
+# Custom settings
+NODE_EXTRA_CA_CERTS=""
+NODE_TLS_REJECT_UNAUTHORIZED=""
+HTTP_PROXY=""
+HTTPS_PROXY=""
+PROXYCA_CERT=""
 
 # NodeJS is needed
 which node >/dev/null 2>&1
@@ -51,6 +57,11 @@ User=$service
 Group=$service
 Environment="USER_ENCRYPT_SECRET=$USER_ENCRYPT_SECRET"
 Environment="DATABASE_ENCRYPT_SECRET=$DATABASE_ENCRYPT_SECRET"
+Environment="HTTP_PROXY=$HTTP_PROXY"
+Environment="HTTPS_PROXY=$HTTPS_PROXY"
+Environment="PROXYCA_CERT=$PROXYCA_CERT"
+Environment="NODE_EXTRA_CA_CERTS=$NODE_EXTRA_CA_CERTS"
+Environment="NODE_TLS_REJECT_UNAUTHORIZED=$NODE_TLS_REJECT_UNAUTHORIZED"
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=$service

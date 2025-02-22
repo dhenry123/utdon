@@ -25,7 +25,13 @@ routerCore.get(
         req.headers.scrapurlheader as string,
         getGlobalGithubToken()
       );
-      await scrapUrlThroughProxy(req.params.url, "GET", header)
+      await scrapUrlThroughProxy(
+        req.params.url,
+        "GET",
+        header,
+        process.env.HTTP_PROXY,
+        process.env.HTTPS_PROXY
+      )
         .then((data: InfosScrapConnection) => {
           // Warn Reduxtoolkit expect text so data will always be type = string
           res.status(200).send(data.data);

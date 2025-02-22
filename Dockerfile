@@ -5,7 +5,7 @@ ARG RUNASUSER="utdon"
 ARG RUNASUSERID="1001"
 ARG RUNASGROUP="1001"
 
-FROM node:20.10.0-alpine3.19 AS base
+FROM node:20.18-alpine3.20 AS base
 
 # build
 FROM base AS builder
@@ -28,7 +28,7 @@ RUN rm -rf client/node_modules client/tools client/dist client/.storybook
 RUN find ./client -name "*.stories.*" -exec rm -rf {} \;
 
 # Building client, final dest is client/dist
-RUN cd client && npm install && npm run build
+RUN cd client && npm install --omit=dev && npm run build
 
 FROM base AS runner
 LABEL org.opencontainers.image.source=https://github.com/dhenry123/utdon

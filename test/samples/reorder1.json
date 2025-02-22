@@ -1,0 +1,34 @@
+[
+  {
+    "name": "codeberg",
+    "compareResult": {
+      "state": true,
+      "strictlyEqual": false,
+      "ts": 1739798558315
+    }
+  },
+  {
+    "name": "Test avec proxy",
+    "compareResult": {
+      "state": true,
+      "strictlyEqual": false,
+      "ts": 1739798500090
+    }
+  },
+  {
+    "name": "immich",
+    "compareResult": {
+      "state": true,
+      "strictlyEqual": true,
+      "ts": 1739798557982
+    }
+  },
+  {
+    "name": "pgadmin4",
+    "compareResult": {
+      "state": true,
+      "strictlyEqual": true,
+      "ts": 1739798559013
+    }
+  }
+]

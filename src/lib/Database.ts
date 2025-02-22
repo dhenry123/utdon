@@ -289,7 +289,10 @@ export const dbUpdateRecord = (
         data.headervalue,
         process.env.DATABASE_ENCRYPT_SECRET
       ),
-      // if record altered setControlGlobalGithubToken, original values were empty, keep this state
+      /**
+       * if the record was modified by the setControlGlobalGithubToken method,
+       * the original values were empty and the final state of the control must not change.
+       */
       headerkeyGit: data.authGlobale
         ? ""
         : Authentification.dataEncrypt(

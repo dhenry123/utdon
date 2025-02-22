@@ -17,7 +17,8 @@ import {
   getTypeGitRepo,
 } from "./helperGitRepository";
 import { filterJson, filterText } from "./helperProdVersionReader";
-import { NODEJSVERSION } from "../Constants";
+import { HTTPREQUESTTIMEOUT, NODEJSVERSION } from "../Constants";
+import { existsSync, readFileSync } from "fs";
 
 export const isProxyRequired = (url: string, envNoProxy: string): boolean => {
   if (!envNoProxy.trim()) return true;
@@ -58,27 +59,36 @@ export const scrapUrlThroughProxy = async (
     }
     const urlToTest = new URL(url);
     let caProxyCert;
-    if (process.env.PROXYCA_CERT) {
-      caProxyCert = Buffer.from(process.env.PROXYCA_CERT, "base64").toString(
-        "utf-8"
-      );
+    if (httpsProxy && process.env.PROXYCA_CERT) {
+      const cacertsDir = `${process.cwd()}/cacerts`;
+      const cacertsPath = `${cacertsDir}/${process.env.PROXYCA_CERT}`;
+      if (existsSync(`${cacertsPath}`)) {
+        caProxyCert = readFileSync(cacertsPath, "utf-8");
+      } else {
+        throw new Error(
+          `The ca certificate name provided in the environment variable PROXYCA_CERT doesn't exist in ${cacertsDir}, create the file or import it`
+        );
+      }
     }
     let agent;
     if (httpsProxy && urlToTest.protocol === "https:") {
       httpRequestResponse.httpsProxy = true;
       agent = new HttpsProxyAgent(httpsProxy, {
-        rejectUnauthorized: true, // CA certificates must be provided - next line
+        rejectUnauthorized:
+          process.env.NODE_TLS_REJECT_UNAUTHORIZED == "0" ? false : true,
         ca: caProxyCert ? [caProxyCert] : undefined,
+        timeout: HTTPREQUESTTIMEOUT,
       });
     } else if (httpProxy && urlToTest.protocol === "http:") {
       httpRequestResponse.httpProxy = true;
-      agent = new HttpProxyAgent(httpProxy);
+      agent = new HttpProxyAgent(httpProxy, { timeout: HTTPREQUESTTIMEOUT });
     }
     const options = {
-      method: method ? method : "GET",
+      method: method,
       agent,
       keepAlive: false,
       headers: headers,
+      timeout: HTTPREQUESTTIMEOUT,
     };
 
     let str = "";
@@ -127,7 +137,7 @@ export const getUpToDateOrNotState = async (
   // eslint-disable-next-line no-async-promise-executor
   return await new Promise(async (resolv, reject) => {
     try {
-      let productionVersion: string | void = "";
+      let productionVersion: string;
       // fixed version
       if (record.fixed) {
         productionVersion = record.fixed;
@@ -136,25 +146,28 @@ export const getUpToDateOrNotState = async (
         productionVersion = await scrapUrlThroughProxy(
           record.urlProduction,
           "GET",
-          record.headerkey ? `${record.headerkey}:${record.headervalue}` : ""
+          record.headerkey ? `${record.headerkey}:${record.headervalue}` : "",
+          process.env.HTTP_PROXY,
+          process.env.HTTPS_PROXY
         )
-          .then(async (output) => {
+          .then(async (output: InfosScrapConnection) => {
             let version = "";
             if (record.scrapTypeProduction === "json") {
               version = filterJson(
                 output.data as string,
-                record.exprProduction || ""
+                record.exprProduction
               );
             } else if (record.scrapTypeProduction === "text") {
               version = filterText(
                 output.data as string,
-                record.exprProduction || ""
+                record.exprProduction
               );
             }
             return version;
           })
           .catch((error: Error) => {
             reject(new Error(`${error.toString()}-${record.urlProduction}`));
+            return "";
           });
       }
       if (!productionVersion) {
@@ -173,9 +186,11 @@ export const getUpToDateOrNotState = async (
         "GET",
         record.headerkeyGit
           ? `${record.headerkeyGit}:${record.headervalueGit}`
-          : ""
+          : "",
+        process.env.HTTP_PROXY,
+        process.env.HTTPS_PROXY
       )
-        .then((response) => {
+        .then((response: InfosScrapConnection) => {
           const githubVersion = getLatestRelease(
             getTypeGitRepo(record.urlGitHub),
             response.data,
@@ -185,10 +200,10 @@ export const getUpToDateOrNotState = async (
           resolv(
             compareVersion(
               record.name,
-              githubVersion || "",
-              productionVersion || "",
-              record.urlGitHub || "",
-              record.urlProduction || ""
+              githubVersion,
+              productionVersion,
+              record.urlGitHub,
+              record.urlProduction
             )
           );
         })

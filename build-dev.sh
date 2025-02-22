@@ -14,8 +14,8 @@ if [ "$?" == "1" ]; then
     exit 1
 fi
 TAG=$(jq '.version' package.json | sed -E 's/^"|"$//g')
-#PROGRESS="--progress plain"
-#NOCACHE="--no-cache"
+PROGRESS="--progress plain"
+NOCACHE="--no-cache"
 PLATFORM="--platform=linux/arm64"
 echo "Building image $LOCALREGISTRY:$TAG"
 sudo docker buildx build --load $PROGRESS $NOCACHE $PLATFORM -t $LOCALREGISTRY:$TAG -f Dockerfile-dev .

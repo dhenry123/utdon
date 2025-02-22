@@ -4,9 +4,9 @@
   "description": "Application for tracking obsolete FOSS applications - Server",
   "main": "main.ts",
   "scripts": {
-    "startServer": "USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test environment=development nodemon -w src/ -e ts -L ./src/main.ts",
+    "startServer": "NODE_TLS_REJECT_UNAUTHORIZED='0' USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test environment=development nodemon -w src/ -e ts -L ./src/main.ts",
     "startServerWithProxy": ". ./envProxy && HTTP_PROXY=\"${HTTP_PROXY}\" USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test environment=development nodemon -w src/ -e ts -L ./src/main.ts",
-    "startServerProduction": "USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test nodemon -w src/ -e ts -L ./src/main.ts",
+    "startServerProduction": "NODE_TLS_REJECT_UNAUTHORIZED='0' USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test nodemon -w src/ -e ts -L ./src/main.ts",
     "startServerProductionWithProxy": ". ./envProxy && HTTP_PROXY=\"${HTTP_PROXY}\" USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56' DATABASE_ENCRYPT_SECRET=test nodemon -w src/ -e ts -L ./src/main.ts",
     "build": "environment=production tsc",
     "preview": "node dist/main.js",

@@ -3,8 +3,9 @@
  * @license AGPL3
  */
 
-import { compareVersion } from "../src/lib/Features";
-import { getUpToDateOrNotState } from "../src/lib/scrapUrlServer";
+import { readFileSync } from "fs";
+import { compareVersion, recordsOrder } from "../src/lib/Features";
+import { UptodateForm } from "../src/Global.types";
 
 describe("Features", () => {
   describe("compareVersion", () => {
@@ -48,59 +49,29 @@ describe("Features", () => {
     });
   });
 
-  describe("getUpToDateOrNotState", () => {
-    /**
-     * Warn i ve used Immich because they expose a demo website
-     * but immich demo could be down...
-     */
-    test("getUpToDateOrNotState - Work only if demo immich website is up - no actions", async () => {
-      const name = "Demo Immich";
-      const content = await getUpToDateOrNotState({
-        urlProduction: "https://demo.immich.app/api/server/version",
-        headerkey: "",
-        headervalue: "",
-        headerkeyGit: "",
-        headervalueGit: "",
-        scrapTypeProduction: "json",
-        exprProduction: "{prefix: 'v',test:join('.',*)}|join('',*)",
-        urlGitHub: "https://github.com/immich-app/immich",
-        exprGithub: "^[v|V][0-9\\.]+$",
-        urlCronJobMonitoring: "",
-        urlCronJobMonitoringAuth: "",
-        urlCICD: "",
-        urlCICDAuth: "",
-        uuid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        name: name,
-        httpMethodCICD: "GET",
-        logo: "",
-        httpMethodCronJobMonitoring: "GET",
-        isPause: true,
-        compareResult: null,
-        groups: [],
-        typeRepo: "github",
-      })
-        .then((result) => {
-          return result;
-        })
-        .catch((error) => {
-          console.log(error);
-          expect(false).toBeTruthy();
-        });
-
-      if (content) {
-        expect(typeof content).toEqual("object");
-        expect(content.name).toEqual(name);
-        expect(content.ts).toBeGreaterThan(0);
-        expect(content.githubLatestRelease).not.toEqual("");
-        expect(content.productionVersion).not.toEqual("");
-      } else {
-        console.log(content);
-        expect(false).toBeTruthy();
-      }
+  describe("recordsOrder", () => {
+    const json = JSON.parse(
+      readFileSync(`${process.cwd()}/test/samples/reorder1.json`, "utf-8")
+    ) as UptodateForm[];
+    const origOrder = json.map((item) => item.name);
+    const json1 = JSON.parse(
+      readFileSync(`${process.cwd()}/test/samples/reorder2.json`, "utf-8")
+    ) as UptodateForm[];
+    const origOrder1 = json.map((item) => item.name);
+    test("recordsOrder - Nothing to do", () => {
+      const result = recordsOrder(json);
+      const orderedNames = result.map((item) => item.name);
+      // console.log(origOrder);
+      // console.log(orderedNames);
+      expect(origOrder).toEqual(orderedNames);
+    });
+    test("recordsOrder - Reorder", () => {
+      const result = recordsOrder(json1);
+      const orderedNames = result.map((item) => item.name);
+      // console.log(origOrder1);
+      // console.log(orderedNames);
+      expect(origOrder1).not.toEqual(orderedNames);
+      expect(orderedNames[0]).toEqual("immich");
     });
   });
-  // describe("recordsOrder", () => {
-  //   test("recordsOrder - Nothing to do", () => {});
-  //   test("recordsOrder - Reorder", () => {});
-  // });
 });
