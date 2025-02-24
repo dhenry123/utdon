@@ -9,7 +9,7 @@ import "./Toast.scss";
 import { ToastType } from "../../../src/Global.types";
 import { TOAST_DEFAULT_LIFETIME } from "../../../src/Constants";
 
-let mysetInterval: NodeJS.Timeout | null;
+let mysetInterval: number | null;
 
 export interface ToastProps {
   toast: ToastType;
@@ -39,7 +39,7 @@ export const Toast = ({ toast }: ToastProps) => {
       }
     } else if (toastitem.length > 0) {
       // interval not set, start interval which will destroy old messages
-      mysetInterval = setInterval(() => {
+      mysetInterval = window.setInterval(() => {
         // see comment above
         const toastactive = toastitemRef.current.filter(
           (x: ToastType) =>

@@ -125,7 +125,7 @@ Les logs sont limités au strict nécessaire pour éviter le stockage inutile:
 - Ajout d'un token "readonly" par utilisateur pour utilisation à partir d'une chaîne CI/CD
 - Stockage S3.
 - Entrypoint API metrics.
-- Authentification LDAP.
+- ~~Authentification LDAP~~.
 
 ## Crédits
 

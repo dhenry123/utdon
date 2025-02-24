@@ -38,13 +38,6 @@ import { patchV1_3_0To1_4_0 as patchDbTo1_4_0 } from "./lib/PatchVersion";
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";
 
-// // NodeJS 21 @todo impossible to implement and dont want to add nodes-fetch
-// const agent = new https.Agent({
-//   rejectUnauthorized: false, // This option disables certificate validation
-// });
-// needed if url to scrap is https with self-signed certificates
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 // logs
 const { combine, timestamp, json } = winston.format;
 const logger = winston.createLogger({

@@ -9,7 +9,7 @@ import {
   filterText,
   isJsonParsable,
 } from "../src/lib/helperProdVersionReader";
-import { scrapUrl } from "../src/lib/Features";
+import { scrapUrlThroughProxy } from "../src/lib/scrapUrlServer";
 
 describe("helperProdVersionReader", () => {
   test("filterText", async () => {
@@ -108,24 +108,26 @@ describe("helperProdVersionReader", () => {
   });
 
   test("scrapUrl", async () => {
-    await scrapUrl("https://www.google.com", "GET").then((output) => {
-      const version = filterText(
-        (output as string).toLocaleLowerCase(),
-        "doctype ([a-zA-Z][^\\s>]*)"
-      );
-      expect(version).toEqual("html");
-    });
+    await scrapUrlThroughProxy("https://www.google.com", "GET").then(
+      (output) => {
+        const version = filterText(
+          (output.data as string).toLocaleLowerCase(),
+          "doctype ([a-zA-Z][^\\s>]*)"
+        );
+        expect(version).toEqual("html");
+      }
+    );
   });
 
-  test("scrapUrl - wrong url", async () => {
-    await scrapUrl("htxxxxx://www.google.com", "GET")
+  test("scrapUrl - wrong url protocol", async () => {
+    await scrapUrlThroughProxy("htxxxxx://www.google.com", "GET")
       .then(() => {
         // unexpected
         expect(true).toBeFalsy();
       })
       .catch((error) => {
         expect(error).toBeDefined();
-        expect(error.toString()).toEqual("TypeError: fetch failed");
+        expect(error.toString()).toMatch(/TypeError \[ERR_INVALID_PROTOCOL\]/);
       });
   });
 

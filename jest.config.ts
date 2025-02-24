@@ -6,6 +6,7 @@ const config: Config = {
   coverageDirectory: "coverage",
   collectCoverage: true,
   testPathIgnorePatterns: ["setExternalStatus"],
+  setupFiles: ["./jestLoadEnvironmentTest.ts"],
 };
 
 export default config;

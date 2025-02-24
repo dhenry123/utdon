@@ -9,3 +9,6 @@ coverage/**
 .envlocaldev
 public
 src/data
+.envTest
+test/cacerts/proxy.ca
+cacerts/proxy.ca

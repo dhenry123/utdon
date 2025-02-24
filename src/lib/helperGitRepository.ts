@@ -8,9 +8,11 @@ import {
   GithubReleaseTagModel,
   TypeGitRepo,
 } from "../Global.types";
-import { scrapUrl } from "./Features";
 
-export const getGitUrlTagReleases = (gitRepoUrl: string, typeRepo: string) => {
+export const getGitUrlTagReleases = (
+  gitRepoUrl: string,
+  typeRepo: TypeGitRepo
+) => {
   if (typeRepo === "github") {
     const githubApiReleasesEntry = "https://api.github.com/repos";
     const regExpExtractDomain = "^https?:\\/\\/[^@\\/\n]+\\/";
@@ -49,41 +51,38 @@ export const getTypeGitRepo = (url: string): TypeGitRepo => {
   return /github\.com/.test(url) ? "github" : "gitea";
 };
 
-export const getLatestRelease = async (
-  url: string,
+export const getLatestRelease = (
   typeRepo: TypeGitRepo,
-  filtersName?: string,
-  header?: string
-): Promise<string> => {
-  return await scrapUrl(getGitUrlTagReleases(url, typeRepo), "GET", header)
-    .then((releaseTags: unknown) => {
-      const json = JSON.parse(releaseTags as string);
-      if (json && Array.isArray(json)) {
-        const filtered: string[] = json
-          .filter((item) => {
-            const tag = getTagFromGitRepoResponse(
-              typeRepo,
-              item as GiteaReleaseTagModel | GithubReleaseTagModel
-            );
-            return filtersName ? tag.match(filtersName) : tag;
-          })
-          .map((item) => {
-            return getTagFromGitRepoResponse(
-              typeRepo,
-              item as GiteaReleaseTagModel | GithubReleaseTagModel
-            ) as string;
-          });
-        if (filtered.length > 0 && filtersName) {
-          return filterAndReplace(filtersName, filtered);
-        }
-      }
-      // if Github change specifications ???? - hard to test
-      // trying with an other domain return 404
-      return "";
-    })
-    .catch((error) => {
-      throw error;
-    });
+  releaseTags: string,
+  filtersName?: string
+): string => {
+  const json = JSON.parse(releaseTags as string);
+  if (json && Array.isArray(json)) {
+    const filtered: string[] = json
+      .filter((item) => {
+        const tag = getTagFromGitRepoResponse(
+          typeRepo,
+          item as GiteaReleaseTagModel | GithubReleaseTagModel
+        );
+        return filtersName ? tag.match(filtersName) : tag;
+      })
+      .map((item) => {
+        return getTagFromGitRepoResponse(
+          typeRepo,
+          item as GiteaReleaseTagModel | GithubReleaseTagModel
+        ) as string;
+      });
+    // tags and filter to apply
+    if (filtered.length > 0 && filtersName) {
+      return filterAndReplace(filtersName, filtered);
+    } else if (filtered.length > 0 && !filtersName) {
+      //tags and no filter return the first
+      return filtered[0];
+    }
+  }
+  // if Github change specifications ???? - hard to test
+  // trying with an other domain return 404
+  return "";
 };
 
 export const getTagFromGitRepoResponse = (

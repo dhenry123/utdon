@@ -35,7 +35,7 @@ export type UptodateForm = {
   headervalue: string;
   headerkeyGit: string;
   headervalueGit: string;
-  // when auth header set from github globale token
+  // Flag indicating that these attributes have been modified by the setControlGlobalGithubToken method.
   authGlobale?: boolean;
   scrapTypeProduction: ScrapType;
   exprProduction: string;
@@ -256,3 +256,9 @@ export interface logInfo extends OptionsLogType {
 export interface logError extends logInfo {
   error: string;
 }
+
+export type InfosScrapConnection = {
+  httpProxy: boolean;
+  httpsProxy: boolean;
+  data: string;
+};

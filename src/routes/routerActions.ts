@@ -6,11 +6,12 @@
 import express, { NextFunction, Request, Response } from "express";
 import {
   ErrorServerJson,
+  InfosScrapConnection,
   UptoDateOrNotStateResponseMonitoring,
   UptodateForm,
 } from "../Global.types";
 import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database";
-import { scrapUrl, getUpToDateOrNotState } from "../lib/Features";
+
 import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
 import { SessionExt } from "../ServerTypes";
 import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
@@ -18,6 +19,10 @@ import {
   getGlobalGithubToken,
   setControlGlobalGithubToken,
 } from "../lib/GlobalGithubToken";
+import {
+  getUpToDateOrNotState,
+  scrapUrlThroughProxy,
+} from "../lib/scrapUrlServer";
 
 const routerActions = express.Router();
 
@@ -26,13 +31,15 @@ const updateExternalStatus = (
   state: "0" | "1"
 ): Promise<string> => {
   return new Promise((resolv, reject) => {
-    scrapUrl(
+    scrapUrlThroughProxy(
       `${control.urlCronJobMonitoring}/${state}`,
       control.httpMethodCronJobMonitoring,
-      `Authorization:${control.urlCronJobMonitoringAuth}`
+      `Authorization:${control.urlCronJobMonitoringAuth}`,
+      process.env.HTTP_PROXY,
+      process.env.HTTPS_PROXY
     )
-      .then((response) => {
-        resolv(response.toString());
+      .then((response: InfosScrapConnection) => {
+        resolv(response.data);
       })
       .catch((error: Error) => {
         reject(error);
@@ -212,17 +219,19 @@ routerActions.put(
           req.app.get("LOGGER")
         );
         if (record && !Array.isArray(record) && record.urlCICD) {
-          await scrapUrl(
+          await scrapUrlThroughProxy(
             record.urlCICD,
             record.httpMethodCICD,
-            `Authorization:${record.urlCICDAuth}`
+            `Authorization:${record.urlCICDAuth}`,
+            process.env.HTTP_PROXY,
+            process.env.HTTPS_PROXY
           )
-            .then((response) => {
+            .then((response: InfosScrapConnection) => {
               req.app.get("LOGGER").info(
                 getLogObjectInfo(req, {
                   uuid: req.body.uuid,
                   urlCICD: record.urlCICD,
-                  scrapResponse: response,
+                  scrapResponse: response.data,
                 })
               );
               res.status(200).send(response);
@@ -266,15 +275,17 @@ routerActions.put(
         if (record && !Array.isArray(record) && record.urlCronJobMonitoring) {
           // status : 0 if if state == true |  1 if state == false
           const payload = req.body.state ? "0" : "1";
-          scrapUrl(
+          scrapUrlThroughProxy(
             `${record.urlCronJobMonitoring}/${payload}`,
             record.httpMethodCronJobMonitoring,
-            `Authorization:${record.urlCronJobMonitoringAuth}`
+            `Authorization:${record.urlCronJobMonitoringAuth}`,
+            process.env.HTTP_PROXY,
+            process.env.HTTPS_PROXY
           )
-            .then((response) => {
+            .then((response: InfosScrapConnection) => {
               const finalResponse = {
                 urlCronJobMonitoringWithPayload: `${record.urlCronJobMonitoring}/${payload}`,
-                urlCronJobMonitoringWithPayloadResponse: response,
+                urlCronJobMonitoringWithPayloadResponse: response.data,
               };
               req.app.get("LOGGER").info(
                 getLogObjectInfo(req, {

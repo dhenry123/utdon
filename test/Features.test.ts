@@ -3,138 +3,75 @@
  * @license AGPL3
  */
 
-import {
-  compareVersion,
-  getUpToDateOrNotState,
-  scrapUrl,
-} from "../src/lib/Features";
+import { readFileSync } from "fs";
+import { compareVersion, recordsOrder } from "../src/lib/Features";
+import { UptodateForm } from "../src/Global.types";
 
 describe("Features", () => {
-  test("compareVersion - strictlyEqual true", () => {
-    const name = "xxxxx";
-    const result = compareVersion(name, "x100", "x100", "", "");
-    expect(result.name).toEqual(name);
-    expect(result.githubLatestRelease).toEqual("x100");
-    expect(result.productionVersion).toEqual("x100");
-    expect(result.strictlyEqual).toBeTruthy();
-    expect(result.productionVersionIncludesGithubLatestRelease).toBeFalsy();
-    expect(result.githubLatestReleaseIncludesProductionVersion).toBeFalsy();
-    expect(result.state).toBeTruthy();
-    expect(result.ts).toBeGreaterThan(0);
+  describe("compareVersion", () => {
+    test("compareVersion - strictlyEqual true", () => {
+      const name = "xxxxx";
+      const result = compareVersion(name, "x100", "x100", "", "");
+      expect(result.name).toEqual(name);
+      expect(result.githubLatestRelease).toEqual("x100");
+      expect(result.productionVersion).toEqual("x100");
+      expect(result.strictlyEqual).toBeTruthy();
+      expect(result.productionVersionIncludesGithubLatestRelease).toBeFalsy();
+      expect(result.githubLatestReleaseIncludesProductionVersion).toBeFalsy();
+      expect(result.state).toBeTruthy();
+      expect(result.ts).toBeGreaterThan(0);
+    });
+
+    test("compareVersion - githubLatestReleaseIncludesProductionVersion", () => {
+      const name = "xxxxx";
+      const result = compareVersion(name, "x100", "x10", "", "");
+      expect(result.name).toEqual(name);
+      expect(result.githubLatestRelease).toEqual("x100");
+      expect(result.productionVersion).toEqual("x10");
+      expect(result.strictlyEqual).toBeFalsy();
+      expect(result.productionVersionIncludesGithubLatestRelease).toBeFalsy();
+      expect(result.githubLatestReleaseIncludesProductionVersion).toBeTruthy();
+      expect(result.state).toBeTruthy();
+      expect(result.ts).toBeGreaterThan(0);
+    });
+
+    test("compareVersion - productionVersionIncludesGithubLatestRelease", () => {
+      const name = "xxxxx";
+      const result = compareVersion(name, "100", "x100", "", "");
+      expect(result.name).toEqual(name);
+      expect(result.githubLatestRelease).toEqual("100");
+      expect(result.productionVersion).toEqual("x100");
+      expect(result.strictlyEqual).toBeFalsy();
+      expect(result.productionVersionIncludesGithubLatestRelease).toBeTruthy();
+      expect(result.githubLatestReleaseIncludesProductionVersion).toBeFalsy();
+      expect(result.state).toBeTruthy();
+      expect(result.ts).toBeGreaterThan(0);
+    });
   });
 
-  test("compareVersion - githubLatestReleaseIncludesProductionVersion", () => {
-    const name = "xxxxx";
-    const result = compareVersion(name, "x100", "x10", "", "");
-    expect(result.name).toEqual(name);
-    expect(result.githubLatestRelease).toEqual("x100");
-    expect(result.productionVersion).toEqual("x10");
-    expect(result.strictlyEqual).toBeFalsy();
-    expect(result.productionVersionIncludesGithubLatestRelease).toBeFalsy();
-    expect(result.githubLatestReleaseIncludesProductionVersion).toBeTruthy();
-    expect(result.state).toBeTruthy();
-    expect(result.ts).toBeGreaterThan(0);
-  });
-
-  test("compareVersion - productionVersionIncludesGithubLatestRelease", () => {
-    const name = "xxxxx";
-    const result = compareVersion(name, "100", "x100", "", "");
-    expect(result.name).toEqual(name);
-    expect(result.githubLatestRelease).toEqual("100");
-    expect(result.productionVersion).toEqual("x100");
-    expect(result.strictlyEqual).toBeFalsy();
-    expect(result.productionVersionIncludesGithubLatestRelease).toBeTruthy();
-    expect(result.githubLatestReleaseIncludesProductionVersion).toBeFalsy();
-    expect(result.state).toBeTruthy();
-    expect(result.ts).toBeGreaterThan(0);
-  });
-
-  test("scrapUrl - default GET", async () => {
-    const content = await scrapUrl("https://www.google.com")
-      .then((result) => {
-        return result;
-      })
-      .catch((error) => {
-        console.log(error);
-        //unexpected --> google is dead ???
-        expect(false).toBeTruthy();
-      });
-    expect(content).not.toEqual("");
-  });
-
-  test("scrapUrl - POST", async () => {
-    const content = await scrapUrl("https://www.google.com", "POST")
-      .then((result) => {
-        console.log(result);
-        //unexpected --> google allow POST on root path  ???
-        expect(false).toBeTruthy();
-      })
-      .catch((error) => {
-        expect(error.toString()).toMatch(/Error: An error has occured: 40/);
-      });
-    expect(content).not.toEqual("");
-  });
-
-  test("scrapUrl - default GET With authent", async () => {
-    const content = await scrapUrl("https://www.google.com", "GET", "xxxxxxxxx")
-      .then((result) => {
-        return result;
-      })
-      .catch((error) => {
-        console.log(error);
-        //unexpected --> google is dead ???
-        expect(false).toBeTruthy();
-      });
-    expect(content).not.toEqual("");
-  });
-
-  /**
-   * Warn i ve used Immich because they expose a demo website
-   * but immich demo could be down...
-   */
-  test("getUpToDateOrNotState - Work only if demo immich website is up - no actions", async () => {
-    const name = "Demo Immich";
-    const content = await getUpToDateOrNotState({
-      urlProduction: "https://demo.immich.app/api/server/version",
-      headerkey: "",
-      headervalue: "",
-      headerkeyGit: "",
-      headervalueGit: "",
-      scrapTypeProduction: "json",
-      exprProduction: "{prefix: 'v',test:join('.',*)}|join('',*)",
-      urlGitHub: "https://github.com/immich-app/immich",
-      exprGithub: "^[v|V][0-9\\.]+$",
-      urlCronJobMonitoring: "",
-      urlCronJobMonitoringAuth: "",
-      urlCICD: "",
-      urlCICDAuth: "",
-      uuid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      name: name,
-      httpMethodCICD: "GET",
-      logo: "",
-      httpMethodCronJobMonitoring: "GET",
-      isPause: true,
-      compareResult: null,
-      groups: [],
-      typeRepo: "github",
-    })
-      .then((result) => {
-        return result;
-      })
-      .catch((error) => {
-        console.log(error);
-        expect(false).toBeTruthy();
-      });
-
-    if (content) {
-      expect(typeof content).toEqual("object");
-      expect(content.name).toEqual(name);
-      expect(content.ts).toBeGreaterThan(0);
-      expect(content.githubLatestRelease).not.toEqual("");
-      expect(content.productionVersion).not.toEqual("");
-    } else {
-      console.log(content);
-      expect(false).toBeTruthy();
-    }
+  describe("recordsOrder", () => {
+    const json = JSON.parse(
+      readFileSync(`${process.cwd()}/test/samples/reorder1.json`, "utf-8")
+    ) as UptodateForm[];
+    const origOrder = json.map((item) => item.name);
+    const json1 = JSON.parse(
+      readFileSync(`${process.cwd()}/test/samples/reorder2.json`, "utf-8")
+    ) as UptodateForm[];
+    const origOrder1 = json.map((item) => item.name);
+    test("recordsOrder - Nothing to do", () => {
+      const result = recordsOrder(json);
+      const orderedNames = result.map((item) => item.name);
+      // console.log(origOrder);
+      // console.log(orderedNames);
+      expect(origOrder).toEqual(orderedNames);
+    });
+    test("recordsOrder - Reorder", () => {
+      const result = recordsOrder(json1);
+      const orderedNames = result.map((item) => item.name);
+      // console.log(origOrder1);
+      // console.log(orderedNames);
+      expect(origOrder1).not.toEqual(orderedNames);
+      expect(orderedNames[0]).toEqual("immich");
+    });
   });
 });
