@@ -3,6 +3,7 @@
  * @license AGPL3
  */
 
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { existsSync, rmSync, copyFileSync, readFileSync, unlinkSync } from "fs";
 import { Authentification } from "../src/lib/Authentification";
 import { LOGIN_FAILED, PASSWORD_OR_USER_UNDEFINED } from "../src/Constants";
@@ -12,6 +13,8 @@ import { SessionExt } from "../src/ServerTypes";
 
 import winston from "winston";
 import Transport from "winston-transport";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 const { combine, timestamp, json } = winston.format;
 interface LastErrorTransportOptions {
   level?: string;
@@ -41,6 +44,9 @@ const logger = winston.createLogger({
   format: combine(timestamp(), json()),
   transports: [new LastErrorTransport()],
 });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const userDatabase = `${__dirname}/data/userDatabase.json`;
 

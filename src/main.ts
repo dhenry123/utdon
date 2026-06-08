@@ -3,7 +3,8 @@
  * @license AGPL3
  */
 
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
+import type { Request, Response, NextFunction } from "express";
 import session from "express-session";
 import crypto from "crypto";
 import * as http from "http";
@@ -37,6 +38,8 @@ import { patchV1_3_0To1_4_0 as patchDbTo1_4_0 } from "./lib/PatchVersion";
 
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 // logs
 const { combine, timestamp, json } = winston.format;
@@ -90,6 +93,8 @@ dbGetData(dbfile)
   });
 
 // Checking users/groups databases - need to be renamed
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const usersDbPathDev = `${__dirname}/../data/user.json`;
 const usersDbPath = `${__dirname}/data/user.json`;
 
@@ -166,7 +171,7 @@ const publicPath =
   process.env.environment === "development" ? "/../client/dist/" : "/public";
 
 // route to send react app
-["/", "/login", "/ui/editcontrol/*", "/ui/addcontrol"].forEach((item) => {
+["/", "/login", "/ui/editcontrol/*path", "/ui/addcontrol"].forEach((item) => {
   app.use(
     item,
     express.static(__dirname + publicPath, {
@@ -181,7 +186,7 @@ if (existsSync(OPENAPIFILEYAML)) {
   app.use("/api/doc/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, _res: Response, next: NextFunction) => {
   // no need auth for this UI routes
   if (API_ENTRY_POINTS_NO_NEED_AUTHENTICATION.includes(req.path))
     return next(null);
@@ -202,7 +207,7 @@ app.use("/api/v1", routerActions);
 /**
  * catch 404 and stop
  */
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   const message = "Route Not found";
   res.status(404).json({ message: message });
 });
@@ -213,7 +218,7 @@ app.use((req: Request, res: Response) => {
 /**
  * logErrors
  */
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((error: Error, _req: Request, res: Response, next: NextFunction) => {
   if (error && typeof error === "object") {
     logger.error({
       srcFile: __filename,

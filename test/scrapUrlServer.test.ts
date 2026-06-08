@@ -1,3 +1,9 @@
+/**
+ * @author DHENRY for mytinydc.com
+ * @license AGPL3
+ */
+
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import {
   getUpToDateOrNotState,
   isProxyRequired,

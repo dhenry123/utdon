@@ -3,6 +3,7 @@
  * @license AGPL3
  */
 
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { UptodateForm } from "../src/Global.types";
 import { existsSync, unlinkSync, writeFileSync, chmodSync } from "fs";
 import {

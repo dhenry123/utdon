@@ -1,8 +1,13 @@
 import { readFileSync, writeFileSync } from "fs";
 import { Authentification } from "./Authentification";
 import { UptodateForm } from "../Global.types";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const getFilePath = (): string => {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  
   const ggtDbPathDev = `${__dirname}/../../data//globalGithubToken`;
   const ggtDbPath = `${__dirname}/../data/globalGithubToken`;
 

@@ -22,6 +22,11 @@ import {
 } from "../Constants";
 import { Request } from "express";
 import { SessionExt } from "../ServerTypes";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const userDatabaseDefault = `${__dirname}/../../data/user.json`;
 

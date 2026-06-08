@@ -9,7 +9,11 @@ import { UptodateForm } from "../Global.types";
 import { Authentification } from "./Authentification";
 import { SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB } from "../Constants";
 import { Logger } from "winston";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const dbFilePath = `${__dirname}/../data`;
 const dbFilePathDev = `${__dirname}/../../data`;
 const dbJson = "database.json";
