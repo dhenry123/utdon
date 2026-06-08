@@ -25,7 +25,7 @@ export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   urlProduction: "",
 };
 
-export const APPLICATION_VERSION = "1.9.0";
+export const APPLICATION_VERSION = "1.10.0";
 export const NODEJSVERSION = "20"; //used to provide user-agent in http header
 export const HTTPREQUESTTIMEOUT = 3000;
 
