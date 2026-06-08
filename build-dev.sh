@@ -18,6 +18,6 @@ PROGRESS="--progress plain"
 NOCACHE="--no-cache"
 PLATFORM="--platform=linux/arm64"
 echo "Building image $LOCALREGISTRY:$TAG"
-sudo docker buildx build --load $PROGRESS $NOCACHE $PLATFORM -t $LOCALREGISTRY:$TAG -f Dockerfile-dev .
+docker buildx build --load $PROGRESS $NOCACHE $PLATFORM -t $LOCALREGISTRY:$TAG -f Dockerfile-dev .
 echo "Pushing image $LOCALREGISTRY:$TAG"
-sudo docker push "$LOCALREGISTRY":"$TAG"
+docker push "$LOCALREGISTRY":"$TAG"
