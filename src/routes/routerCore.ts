@@ -21,12 +21,12 @@ routerCore.get(
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.params.url !== undefined) {
       const header = getHeaderGlobalGithubToken(
-        req.params.url,
+        req.params.url as string,
         req.headers.scrapurlheader as string,
         getGlobalGithubToken()
       );
       await scrapUrlThroughProxy(
-        req.params.url,
+        req.params.url as string,
         "GET",
         header,
         process.env.HTTP_PROXY,
