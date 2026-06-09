@@ -13,19 +13,18 @@ FROM base AS builder
 WORKDIR /app
 
 # Server
-COPY ./src/ ./src/
 COPY ./openapi.yaml .
 COPY ./package.json .
 COPY ./locales ./locales
 COPY ./tsconfig.json .
 # Building server, final dest is /dist
-RUN npm install && npm run build
+RUN npm install
+COPY ./src/ ./src/
+RUN npm run build
 RUN rm -rf node_modules && npm install --omit=dev
 # Client
 COPY ./client ./client
 RUN rm -rf client/node_modules client/tools client/dist client/.storybook
-# Remove stories
-RUN find ./client -name "*.stories.*" -exec rm -rf {} \;
 
 # Building client, final dest is client/dist
 RUN cd client && npm install && npm run build
