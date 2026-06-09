@@ -19,8 +19,8 @@ import {
   dbCreate,
   dbGetData,
   getDbInitJsonFileName,
-} from "./lib/Database";
-import { Authentification } from "./lib/Authentification";
+} from "./lib/Database.js";
+import { Authentification } from "./lib/Authentification.js";
 import {
   ADMINPASSWORDDEFAULT,
   ADMINUSERLOGINDEFAULT,
@@ -29,12 +29,12 @@ import {
   OPENAPIFILEYAML,
   SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB,
   SERVER_ERROR_USER_IS_NOT_AUTHENTIFIED,
-} from "./Constants";
-import routerControl from "./routes/routerControls";
-import routerActions from "./routes/routerActions";
-import routerCore from "./routes/routerCore";
-import routerAuth from "./routes/routerAuth";
-import { patchV1_3_0To1_4_0 as patchDbTo1_4_0 } from "./lib/PatchVersion";
+} from "./Constants.js";
+import routerControl from "./routes/routerControls.js";
+import routerActions from "./routes/routerActions.js";
+import routerCore from "./routes/routerCore.js";
+import routerAuth from "./routes/routerAuth.js";
+import { patchV1_3_0To1_4_0 as patchDbTo1_4_0 } from "./lib/PatchVersion.js";
 
 // Swagger Documentation
 import swaggerUi from "swagger-ui-express";

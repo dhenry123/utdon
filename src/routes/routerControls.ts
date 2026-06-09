@@ -4,18 +4,18 @@
  */
 
 import express, { Request, Response, NextFunction } from "express";
-import { UptodateForm } from "../Global.types";
+import { UptodateForm } from "../Global.types.js";
 import {
   dbCommit,
   dbDeleteRecord,
   dbGetRecord,
   dbInsert,
   dbUpdateRecord,
-} from "../lib/Database";
-import { recordsOrder } from "../lib/Features";
-import { SessionExt } from "../ServerTypes";
-import { getTypeGitRepo } from "../lib/helperGitRepository";
-import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+} from "../lib/Database.js";
+import { recordsOrder } from "../lib/Features.js";
+import { SessionExt } from "../ServerTypes.js";
+import { getTypeGitRepo } from "../lib/helperGitRepository.js";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs.js";
 const routerControl = express.Router();
 
 routerControl.post(

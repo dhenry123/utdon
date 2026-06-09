@@ -3,7 +3,7 @@
  * @license AGPL3
  */
 
-import { UptoDateOrNotState, UptodateForm } from "./Global.types";
+import { UptoDateOrNotState, UptodateForm } from "./Global.types.js";
 
 export const STORYBOOK_UPDATEORNOTSTATE: UptoDateOrNotState = {
   name: "xxxxx",

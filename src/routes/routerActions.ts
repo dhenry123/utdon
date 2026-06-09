@@ -9,20 +9,20 @@ import {
   InfosScrapConnection,
   UptoDateOrNotStateResponseMonitoring,
   UptodateForm,
-} from "../Global.types";
-import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database";
+} from "../Global.types.js";
+import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database.js";
 
-import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
-import { SessionExt } from "../ServerTypes";
-import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants.js";
+import { SessionExt } from "../ServerTypes.js";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs.js";
 import {
   getGlobalGithubToken,
   setControlGlobalGithubToken,
-} from "../lib/GlobalGithubToken";
+} from "../lib/GlobalGithubToken.js";
 import {
   getUpToDateOrNotState,
   scrapUrlThroughProxy,
-} from "../lib/scrapUrlServer";
+} from "../lib/scrapUrlServer.js";
 
 const routerActions = express.Router();
 

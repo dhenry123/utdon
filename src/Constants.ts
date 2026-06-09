@@ -11,7 +11,7 @@ import {
   UptoDateOrNotState,
   UptodateForm,
   NewUserType,
-} from "./Global.types";
+} from "./Global.types.js";
 
 export const INPROGRESS_UPTODATEORNOTSTATE: UptoDateOrNotState = {
   name: "In progress",

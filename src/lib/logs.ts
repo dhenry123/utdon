@@ -1,6 +1,6 @@
 import { Request } from "express";
-import { logError, logInfo, OptionsLogType } from "../Global.types";
-import { SessionExt } from "../ServerTypes";
+import { logError, logInfo, OptionsLogType } from "../Global.types.js";
+import { SessionExt } from "../ServerTypes.js";
 
 const getBase = (req: Request): logInfo => {
   const session = req.session as SessionExt;

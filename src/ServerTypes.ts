@@ -4,7 +4,7 @@
  */
 
 import { Session } from "express-session";
-import { InfoIuType } from "./Global.types";
+import { InfoIuType } from "./Global.types.js";
 
 /**
  * No need for UI

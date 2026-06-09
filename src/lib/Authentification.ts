@@ -11,7 +11,7 @@ import {
   UserDescriptionType,
   UsersGroupsType,
   UserType,
-} from "../Global.types";
+} from "../Global.types.js";
 import crypto from "crypto";
 
 import {
@@ -19,9 +19,9 @@ import {
   CIPHERSHAALGORITHM,
   LOGIN_FAILED,
   PASSWORD_OR_USER_UNDEFINED,
-} from "../Constants";
+} from "../Constants.js";
 import { Request } from "express";
-import { SessionExt } from "../ServerTypes";
+import { SessionExt } from "../ServerTypes.js";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
