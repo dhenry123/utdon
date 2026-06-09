@@ -13,14 +13,15 @@ FROM base AS builder
 WORKDIR /app
 
 # Server
-COPY ./src/ ./src/
-RUN rm -f ./genSwaggerJson.ts
 COPY ./openapi.yaml .
 COPY ./package.json .
 COPY ./locales ./locales
 COPY ./tsconfig.json .
 # Building server, final dest is /dist
-RUN npm install && npm run build
+RUN npm install
+COPY ./src/ ./src/
+RUN rm -f ./genSwaggerJson.ts
+RUN npm run build
 RUN rm -rf node_modules && npm install --omit=dev
 
 FROM base AS runner
