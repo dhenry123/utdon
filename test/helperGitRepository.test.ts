@@ -3,6 +3,7 @@
  * @license AGPL3
  */
 
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import {
   getLatestRelease,
   getGitUrlTagReleases,
@@ -22,7 +23,7 @@ describe("helperGitRepository", () => {
         "https://github.com/dhenry123/utdon",
         "github"
       );
-      expect(url).toEqual("https://api.github.com/repos/dhenry123/utdon/tags");
+      expect(url).toEqual("https://api.github.com/repos/dhenry123/utdon/releases");
     });
 
     test("getGitUrlTagReleases - gitea", () => {

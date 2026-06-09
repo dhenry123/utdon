@@ -1,9 +1,14 @@
 import { readFileSync, writeFileSync } from "fs";
-import { Authentification } from "./Authentification";
-import { UptodateForm } from "../Global.types";
+import { Authentification } from "./Authentification.js";
+import { UptodateForm } from "../Global.types.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const getFilePath = (): string => {
-  const ggtDbPathDev = `${__dirname}/../../data//globalGithubToken`;
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  
+  const ggtDbPathDev = `${__dirname}/../../data/globalGithubToken`;
   const ggtDbPath = `${__dirname}/../data/globalGithubToken`;
 
   return process.env.environment === "development" ? ggtDbPathDev : ggtDbPath;

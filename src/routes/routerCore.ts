@@ -4,13 +4,13 @@
  */
 
 import express, { NextFunction, Request, Response } from "express";
-import { APPLICATION_VERSION } from "../Constants";
+import { APPLICATION_VERSION } from "../Constants.js";
 import {
   getGlobalGithubToken,
   getHeaderGlobalGithubToken,
-} from "../lib/GlobalGithubToken";
-import { scrapUrlThroughProxy } from "../lib/scrapUrlServer";
-import { InfosScrapConnection } from "../Global.types";
+} from "../lib/GlobalGithubToken.js";
+import { scrapUrlThroughProxy } from "../lib/scrapUrlServer.js";
+import { InfosScrapConnection } from "../Global.types.js";
 const routerCore = express.Router();
 
 /**
@@ -21,12 +21,12 @@ routerCore.get(
   async (req: Request, res: Response, next: NextFunction) => {
     if (req.params.url !== undefined) {
       const header = getHeaderGlobalGithubToken(
-        req.params.url,
+        req.params.url as string,
         req.headers.scrapurlheader as string,
         getGlobalGithubToken()
       );
       await scrapUrlThroughProxy(
-        req.params.url,
+        req.params.url as string,
         "GET",
         header,
         process.env.HTTP_PROXY,

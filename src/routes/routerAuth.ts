@@ -4,19 +4,19 @@
  */
 
 import express, { NextFunction, Request, Response } from "express";
-import { ERRORINVALIDREQUEST } from "../Constants";
+import { ERRORINVALIDREQUEST } from "../Constants.js";
 import {
   ChangePasswordType,
   InfoIuType,
   NewUserType,
   UserType,
-} from "../Global.types";
-import { SessionExt } from "../ServerTypes";
-import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+} from "../Global.types.js";
+import { SessionExt } from "../ServerTypes.js";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs.js";
 import {
   getGlobalGithubToken,
   setGlobalGithubToken,
-} from "../lib/GlobalGithubToken";
+} from "../lib/GlobalGithubToken.js";
 const routerAuth = express.Router();
 
 /**

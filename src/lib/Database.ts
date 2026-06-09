@@ -5,11 +5,15 @@
 
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { v4 as uuidv4 } from "uuid";
-import { UptodateForm } from "../Global.types";
-import { Authentification } from "./Authentification";
-import { SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB } from "../Constants";
+import { UptodateForm } from "../Global.types.js";
+import { Authentification } from "./Authentification.js";
+import { SERVER_ERROR_IMPOSSIBLE_TO_CREATE_DB } from "../Constants.js";
 import { Logger } from "winston";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const dbFilePath = `${__dirname}/../data`;
 const dbFilePathDev = `${__dirname}/../../data`;
 const dbJson = "database.json";

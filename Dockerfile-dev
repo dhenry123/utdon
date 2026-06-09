@@ -5,7 +5,7 @@ ARG RUNASUSER="utdon"
 ARG RUNASUSERID="1001"
 ARG RUNASGROUP="1001"
 
-FROM node:20.18-alpine3.20 AS base
+FROM node:22.22.3-alpine3.23 AS base
 
 # build
 FROM base AS builder
@@ -13,14 +13,15 @@ FROM base AS builder
 WORKDIR /app
 
 # Server
-COPY ./src/ ./src/
-RUN rm -f ./genSwaggerJson.ts
 COPY ./openapi.yaml .
 COPY ./package.json .
 COPY ./locales ./locales
 COPY ./tsconfig.json .
 # Building server, final dest is /dist
-RUN npm install && npm run build
+RUN npm install
+COPY ./src/ ./src/
+RUN rm -f ./genSwaggerJson.ts
+RUN npm run build
 RUN rm -rf node_modules && npm install --omit=dev
 
 FROM base AS runner

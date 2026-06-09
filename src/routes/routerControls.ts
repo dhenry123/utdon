@@ -4,18 +4,18 @@
  */
 
 import express, { Request, Response, NextFunction } from "express";
-import { UptodateForm } from "../Global.types";
+import { UptodateForm } from "../Global.types.js";
 import {
   dbCommit,
   dbDeleteRecord,
   dbGetRecord,
   dbInsert,
   dbUpdateRecord,
-} from "../lib/Database";
-import { recordsOrder } from "../lib/Features";
-import { SessionExt } from "../ServerTypes";
-import { getTypeGitRepo } from "../lib/helperGitRepository";
-import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+} from "../lib/Database.js";
+import { recordsOrder } from "../lib/Features.js";
+import { SessionExt } from "../ServerTypes.js";
+import { getTypeGitRepo } from "../lib/helperGitRepository.js";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs.js";
 const routerControl = express.Router();
 
 routerControl.post(
@@ -94,7 +94,7 @@ routerControl.get(
       const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
       let rec = dbGetRecord(
         req.app.get("DB"),
-        req.params.uuid,
+        req.params.uuid as string,
         userGroups,
         req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
@@ -121,20 +121,20 @@ routerControl.delete(
       // get record filtered on authorized groups
       const rec = dbGetRecord(
         req.app.get("DB"),
-        req.params.uuid,
+        req.params.uuid as string,
         userGroups,
         req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
       );
       if (rec && !Array.isArray(rec)) {
-        const rec = dbDeleteRecord(req.app.get("DB"), req.params.uuid);
+        const rec = dbDeleteRecord(req.app.get("DB"), req.params.uuid as string);
         if (rec === req.params.uuid) {
           //commit
           dbCommit(req.app.get("DBFILE") as string, req.app.get("DB"))
             .then(() => {
               req.app.get("LOGGER").info(
                 getLogObjectInfo(req, {
-                  uuid: req.params.uuid,
+                  uuid: req.params.uuid as string,
                 })
               );
               res.status(200).json({ uuid: rec });

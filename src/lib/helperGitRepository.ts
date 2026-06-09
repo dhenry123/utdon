@@ -17,7 +17,7 @@ export const getGitUrlTagReleases = (
     const githubApiReleasesEntry = "https://api.github.com/repos";
     const regExpExtractDomain = "^https?:\\/\\/[^@\\/\n]+\\/";
     const owner = gitRepoUrl.replace(new RegExp(regExpExtractDomain), "");
-    return `${githubApiReleasesEntry}/${owner}/tags`;
+    return `${githubApiReleasesEntry}/${owner}/releases`;
   } else {
     //Gitea other solution
     //xxxxDOMAINxxx/api/v1/repos/xxxOWNERxxx/releases
@@ -91,5 +91,5 @@ export const getTagFromGitRepoResponse = (
 ): string => {
   return typeRepo === "gitea"
     ? (data.tag_name as string)
-    : (data.name as string);
+    : ( data.tag_name ? data.tag_name as string : data.name as string);
 };

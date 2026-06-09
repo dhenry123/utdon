@@ -124,9 +124,9 @@ Logs are kept to a minimum to avoid unnecessary storage:
 
 ## Roadmap
 
-- Add one "readonly" token per user for use from a CI/CD chain.
-- S3 storage.
-- Entrypoint API metrics.
+- ~~Add one "readonly" token per user for use from a CI/CD chain~~.
+- ~~S3 storage~~.
+- ~~Entrypoint API metrics~~.
 - ~~LDAP authentication~~.
 
 ## Credits
@@ -142,6 +142,8 @@ Logs are kept to a minimum to avoid unnecessary storage:
 - LoaderShip: https://www.loadership.com/
 
 - Logo: <https://www.instagram.com/henry_redbeard/>
+
+- Node: v22.22.3 (LTS)
 
 ## If you like this application
 

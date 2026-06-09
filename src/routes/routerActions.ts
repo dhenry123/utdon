@@ -9,20 +9,20 @@ import {
   InfosScrapConnection,
   UptoDateOrNotStateResponseMonitoring,
   UptodateForm,
-} from "../Global.types";
-import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database";
+} from "../Global.types.js";
+import { dbCommit, dbGetRecord, dbUpdateRecord } from "../lib/Database.js";
 
-import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants";
-import { SessionExt } from "../ServerTypes";
-import { getLogObjectError, getLogObjectInfo } from "../lib/logs";
+import { UUIDNOTFOUND, UUIDNOTPROVIDED } from "../Constants.js";
+import { SessionExt } from "../ServerTypes.js";
+import { getLogObjectError, getLogObjectInfo } from "../lib/logs.js";
 import {
   getGlobalGithubToken,
   setControlGlobalGithubToken,
-} from "../lib/GlobalGithubToken";
+} from "../lib/GlobalGithubToken.js";
 import {
   getUpToDateOrNotState,
   scrapUrlThroughProxy,
-} from "../lib/scrapUrlServer";
+} from "../lib/scrapUrlServer.js";
 
 const routerActions = express.Router();
 
@@ -64,7 +64,7 @@ routerActions.put(
         ErrorServerJson[] = [];
       const record = dbGetRecord(
         req.app.get("DB"),
-        req.params.controlUuid,
+        req.params.controlUuid as string,
         userGroups,
         req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
@@ -190,7 +190,7 @@ routerActions.put(
       } else {
         req.app.get("LOGGER").error(
           getLogObjectError(req, UUIDNOTFOUND, {
-            uuid: req.params.controlUuid,
+            uuid: req.params.controlUuid as string,
           })
         );
         res.status(404).json({ error: UUIDNOTFOUND });
@@ -320,14 +320,14 @@ routerActions.get(
       const userGroups = req.app.get("AUTH").getUserGroups(session.user.uuid);
       const record = (await dbGetRecord(
         req.app.get("DB"),
-        req.params.controlUuid,
+        req.params.controlUuid as string,
         userGroups,
         req.app.get("AUTH").isAdmin(req),
         req.app.get("LOGGER")
       )) as UptodateForm;
       req.app
         .get("LOGGER")
-        .info(getLogObjectInfo(req, { uuid: req.params.controlUuid }));
+        .info(getLogObjectInfo(req, { uuid: req.params.controlUuid as string }));
       if (record) {
         if (record.compareResult?.githubLatestRelease) {
           res.status(200).json(record.compareResult?.githubLatestRelease);

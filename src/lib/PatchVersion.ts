@@ -1,4 +1,4 @@
-import { UptodateForm } from "../Global.types";
+import { UptodateForm } from "../Global.types.js";
 
 // V1.3.0 -> V1.4.0
 // Add groups attribut to controls

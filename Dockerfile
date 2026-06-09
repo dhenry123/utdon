@@ -5,7 +5,7 @@ ARG RUNASUSER="utdon"
 ARG RUNASUSERID="1001"
 ARG RUNASGROUP="1001"
 
-FROM node:20.18-alpine3.20 AS base
+FROM node:22.22.3-alpine3.23 AS base
 
 # build
 FROM base AS builder
@@ -13,22 +13,21 @@ FROM base AS builder
 WORKDIR /app
 
 # Server
-COPY ./src/ ./src/
 COPY ./openapi.yaml .
 COPY ./package.json .
 COPY ./locales ./locales
 COPY ./tsconfig.json .
 # Building server, final dest is /dist
-RUN npm install && npm run build
+RUN npm install
+COPY ./src/ ./src/
+RUN npm run build
 RUN rm -rf node_modules && npm install --omit=dev
 # Client
 COPY ./client ./client
 RUN rm -rf client/node_modules client/tools client/dist client/.storybook
-# Remove stories
-RUN find ./client -name "*.stories.*" -exec rm -rf {} \;
 
 # Building client, final dest is client/dist
-RUN cd client && npm install --omit=dev && npm run build
+RUN cd client && npm install && npm run build
 
 FROM base AS runner
 LABEL org.opencontainers.image.source=https://github.com/dhenry123/utdon

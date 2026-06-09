@@ -3,6 +3,7 @@
  * @license AGPL3
  */
 
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { readFileSync } from "fs";
 import {
   filterJson,

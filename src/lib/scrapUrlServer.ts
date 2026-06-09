@@ -10,14 +10,14 @@ import http from "http";
 
 import { HttpProxyAgent } from "http-proxy-agent";
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { compareVersion } from "./Features";
+import { compareVersion } from "./Features.js";
 import {
   getGitUrlTagReleases,
   getLatestRelease,
   getTypeGitRepo,
-} from "./helperGitRepository";
-import { filterJson, filterText } from "./helperProdVersionReader";
-import { HTTPREQUESTTIMEOUT, NODEJSVERSION } from "../Constants";
+} from "./helperGitRepository.js";
+import { filterJson, filterText } from "./helperProdVersionReader.js";
+import { HTTPREQUESTTIMEOUT, NODEJSVERSION } from "../Constants.js";
 import { existsSync, readFileSync } from "fs";
 
 export const isProxyRequired = (url: string, envNoProxy: string): boolean => {
