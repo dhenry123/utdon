@@ -8,7 +8,7 @@ import {
   GithubReleaseTagModel,
   TypeGitRepo,
 } from "../Global.types";
-import { parseSemver, compareSemverParsed, SemVer } from "./semver";
+import { parseSemver, compareSemverParsed, SemVer } from "./semver.js";
 
 export const getGitUrlTagReleases = (
   gitRepoUrl: string,

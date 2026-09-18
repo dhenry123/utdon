@@ -4,7 +4,7 @@
  */
 
 import { UptoDateOrNotState, UptodateForm } from "../Global.types";
-import { compareSemver } from "./semver";
+import { compareSemver } from "./semver.js";
 
 /**
  * return the object UptoDateOrNotState
