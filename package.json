@@ -16,7 +16,8 @@
     "updateVersionMinor": "./updateVersion.sh minor",
     "updateVersionPatch": "./updateVersion.sh patch",
     "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --config jest.config.ts",
-    "startLocalProxy": "node test/tools/localProxy.mjs"
+    "startLocalProxy": "node test/tools/localProxy.mjs",
+    "checkConfidentiality": ".agents/skills/pr-confidentiality/scripts/checkConfidentiality.sh"
   },
   "repository": {
     "type": "git",

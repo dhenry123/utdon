@@ -11,6 +11,7 @@
 - UI : l'aperçu « dernière version disponible détectée » de l'assistant de contrôle applique désormais la même sélection que le serveur.
 - Tests UI : nouvelle suite Vitest + React Testing Library pour le client (56 tests).
 - Tests : proxy local minimal (`npm run startLocalProxy`) permettant d'exécuter la suite de tests serveur sans proxy corporate.
+- Garde-fou de confidentialité : `npm run checkConfidentiality` analyse les commits en attente, l'arborescence de travail et tout texte sur le point d'être publié (descriptions de PR) à la recherche de secrets, d'adresses IP internes et de fichiers sensibles ; un hook git `pre-push` l'applique avant chaque push.
 - Dépendances client : vite 8, @vitejs/plugin-react 6, @reduxjs/toolkit 2, react-redux 9, react-router-dom 7, react-intl 12 — `npm audit` ne rapporte plus aucune vulnérabilité (4 auparavant).
 - Dépendances serveur actualisées.
 

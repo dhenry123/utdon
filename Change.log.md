@@ -11,6 +11,7 @@
 - UI: the control wizard "latest available version detected" preview now applies the same selection as the server.
 - UI tests: new Vitest + React Testing Library suite for the client (56 tests).
 - Tests: minimal local proxy (`npm run startLocalProxy`) so the server test suite can run without a corporate proxy.
+- Confidentiality gate: `npm run checkConfidentiality` scans pending commits, the working tree and any text about to be published (PR descriptions) for secrets, internal IP addresses and sensitive files; a git `pre-push` hook enforces it before every push.
 - Client dependencies: vite 8, @vitejs/plugin-react 6, @reduxjs/toolkit 2, react-redux 9, react-router-dom 7, react-intl 12 — `npm audit` now reports 0 vulnerabilities (was 4).
 - Server dependencies refreshed.
 
