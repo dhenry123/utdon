@@ -15,7 +15,7 @@
     "updateVersionMajor": "./updateVersion.sh major",
     "updateVersionMinor": "./updateVersion.sh minor",
     "updateVersionPatch": "./updateVersion.sh patch",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --config jest.config.ts --testPathIgnorePatterns='devtest*'",
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --config jest.config.ts",
     "startLocalProxy": "node test/tools/localProxy.mjs"
   },
   "repository": {

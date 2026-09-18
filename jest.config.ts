@@ -2,7 +2,8 @@ export default {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', 'devtest*'],
+  // client/ has its own vitest suite (npm test in client/)
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', 'client/', 'devtest*'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
