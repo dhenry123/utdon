@@ -164,6 +164,9 @@ export type UptoDateOrNotState = {
   strictlyEqual: boolean;
   githubLatestReleaseIncludesProductionVersion: boolean;
   productionVersionIncludesGithubLatestRelease: boolean;
+  // semver productionVersion is greater than githubLatestRelease (issue #26)
+  // optional: absent on compareResults persisted by previous versions
+  productionVersionIsGreater?: boolean;
   urlGitHub: string;
   urlProduction: string;
   // generated timestamp

@@ -17,10 +17,10 @@ import {
   UptodateFormFields,
 } from "../../../src/Global.types";
 import {
-  filterAndReplace,
   getGitUrlTagReleases,
   getTagFromGitRepoResponse,
   getTypeGitRepo,
+  selectLatestTag,
 } from "../../../src/lib/helperGitRepository";
 import { regExprGithubSamples } from "../helpers/ExprSamples";
 import { Block } from "./Block";
@@ -102,13 +102,11 @@ export const ScrapGitHubReleaseTags = ({
             listexcluded.push(item);
           }
         });
-        if (listmatch.length > 0) {
-          setLatestRelease(
-            filterAndReplace(activeUptodateForm.exprGithub, listmatch)
-          );
-        } else {
-          setLatestRelease("");
-        }
+        // same selection as the server-side comparison (issue #26):
+        // greatest semver tag among the matching ones
+        setLatestRelease(
+          selectLatestTag(tagsList, activeUptodateForm.exprGithub)
+        );
         setTagsListMatchExpr(listmatch);
         setExcludedFromTags(listexcluded);
       }

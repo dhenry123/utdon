@@ -3,6 +3,16 @@
 HTTP_PROXY="http://192.168.1.1:8080"
 HTTPS_PROXY="http://192.168.1.1:8080"
 
+# No corporate proxy available ?
+# Start the minimal local proxy bundled with the tests and point
+# HTTP_PROXY/HTTPS_PROXY at it (tunnels HTTPS with CONNECT, no CA needed):
+#
+#   npm run startLocalProxy
+#
+# HTTP_PROXY="http://127.0.0.1:3128"
+# HTTPS_PROXY="http://127.0.0.1:3128"
+# PROXYCA_CERT=""
+
 # With ssl proxy CA certificate must be set && url proxy must start with https
 
 # put ca cert in tests/cacerts/proxy.ca
@@ -13,4 +23,4 @@ PROXYCA_CERT="../test/cacerts/proxy.ca"
 INTSSLHTTPS_PROXY="https://proxy.mydomain:8083"
 GITHUBTOKEN="[your GitHub token]"
 
-HARCODEDGREP="[Words to search for]
+HARCODEDGREP="[Words to search for]"

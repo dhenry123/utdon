@@ -9,8 +9,10 @@ import {
   getGitUrlTagReleases,
   getTypeGitRepo,
   filterAndReplace,
+  selectLatestTag,
 } from "../src/lib/helperGitRepository";
 import crypto from "crypto";
+import { readFileSync } from "fs";
 import { scrapUrlThroughProxy } from "../src/lib/scrapUrlServer";
 import { InfosScrapConnection, TypeGitRepo } from "../src/Global.types";
 import http from "http";
@@ -201,6 +203,89 @@ describe("helperGitRepository", () => {
       const result = filterAndReplace(filtersName, filtered);
       // console.log(result);
       expect(result).toEqual(filtered[0].replace(/v([0-9.]+)$/, "$1"));
+    });
+  });
+
+  describe("getLatestRelease - semver ordering (issue #26)", () => {
+    // offline fixture modeled on the VictoriaLogs releases API response:
+    // the v1.51.1 backport was created AFTER v1.52.0, so the API (ordered
+    // by internal id) lists it first — the greatest tag is NOT entry [0]
+    const outOfOrder = readFileSync(
+      `${process.cwd()}/test/samples/releases-out-of-order.json`,
+      "utf-8"
+    );
+
+    test("getLatestRelease - no filter - returns the greatest tag, not the first", () => {
+      expect(getLatestRelease("github", outOfOrder, "")).toEqual("v1.52.0");
+    });
+
+    test("getLatestRelease - filter without capture - greatest matching tag", () => {
+      expect(getLatestRelease("github", outOfOrder, "^v[0-9.]+$")).toEqual(
+        "v1.52.0"
+      );
+    });
+
+    test("getLatestRelease - filter with capture - greatest after $1 substitution", () => {
+      expect(getLatestRelease("github", outOfOrder, "^v([0-9.]+)$")).toEqual(
+        "1.52.0"
+      );
+    });
+
+    test("getLatestRelease - gitea - same ordering", () => {
+      expect(getLatestRelease("gitea", outOfOrder, "")).toEqual("v1.52.0");
+    });
+
+    test("getLatestRelease - non semver tags - falls back to first entry", () => {
+      const tags = JSON.stringify([
+        { tag_name: "stable" },
+        { tag_name: "nightly" },
+      ]);
+      expect(getLatestRelease("github", tags, "")).toEqual("stable");
+    });
+
+    test("getLatestRelease - numeric fields compared numerically", () => {
+      // a string comparison would wrongly rank v1.2.0 above v1.10.0
+      const tags = JSON.stringify([
+        { tag_name: "v1.2.0" },
+        { tag_name: "v1.10.0" },
+      ]);
+      expect(getLatestRelease("github", tags, "")).toEqual("v1.10.0");
+    });
+  });
+
+  describe("selectLatestTag", () => {
+    test("selectLatestTag - greatest tag, not first", () => {
+      expect(selectLatestTag(["v10.0.1", "v10.0.2", "v9.0.3"])).toEqual(
+        "v10.0.2"
+      );
+    });
+
+    test("selectLatestTag - filter scopes candidates then picks greatest", () => {
+      // first-match behavior would return v1.9.0
+      expect(selectLatestTag(["v1.9.0", "v1.9.5", "v2.1.0"], "^v1\\.")).toEqual(
+        "v1.9.5"
+      );
+    });
+
+    test("selectLatestTag - filter with capture substitution", () => {
+      expect(
+        selectLatestTag(
+          ["v1.9.0-lts", "v1.9.5-lts", "v2.1.0"],
+          "^v(1\\.9\\.[0-9]+)-lts$"
+        )
+      ).toEqual("1.9.5");
+    });
+
+    test("selectLatestTag - empty list", () => {
+      expect(selectLatestTag([])).toEqual("");
+    });
+
+    test("selectLatestTag - no match with filter", () => {
+      expect(selectLatestTag(["v1.0.0"], "^x")).toEqual("");
+    });
+
+    test("selectLatestTag - non semver falls back to first", () => {
+      expect(selectLatestTag(["stable", "nightly"])).toEqual("stable");
     });
   });
 });
