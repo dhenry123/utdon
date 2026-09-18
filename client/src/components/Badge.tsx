@@ -8,6 +8,8 @@ import "./Badge.scss";
 interface BadgeProps {
   isSuccess: boolean;
   isWarning?: boolean;
+  // production version greater than the latest release: undeterminable state
+  isUnknown?: boolean;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
   title?: string;
   noState?: boolean;
@@ -15,6 +17,7 @@ interface BadgeProps {
 export const Badge = ({
   isSuccess,
   isWarning,
+  isUnknown,
   onClick,
   title,
   noState,
@@ -28,7 +31,9 @@ export const Badge = ({
       <div className={`label`}>State</div>
       <div
         className={`value ${
-          isSuccess
+          isUnknown
+            ? "unknown"
+            : isSuccess
             ? isWarning
               ? "uptodatewithwarn"
               : "uptodate"
@@ -37,7 +42,13 @@ export const Badge = ({
             : "toupdate"
         }`}
       >
-        {isSuccess ? "UP to date" : noState ? "No State" : "OUT of date"}
+        {isUnknown
+          ? "Unknown"
+          : isSuccess
+          ? "UP to date"
+          : noState
+          ? "No State"
+          : "OUT of date"}
       </div>
     </div>
   );

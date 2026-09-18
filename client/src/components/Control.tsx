@@ -111,6 +111,7 @@ export const Control = ({
             <Badge
               isSuccess={data.compareResult.state}
               isWarning={!data.compareResult.strictlyEqual}
+              isUnknown={!!data.compareResult.productionVersionIsGreater}
               onClick={() => {
                 handleOnDisplayLatestCompare(data);
               }}

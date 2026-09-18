@@ -50,7 +50,8 @@
         color: root.$badge-color-warning-dark;
       }
     }
-    &.nostate {
+    &.nostate,
+    &.unknown {
       background-color: root.$badge-background-color-nostate;
       color: root.$badge-color-nostate;
       @media (prefers-color-scheme: dark) {

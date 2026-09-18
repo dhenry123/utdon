@@ -5,7 +5,7 @@
 # 1.11.0
 
 - Fix #26: the latest release is now selected by the greatest SemVer tag, not by the first entry of the GitHub/Gitea releases list. Forges order releases by creation id, so a backport published after a newer release (e.g. VictoriaLogs v1.51.1 after v1.52.0) was wrongly detected as "latest". Non-SemVer versioning schemes keep the previous behavior.
-- Fix #26: a production version **greater** than the latest detected release is no longer reported "TO UPDATE"; it is reported "up to date" with a warning and a new field `productionVersionIsGreater` in the comparison result.
+- Fix #26: a production version **greater** than the latest detected release is no longer reported "TO UPDATE"; it is displayed with a gray "Unknown" badge and a new field `productionVersionIsGreater` in the comparison result.
 - SemVer-aware comparison (v-prefix tolerance, pre-release precedence) when both versions parse as SemVer; legacy string-containment behavior is kept as a fallback.
 - **BEHAVIOR CHANGE**: for repositories maintaining several version streams (e.g. 1.x LTS and 2.x) without a keep-regexp, the greatest version now wins. Use the "keep only releases which match this pattern" filter to track a specific stream.
 - UI: the control wizard "latest available version detected" preview now applies the same selection as the server.

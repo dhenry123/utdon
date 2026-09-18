@@ -87,9 +87,11 @@ flowchart TD
 - The containment flags keep their original meaning (string relationships) and are
   still computed, so existing UI displays are unchanged.
 - `productionVersionIsGreater` (optional field on `UptoDateOrNotState`) marks the
-  "running ahead of the latest release" case. With `state: true, strictlyEqual: false`
-  it lands in the existing "up to date **with warning**" tier (`Control.tsx`,
-  `ResultCompare.tsx` key `isWarning` off `strictlyEqual`) — no client change required.
+  "running ahead of the latest release" case. Per the reporter's suggestion in the
+  issue thread, the UI renders it as a **gray "Unknown" badge** (`Badge isUnknown`,
+  `Control.tsx`, `ResultCompare.tsx`) with a dedicated message in the compare dialog —
+  deliberately not "UP to date", since the state is undeterminable (the matching
+  release may simply not be published yet).
 - Old persisted `compareResult`s stay valid: the new field is optional.
 - Pure semver choice, documented: `1.53.0-rc.1` **beats** `1.52.0` (use the keep-regex
   to exclude prereleases when undesired).

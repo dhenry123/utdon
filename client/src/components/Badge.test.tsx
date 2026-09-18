@@ -20,6 +20,14 @@ describe("Badge", () => {
     expect(value).toHaveClass("uptodatewithwarn");
   });
 
+  it("production greater than the latest release renders the gray Unknown tier", () => {
+    render(<Badge isSuccess={true} isWarning={true} isUnknown={true} />);
+    const value = screen.getByText("Unknown");
+    expect(value).toHaveClass("unknown");
+    expect(value).not.toHaveClass("uptodatewithwarn");
+    expect(screen.queryByText("UP to date")).toBeNull();
+  });
+
   it("not up to date renders OUT of date", () => {
     render(<Badge isSuccess={false} />);
     const value = screen.getByText("OUT of date");
