@@ -57,12 +57,16 @@ Exceptions:
 | `PUT /action/cicd/` | auth | Body `{uuid}`. Fires the control's `urlCICD` with `httpMethodCICD` and its `Authorization` header. 200 connection info / 404 (no uuid / no urlCICD) / 500. |
 | `GET /action/lastcomparegitrelease/{controlUuid}` | auth | Returns `compareResult.githubLatestRelease` from the stored last compare (handy for CI scripts). 200 string / 404. |
 
+Note (1.11.0): compare results include the optional flag
+`productionVersionIsGreater` when the production version is **newer** than the latest
+detected release — `state` remains `true`, and the UI renders a gray "Unknown" badge.
+
 ## `routerCore` — scraping, health, version
 
 | Method & Path | Auth | Description |
 |---|---|---|
 | `GET /scrap/{url}` | auth | Server-side fetch of an arbitrary URL (GET, 3 s timeout, proxy-aware). Optional custom header via the `scrapurlheader` request header (`"key:value"`). Injects `Authorization: Bearer <globalGithubToken>` for github.com URLs when the caller supplies no header. Returns raw body text. Used by the UI wizard to test extraction expressions (also avoids browser CORS). |
-| `GET /version` | public | `{"version": "1.10.0"}`. |
+| `GET /version` | public | `{"version": "1.11.0"}`. |
 | `GET /healthz` | public | Liveness probe. 204. |
 | `GET /metrics` | auth | **Not implemented** (roadmap). 503. |
 

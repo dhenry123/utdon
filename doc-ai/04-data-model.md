@@ -55,7 +55,8 @@ Returned by `getUpToDateOrNotState` and stored on the control:
 | `productionVersion` | Version extracted from production (or the `fixed` value). |
 | `state` | Boolean — up to date? |
 | `strictlyEqual` | Exact string equality of both versions. |
-| `githubLatestReleaseIncludesProductionVersion` / `productionVersionIncludesGithubLatestRelease` | Mutual substring containment flags → drive the "up to date **with warning**" badge. |
+| `githubLatestReleaseIncludesProductionVersion` / `productionVersionIncludesGithubLatestRelease` | Mutual substring containment flags (string relationship, kept for compatibility). |
+| `productionVersionIsGreater` | Optional (1.11.0, issue #26): production runs a version **newer** than the latest detected release — `state` stays `true` and the UI shows the gray "Unknown" badge. Absent on records persisted before 1.11.0. |
 | `urlGitHub`, `urlProduction` | Echo of sources. |
 | `ts` | Comparison timestamp. |
 

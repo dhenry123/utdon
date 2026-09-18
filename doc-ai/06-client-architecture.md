@@ -6,9 +6,12 @@ with per-component SCSS files.
 
 ## Stack, build & serving
 
-- React 18.3 + TypeScript 5.9 + Vite 4.5 (`@vitejs/plugin-react`, Sass modern-compiler).
-- Redux Toolkit 1.9 + RTK Query; react-router-dom 6.30 (`createBrowserRouter` + route
-  loaders); react-intl 6.8; `@tabler/icons-webfont`; `react-multi-select-component`.
+- React 18.3 + TypeScript 5.9 + **Vite 8** (`@vitejs/plugin-react` 6, Sass modern-compiler).
+- **Redux Toolkit 2** + RTK Query; **react-router-dom 7** (`createBrowserRouter` + route
+  loaders); **react-intl 12**; `@tabler/icons-webfont`; `react-multi-select-component`
+  (unmaintained at React ≤18 — the blocker for a React 19 upgrade).
+- Tests: **Vitest 5 + React Testing Library** (`npm test` in `client/` → `vitest run`,
+  57 tests; jsdom environment, config in `vite.config.ts`, setup in `src/test/setup.ts`).
 - `npm run build` = `tsc && vite build` → `client/dist` (with manifest).
 - Dev: Vite dev server on `0.0.0.0:7852`, `/api` proxied to `http://0.0.0.0:3015`
   ([client/vite.config.ts](../client/vite.config.ts)); the Express server runs

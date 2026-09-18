@@ -51,7 +51,7 @@ Port: container **3015** (`PORT` env overrides).
   `docker login ghcr.io`; per-platform `podman build` for `linux/amd64` and
   `linux/arm64` from `Dockerfile`, tagged `ghcr.io/${USERNAME}/utdon:${platform}-${TAG}`;
   `podman manifest create/push` → `ghcr.io/dhenry123/utdon:${TAG}` and `:latest`.
-- [`build-dev.sh`](../build-dev.sh): builds the client, then `docker buildx` (arm64)
+- [`build-dev.sh`](../build-dev.sh): builds the client, then **podman build** (arm64)
   from `Dockerfile-dev`, tagged and pushed to a local registry from `.envlocaldev`
   (`LOCALREGISTRY`, requires `jq`).
 
@@ -71,10 +71,13 @@ publishing is manual via `build-prod.sh`.
   `npm version --no-git-tag-version` in root **and** `client/` → `sed` updates
   `APPLICATION_VERSION` in `src/Constants.ts`. Git tags are created manually.
 - Bilingual changelogs: [`Change.log.md`](../Change.log.md) (EN) / `Change.log.fr.md`.
-  ⚠️ As of 1.10.0 the changelog lags: latest entry is 1.9.0, and 1.8.0/1.10.0 are
-  undocumented (see [10-code-observations.md](./10-code-observations.md)).
+  Changelog: 1.10.0 entries were reconstructed in 1.11.0 and 1.11.0 is documented;
+  **1.8.0 remains undocumented** (see [10-code-observations.md](./10-code-observations.md)).
 - [`checkHardCoded.sh`](../checkHardCoded.sh): pre-commit guard grepping changed files
-  for words from `.envTest`'s `HARDCDGREP` list.
+  for words from `.envTest`'s `HARCODEDGREP` list. Complemented since 1.11.0 by the
+  confidentiality gate: `npm run checkConfidentiality` (+ git `pre-push` hook, skill in
+  `.agents/skills/pr-confidentiality/`) which scans pending commits and PR text for
+  secrets, internal IP ranges and sensitive files.
 - [`install-legacy.sh`](../install-legacy.sh): bare-metal install to `/usr/local/utdon`
   (builds server + client, prunes dev deps), generates the two secrets with
   `openssl rand -base64 32`, prints a systemd unit template to stdout.

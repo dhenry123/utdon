@@ -79,7 +79,7 @@ Selected constants (see the file for the full list):
 
 | Constant | Value | Notes |
 |---|---|---|
-| `APPLICATION_VERSION` | `"1.10.0"` | Kept in sync by `updateVersion.sh`. |
+| `APPLICATION_VERSION` | `"1.11.0"` | Kept in sync by `updateVersion.sh`. |
 | `NODEJSVERSION` | `"20"` | Used in the outbound `User-Agent: Node.js/20 (Linux)`. |
 | `HTTPREQUESTTIMEOUT` | `3000` | Outbound request + agent timeout (ms). |
 | `ADMINUSERLOGINDEFAULT` / `ADMINPASSWORDDEFAULT` | `admin` / `admin` | First-boot account. |

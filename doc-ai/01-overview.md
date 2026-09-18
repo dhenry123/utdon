@@ -43,6 +43,8 @@ utdon/                          # monorepo: server at root, client in client/
 ├── data/                       # RUNTIME STORAGE (JSON databases; git-ignored)
 ├── cacerts/                    # optional proxy CA certificates
 ├── test/                       # Jest test suite (server) + fixtures in test/samples
+│   └── tools/localProxy.mjs    # minimal local proxy for live tests (no corporate proxy needed)
+├── .agents/skills/             # project skills (confidentiality gate before push/PR)
 ├── doc/                        # user documentation (EN/FR): INSTALL, GROUPS, CONTROL
 ├── locales/fr.json             # French UI translations (keys are English sentences)
 ├── openapi.yaml                # Swagger spec (partial — see 03-api-reference.md)
@@ -69,7 +71,7 @@ utdon/                          # monorepo: server at root, client in client/
 | Routing | react-router-dom 6 (`createBrowserRouter`) | 6.30 |
 | i18n | react-intl (en = source keys, fr = `locales/fr.json`) | 6.8 |
 | Styling | Sass (hand-rolled component kit, no UI framework) | 1.100 |
-| Testing | Jest 30 + ts-jest (server only; no client tests) | — |
+| Testing | Jest 30 + ts-jest for the server (201 tests) — Vitest 5 + React Testing Library for the client (57 tests) | — |
 
 ## Runtime topology
 
@@ -160,4 +162,7 @@ sequenceDiagram
 ```
 
 See [05-server-libraries.md](./05-server-libraries.md) for the exact semantics of each
-step (notably: `compareVersion` is string-containment based, **not** semver-aware).
+step: since 1.11.0 (issue #26) release selection picks the greatest SemVer tag and the
+comparison is SemVer-ordered when both sides parse, with the legacy string-containment
+behavior kept as a fallback — see also
+[issues/issue-26-version-ordering.md](./issues/issue-26-version-ordering.md).

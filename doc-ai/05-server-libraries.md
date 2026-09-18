@@ -68,11 +68,13 @@ In-memory `UptodateForm[]` cached as `app.get("DB")`, persisted to
 
 ## `Features.ts` — comparison semantics & ordering
 
-- `compareVersion(name, sourceCodeVersion, productionVersion)` — **not semver-aware**:
-  exact string equality (`strictlyEqual`), otherwise mutual regex-containment tests
-  (`githubLatestReleaseIncludesProductionVersion` and the reverse). `"v1.8.9"` vs
-  `"1.8.9"` → up to date *with warning*. Versions containing regex metacharacters can
-  behave unexpectedly (see [10-code-observations.md](./10-code-observations.md)).
+- `compareVersion(name, sourceCodeVersion, productionVersion)` — since 1.11.0
+  (issue #26): when **both** sides parse as SemVer, the result is decided by
+  ordering — production greater than latest sets `state: true` plus
+  `productionVersionIsGreater: true` (UI shows the gray "Unknown" badge);
+  SemVer-equal but string-different (v-prefix) → up to date with warning;
+  production lower → to update. Non-SemVer values keep the legacy
+  string-equality/containment behavior.
 - `recordsOrder(records)` — dashboard sort: to-update (incl. never-compared) first,
   then up-to-date-with-warning, then strictly up-to-date.
 
@@ -82,9 +84,18 @@ In-memory `UptodateForm[]` cached as `app.get("DB")`, persisted to
   (protocol+domain stripped by regex); Gitea → `{scheme}://{domain}/api/v1/repos/{path}/releases`.
 - `getTypeGitRepo(url)` — `/github\.com/` → `github`, anything else → `gitea`.
 - `getLatestRelease(typeRepo, json, filtersName?)` — extracts tag names
-  (GitHub: `tag_name ?? name`; Gitea: `tag_name`), optionally regex-filters
-  (`filterAndReplace`, with `$1` capture substitution), returns the **first** entry
-  (relies on the forges returning newest-first).
+  (GitHub: `tag_name ?? name`; Gitea: `tag_name`) and delegates to `selectLatestTag`.
+- `selectLatestTag(tags, filtersName?)` — since 1.11.0 (issue #26): applies the
+  optional keep-regex to **every** entry (with `$1` capture substitution), then returns
+  the **greatest SemVer tag**; falls back to the first entry when no tag parses as
+  SemVer. `filterAndReplace` still exists but is no longer used for selection.
+
+## `semver.ts` — SemVer support (new in 1.11.0)
+
+`parseSemver(version)` (v-prefix tolerant, prerelease + build metadata parsed) and
+`compareSemver(a, b)` (full SemVer precedence incl. numeric identifiers and
+prerelease rules; returns `null` when either side does not parse). Zero dependencies;
+see [issues/issue-26-version-ordering.md](./issues/issue-26-version-ordering.md).
 
 ## `helperProdVersionReader.ts` — version extraction (shared with the browser)
 

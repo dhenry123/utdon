@@ -18,12 +18,12 @@ be intentional design trade-offs.
    when `req.body.uuid` is missing, no response is ever sent (the request hangs until
    client timeout).
 
-3. **Version comparison is string-containment, not semver** —
-   [`src/lib/Features.ts:26-37`](../src/lib/Features.ts): `compareVersion` uses exact
-   equality plus mutual `String.match()` containment (each version used as a regex
-   against the other). `v1.8.9` vs `1.8.9` → up-to-date **with warning** (by design);
-   but versions containing regex metacharacters (e.g. `1.2.3+build.1` in a regex
-   context) can produce surprising matches (e.g. `.` matching any character).
+3. **~~Version comparison is string-containment, not semver~~ FIXED in 1.11.0 (issue #26)** —
+   `compareVersion` now orders by SemVer when both sides parse (see
+   [`src/lib/Features.ts`](../src/lib/Features.ts) and
+   [issues/issue-26-version-ordering.md](./issues/issue-26-version-ordering.md)); the
+   legacy containment behavior remains only as the fallback for non-SemVer values,
+   where the regex-metacharacter caveat still applies.
 
 4. **Startup race on DB load** — [`src/main.ts:66-93`](../src/main.ts): the controls
    DB is loaded in an async continuation while `httpServer.listen()` is registered
@@ -62,18 +62,19 @@ be intentional design trade-offs.
     trust boundary in mind.
 
 12. **Dev scripts embed secrets** — [`package.json`](../package.json) `startServer*`
-    scripts hardcode `USER_ENCRYPT_SECRET='7252c26afd532e75510e8d7bcf37bb56'`,
-    `DATABASE_ENCRYPT_SECRET=test` and `NODE_TLS_REJECT_UNAUTHORIZED='0'`. Convenient
-    for dev, but the same strings are in git history.
+    scripts hardcode a 32-char hex `USER_ENCRYPT_SECRET` placeholder (already public in
+    git history — redacted here on purpose), `DATABASE_ENCRYPT_SECRET=test` and
+    `NODE_TLS_REJECT_UNAUTHORIZED='0'`. Convenient for dev, but the same strings are in
+    git history.
 
 ## Documentation / consistency lag
 
-13. **`openapi.yaml` lags the implementation** — `info.version: 1.5.0` vs app 1.10.0;
+13. **`openapi.yaml` lags the implementation** — `info.version: 1.5.0` vs app 1.11.0;
     only 7 of the ~26 paths are documented (no auth/user/group endpoints, no `/scrap`).
     This file (doc-ai) is currently the complete API reference.
 
-14. **Changelog lags** — latest entry in `Change.log.md` is 1.9.0; 1.8.0 and 1.10.0
-    have no entries.
+14. **Changelog** — partially resolved in 1.11.0: the missing 1.10.0 entries were
+    reconstructed and 1.11.0 is documented (EN/FR); **1.8.0 still has no entry**.
 
 15. **`install-legacy.sh` mentions Node LTS-20** while the Docker images and README
     use Node 22.22.3.
@@ -88,7 +89,8 @@ be intentional design trade-offs.
 ## Minor / cosmetic
 
 18. **`Constants-dev.ts`** contains Storybook fixtures never imported by the server,
-    and duplicates application-shape constants rather than importing them.
+    and duplicates application-shape constants rather than importing them — and
+    Storybook itself was removed in 1.10.0, making the file fully orphaned.
 
 19. **Client RTK Query `deleteUser`** names its parameter `login` but sends a **uuid**
     ([`client/src/api/mytinydcUPDONApi.ts:168-175`](../client/src/api/mytinydcUPDONApi.ts);
