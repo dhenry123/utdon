@@ -18,11 +18,12 @@ if [ "$?" == "1" ]; then
     exit 1
 fi
 TAG=$(jq '.version' package.json | sed -E 's/^"|"$//g')
-PROGRESS="--progress plain"
 PLATFORM="--platform=linux/arm64"
 echo "Building image $LOCALREGISTRY:$TAG"
 #NOCACHE="--no-cache"
 
-docker buildx build --load $PROGRESS $NOCACHE $PLATFORM -t $LOCALREGISTRY:$TAG -f Dockerfile-dev .
+# podman (not docker): no --load (always loaded into the local store)
+# and no --progress flag
+podman build $NOCACHE $PLATFORM -t $LOCALREGISTRY:$TAG -f Dockerfile-dev .
 echo "Pushing image $LOCALREGISTRY:$TAG"
-docker push "$LOCALREGISTRY":"$TAG"
+podman push "$LOCALREGISTRY":"$TAG"
