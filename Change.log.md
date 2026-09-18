@@ -15,6 +15,19 @@
 - Client dependencies: vite 8, @vitejs/plugin-react 6, @reduxjs/toolkit 2, react-redux 9, react-router-dom 7, react-intl 12 — `npm audit` now reports 0 vulnerabilities (was 4).
 - Server dependencies refreshed.
 
+# 1.10.0
+
+- Server migrated to **ECMAScript modules** ("type": "module", .js import specifiers, ESM TypeScript/Jest configurations, nodemon now runs tsx).
+- Server dependencies upgraded to new majors: Express 4 → 5, body-parser 1 → 2, helmet 7 → 8, express-session 1.18 → 1.19, http/https-proxy-agent 7 → 9, @metrichor/jmespath 0.3 → 1.0.
+- **BREAKING CHANGE**: Node.js 22 is now required (Docker base image node:22.22.3-alpine3.23, previously node:20.18).
+- GitHub version detection now uses the **/releases** API endpoint instead of /tags, and reads the tag from "tag_name" first ("name" as fallback).
+- Express 5 compatibility: the SPA wildcard route becomes "/ui/editcontrol/*path" (Express 5 requires named wildcards).
+- Storybook and ESLint removed from the client (all *.stories.* files deleted) — lighter installs and builds.
+- Build: "npm run build" cleans the dist/ directory first; Docker builds copy package files before the source for better layer caching.
+- Roadmap: dropped the "readonly token per user", "S3 storage" and "API metrics entrypoint" items.
+- Client: minor dependency upgrades (react-router-dom 6.30, vite 4.5.14, typescript 5.9).
+- Tests: ESM Jest configuration (ts-jest ESM preset, new tsconfig.test.json), new test suites (groups, database).
+
 # 1.9.0
 
 - NodeJS 20.18
