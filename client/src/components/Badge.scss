@@ -50,12 +50,19 @@
         color: root.$badge-color-warning-dark;
       }
     }
-    &.nostate,
-    &.unknown {
+    &.nostate {
       background-color: root.$badge-background-color-nostate;
       color: root.$badge-color-nostate;
       @media (prefers-color-scheme: dark) {
         color: root.$badge-color-nostate-dark;
+      }
+    }
+    &.unknown {
+      background-color: root.$badge-background-color-unknown;
+      color: root.$badge-color-unknown;
+      @media (prefers-color-scheme: dark) {
+        background-color: root.$badge-background-color-unknown-dark;
+        color: root.$badge-color-unknown-dark;
       }
     }
   }

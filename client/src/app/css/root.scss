@@ -102,6 +102,13 @@ $badge-background-color-nostate: $palette-theme-origin-color-30;
 $badge-color-nostate: $palette-theme-origin-color-18;
 $badge-color-nostate-dark: $palette-theme-origin-color-27;
 
+// production version greater than the latest release: neutral gray,
+// high contrast in both color schemes
+$badge-background-color-unknown: $palette-theme-origin-color-22;
+$badge-color-unknown: $palette-theme-origin-color-26;
+$badge-background-color-unknown-dark: $palette-theme-origin-color-26;
+$badge-color-unknown-dark: $palette-theme-origin-color-27;
+
 $badge-label-color: $palette-theme-origin-color-27;
 $badge-label-color-dark: $palette-theme-origin-color-27;
 
