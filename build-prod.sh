@@ -6,7 +6,7 @@ set -e
 
 source .envlocaldev
 # login to github
-echo "${CR_PAT}" | docker login ghcr.io --username "${USERNAME}" --password-stdin
+echo "${CR_PAT}" | podman login ghcr.io --username "${USERNAME}" --password-stdin
 
 # jq is needed
 which jq >/dev/null 2>&1
