@@ -1,6 +1,6 @@
 {
   "name": "mytinydc-utdon",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Application for tracking obsolete FOSS applications - Server",
   "main": "main.ts",
   "type": "module",
@@ -15,7 +15,9 @@
     "updateVersionMajor": "./updateVersion.sh major",
     "updateVersionMinor": "./updateVersion.sh minor",
     "updateVersionPatch": "./updateVersion.sh patch",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --config jest.config.ts --testPathIgnorePatterns='devtest*'"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest --config jest.config.ts",
+    "startLocalProxy": "node test/tools/localProxy.mjs",
+    "checkConfidentiality": ".agents/skills/pr-confidentiality/scripts/checkConfidentiality.sh"
   },
   "repository": {
     "type": "git",

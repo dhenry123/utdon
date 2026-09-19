@@ -35,6 +35,7 @@
   "Url of the CI/CD API entrypoint": "Url du point d'entrée de l'API CI/CD",
   "Compare": "Effectuer une comparaison",
   "This result may be a false positive": "Ce résultat peut-être un faux positif",
+  "Your production version is greater than the latest detected release": "Votre version de production est supérieure à la dernière release détectée",
   "The latest Github Release tag includes your production version": "La dernière release Github inclut votre version de production.",
   "Your production version includes the latest git Release tag": "Votre version de production inclut la dernière release git",
   "Your production version": "Votre version de production",

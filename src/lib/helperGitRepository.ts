@@ -8,6 +8,7 @@ import {
   GithubReleaseTagModel,
   TypeGitRepo,
 } from "../Global.types";
+import { parseSemver, compareSemverParsed, SemVer } from "./semver.js";
 
 export const getGitUrlTagReleases = (
   gitRepoUrl: string,
@@ -51,6 +52,46 @@ export const getTypeGitRepo = (url: string): TypeGitRepo => {
   return /github\.com/.test(url) ? "github" : "gitea";
 };
 
+/**
+ * Select the latest tag from a list (issue #26).
+ * GitHub/Gitea list releases by internal id (creation order), which is NOT
+ * version order when a backport is published after a newer release — so the
+ * greatest SemVer tag wins. Falls back to the first entry when no tag is
+ * parsable SemVer (non semver versioning schemes).
+ * @param tags tag names
+ * @param filtersName optional keep-regexp, applied to every entry ($1
+ * capture substitution included) before comparing
+ * @returns the selected tag, "" when no tag matches the filter
+ */
+export const selectLatestTag = (
+  tags: string[],
+  filtersName?: string
+): string => {
+  const regExp = filtersName ? new RegExp(filtersName) : undefined;
+  const matching = regExp
+    ? tags.filter((tag) => tag && tag.match(regExp))
+    : tags;
+  if (matching.length === 0) return "";
+  const candidates =
+    regExp && filtersName?.match(/\(/)
+      ? matching.map((tag) => tag.replace(regExp, "$1"))
+      : matching;
+  let latest: string | null = null;
+  let latestSemver: SemVer | null = null;
+  for (const candidate of candidates) {
+    const parsed = parseSemver(candidate);
+    if (
+      parsed &&
+      (!latestSemver || compareSemverParsed(parsed, latestSemver) > 0)
+    ) {
+      latestSemver = parsed;
+      latest = candidate;
+    }
+  }
+  // no parsable semver: keep the historical first-entry behavior
+  return latest ?? candidates[0];
+};
+
 export const getLatestRelease = (
   typeRepo: TypeGitRepo,
   releaseTags: string,
@@ -58,27 +99,13 @@ export const getLatestRelease = (
 ): string => {
   const json = JSON.parse(releaseTags as string);
   if (json && Array.isArray(json)) {
-    const filtered: string[] = json
-      .filter((item) => {
-        const tag = getTagFromGitRepoResponse(
-          typeRepo,
-          item as GiteaReleaseTagModel | GithubReleaseTagModel
-        );
-        return filtersName ? tag.match(filtersName) : tag;
-      })
-      .map((item) => {
-        return getTagFromGitRepoResponse(
-          typeRepo,
-          item as GiteaReleaseTagModel | GithubReleaseTagModel
-        ) as string;
-      });
-    // tags and filter to apply
-    if (filtered.length > 0 && filtersName) {
-      return filterAndReplace(filtersName, filtered);
-    } else if (filtered.length > 0 && !filtersName) {
-      //tags and no filter return the first
-      return filtered[0];
-    }
+    const tags = json.map((item) => {
+      return getTagFromGitRepoResponse(
+        typeRepo,
+        item as GiteaReleaseTagModel | GithubReleaseTagModel
+      );
+    }) as string[];
+    return selectLatestTag(tags, filtersName);
   }
   // if Github change specifications ???? - hard to test
   // trying with an other domain return 404

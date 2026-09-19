@@ -140,7 +140,7 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
             </FieldSet>
             <FieldSetClickableUrl
               legend={intl.formatMessage({ id: "Production version url" })}
-              url={control.urlProduction}
+              url={control.urlProduction ?? ""}
             />
             <FieldSetClickableUrl
               legend={intl.formatMessage({ id: "Git repository url" })}
@@ -160,6 +160,7 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
                 <Badge
                   isSuccess={control.compareResult.state}
                   isWarning={!control.compareResult.strictlyEqual}
+                  isUnknown={!!control.compareResult.productionVersionIsGreater}
                 />
               </FieldSet>
               <FieldSet
@@ -176,8 +177,19 @@ export const ResultCompare = ({ control }: ResultCompareProps) => {
               </FieldSet>
             </div>
             <div>
-              {control.compareResult.state &&
-              !control.compareResult.strictlyEqual ? (
+              {control.compareResult.productionVersionIsGreater ? (
+                <FieldSet
+                  legend={intl.formatMessage({ id: "Warning" })}
+                  className="warning"
+                >
+                  <div>
+                    {intl.formatMessage({
+                      id: "Your production version is greater than the latest detected release",
+                    })}
+                  </div>
+                </FieldSet>
+              ) : control.compareResult.state &&
+                !control.compareResult.strictlyEqual ? (
                 <FieldSet
                   legend={intl.formatMessage({ id: "Warning" })}
                   className="warning"

@@ -50,6 +50,61 @@ describe("Features", () => {
     });
   });
 
+  describe("compareVersion - semver ordering (issue #26)", () => {
+    test("compareVersion - production greater than github latest - up to date", () => {
+      const result = compareVersion("xxxxx", "1.51.1", "1.52.0", "", "");
+      expect(result.state).toBeTruthy();
+      expect(result.strictlyEqual).toBeFalsy();
+      expect(result.productionVersionIsGreater).toBeTruthy();
+      expect(result.productionVersionIncludesGithubLatestRelease).toBeFalsy();
+      expect(result.githubLatestReleaseIncludesProductionVersion).toBeFalsy();
+    });
+
+    test("compareVersion - production greater than a v-prefixed github latest - issue #26 VictoriaLogs case", () => {
+      // github wrongly detected v1.51.1 (backport listed first by the API)
+      // while production runs 1.52.0
+      const result = compareVersion("xxxxx", "v1.51.1", "1.52.0", "", "");
+      expect(result.state).toBeTruthy();
+      expect(result.strictlyEqual).toBeFalsy();
+      expect(result.productionVersionIsGreater).toBeTruthy();
+    });
+
+    test("compareVersion - production lower than github latest - to update", () => {
+      const result = compareVersion("xxxxx", "v1.52.0", "v1.51.1", "", "");
+      expect(result.state).toBeFalsy();
+      expect(result.strictlyEqual).toBeFalsy();
+      expect(result.productionVersionIsGreater).toBeFalsy();
+    });
+
+    test("compareVersion - semver equal with v prefix - up to date with warning", () => {
+      const result = compareVersion("xxxxx", "v1.52.0", "1.52.0", "", "");
+      expect(result.state).toBeTruthy();
+      expect(result.strictlyEqual).toBeFalsy();
+      expect(result.productionVersionIsGreater).toBeFalsy();
+      expect(result.githubLatestReleaseIncludesProductionVersion).toBeTruthy();
+      expect(result.productionVersionIncludesGithubLatestRelease).toBeFalsy();
+    });
+
+    test("compareVersion - release greater than its prerelease tag", () => {
+      const result = compareVersion("xxxxx", "1.52.0-rc.1", "1.52.0", "", "");
+      expect(result.state).toBeTruthy();
+      expect(result.productionVersionIsGreater).toBeTruthy();
+    });
+
+    test("compareVersion - github prerelease of a greater version wins", () => {
+      // pure semver: 1.53.0-rc.1 > 1.52.0
+      const result = compareVersion("xxxxx", "1.53.0-rc.1", "1.52.0", "", "");
+      expect(result.state).toBeFalsy();
+      expect(result.productionVersionIsGreater).toBeFalsy();
+    });
+
+    test("compareVersion - non semver values keep legacy containment behavior", () => {
+      const result = compareVersion("xxxxx", "latest", "1.2.3", "", "");
+      expect(result.state).toBeFalsy();
+      expect(result.productionVersionIsGreater).toBeFalsy();
+    });
+  });
+
   describe("recordsOrder", () => {
     const json = JSON.parse(
       readFileSync(`${process.cwd()}/test/samples/reorder1.json`, "utf-8")

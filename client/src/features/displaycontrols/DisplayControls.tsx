@@ -425,6 +425,9 @@ export const DisplayControls = () => {
                           <Badge
                             isSuccess={item.compareResult.state}
                             isWarning={!item.compareResult.strictlyEqual}
+                            isUnknown={
+                              !!item.compareResult.productionVersionIsGreater
+                            }
                             onClick={() => {
                               handleOnDisplayLatestCompare(item);
                             }}

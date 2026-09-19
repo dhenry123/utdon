@@ -4,6 +4,7 @@
  */
 
 import { UptoDateOrNotState, UptodateForm } from "../Global.types";
+import { compareSemver } from "./semver.js";
 
 /**
  * return the object UptoDateOrNotState
@@ -21,6 +22,7 @@ export const compareVersion = (
   let uptodateState = false,
     githubLatestReleaseIncludesProductionVersion = false,
     productionVersionIncludesGithubLatestRelease = false,
+    productionVersionIsGreater = false,
     strictlyEqual = false;
   // strict equality
   if (sourceCodeVersion === productionVersion) {
@@ -29,11 +31,26 @@ export const compareVersion = (
   } else {
     if (sourceCodeVersion.match(productionVersion)) {
       githubLatestReleaseIncludesProductionVersion = true;
-      uptodateState = true;
     }
     if (productionVersion.match(sourceCodeVersion)) {
       productionVersionIncludesGithubLatestRelease = true;
-      uptodateState = true;
+    }
+    // SemVer ordering (issue #26): decide by precedence whenever both sides
+    // are parsable semver, otherwise keep the legacy containment behavior
+    const semverComparison = compareSemver(productionVersion, sourceCodeVersion);
+    if (semverComparison !== null) {
+      if (semverComparison === 0) {
+        // semver equal - strings differ (eg: v prefix)
+        uptodateState = true;
+      } else if (semverComparison > 0) {
+        // production runs ahead of the latest release: not "to update"
+        uptodateState = true;
+        productionVersionIsGreater = true;
+      }
+    } else {
+      uptodateState =
+        githubLatestReleaseIncludesProductionVersion ||
+        productionVersionIncludesGithubLatestRelease;
     }
   }
   return {
@@ -46,6 +63,7 @@ export const compareVersion = (
       githubLatestReleaseIncludesProductionVersion,
     productionVersionIncludesGithubLatestRelease:
       productionVersionIncludesGithubLatestRelease,
+    productionVersionIsGreater: productionVersionIsGreater,
     urlGitHub: urlGitHub,
     urlProduction: urlProduction,
     ts: new Date().valueOf(),
